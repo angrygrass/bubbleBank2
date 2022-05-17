@@ -17,11 +17,12 @@ public class Transaction {
     private Portfolio portfolio;
     private Asset asset;
 
-
     private final Logger logger = LogManager.getLogger(Transaction.class);
 
     public Transaction() {
         super();
         logger.info("New empty Transaction");
     }
+
+
 }

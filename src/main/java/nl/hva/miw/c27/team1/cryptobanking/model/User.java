@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class User {
 
-    private long id;
+    private int id;
     private String role;
     private String firstName;
     private String prefix;
@@ -28,17 +28,25 @@ public class User {
         logger.info("New empty User");
     }
 
-    public User(long id) {
+    public User(int id) {
         super();
         this.id = id;
         logger.info("New User");
     }
 
-    public long getId() {
+    public User(int id, String role) {
+        super();
+        this.id = id;
+        this.role = role;
+        logger.info("New User with Role");
+    }
+
+    // getters & setters
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

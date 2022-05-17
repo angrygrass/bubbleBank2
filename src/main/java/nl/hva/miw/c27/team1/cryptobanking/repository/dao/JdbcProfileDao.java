@@ -1,0 +1,28 @@
+package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
+
+import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
+import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+@Repository
+public class JdbcProfileDao implements ProfileDao {
+
+    private JdbcTemplate jdbcTemplate;
+    private final Logger logger = LogManager.getLogger(Transaction.class);
+
+
+    public JdbcProfileDao(JdbcTemplate jdbcTemplate) {
+        super();
+        this.jdbcTemplate = jdbcTemplate;
+        logger.info("New JdbcProfileDao.");
+    }
+
+    @Override
+    public Optional<Profile> findByUserName(String userName) {
+        return Optional.empty();
+    }
+}
