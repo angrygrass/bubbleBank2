@@ -1,7 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
-import nl.hva.miw.c27.team1.cryptobanking.model.User;
-import nl.hva.miw.c27.team1.cryptobanking.repository.dao.ProfileDao;
+import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.UserDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,15 +19,15 @@ import java.util.Optional;
 
 // class needs db queries
 @Repository
-public class UserRepository {
+public class RootRepository {
 
     private List<User> userList;
     private final UserDao userDao;
 
-    private final Logger logger = LogManager.getLogger(UserRepository.class);
+    private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
-    public UserRepository(UserDao userDao) {
+    public RootRepository(UserDao userDao) {
         this.userList = new ArrayList<>();
         fillUserLIst();
         this.userDao = userDao;
@@ -40,8 +39,8 @@ public class UserRepository {
     }
 
     public void fillUserLIst() {
-        userList.add(new User(1, "Client"));
-        userList.add(new User(2, "Admin"));
+        userList.add(new Customer(1, "Client"));
+        userList.add(new Admin(2, "Admin"));
     }
 
     public List<User> getAllUsers() {
@@ -64,6 +63,11 @@ public class UserRepository {
         } else {
             return null;
         }
+    }
+
+    // needs query
+    public Optional<Profile> getProfileOfUser(String userName) {
+        return null;
     }
 
     public void delete(int id) {

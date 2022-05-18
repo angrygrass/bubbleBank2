@@ -8,13 +8,24 @@ public class BankAccount {
     private String iban;
     private long balanceInEuros;
     private Portfolio portfolio;
-    private User user;
+    private Customer customer;
 
     private final Logger logger = LogManager.getLogger(BankAccount.class);
 
     public BankAccount() {
         super();
         logger.info("New empty BankAccount");
+    }
+
+    // getters & setters
+
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 
     public long getBalanceInEuros() {
@@ -33,20 +44,12 @@ public class BankAccount {
         this.portfolio = portfolio;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
-        this.iban = iban;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Logger getLogger() {

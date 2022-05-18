@@ -5,27 +5,65 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
 
-public class User {
+public abstract class User {
 
     private int id;
     private String role;
     private String firstName;
     private String prefix;
     private String surName;
-    private long bsnNumber;
+    private int bsnNumber;
     private Date birthDate;
     private String streetName;
-    private int houseNumber;
+    private String houseNumber;
     private String zipCode;
     private String residence;
+    private String country;
     private Profile profile;
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
-    public User() {
+    private User(int id, String role, String firstName, String prefix, String surName,
+                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
+                 String zipCode, String residence, String country, Profile profile) {
+        this.id = id;
+        this.role = role;
+        this.firstName = firstName;
+        this.prefix = prefix;
+        this.surName = surName;
+        this.bsnNumber = bsnNumber;
+        this.birthDate = birthDate;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+        this.zipCode = zipCode;
+        this.residence = residence;
+        this.country = country;
+        this.profile = profile;
+        logger.info("New private User");
+    }
+
+    public User(String firstName, String prefix, String surName,
+                int bsnNumber, Date birthDate, String streetName, String houseNumber,
+                String zipCode, String residence, String country, Profile profile) {
+        this.firstName = firstName;
+        this.prefix = prefix;
+        this.surName = surName;
+        this.bsnNumber = bsnNumber;
+        this.birthDate = birthDate;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+        this.zipCode = zipCode;
+        this.residence = residence;
+        this.country = country;
+        this.profile = profile;
+    }
+
+    public User(int id, String role) {
         super();
-        logger.info("New empty User");
+        this.id = id;
+        this.role = role;
+        logger.info("New User with role");
     }
 
     public User(int id) {
@@ -34,11 +72,9 @@ public class User {
         logger.info("New User with id");
     }
 
-    public User(int id, String role) {
+    public User() {
         super();
-        this.id = id;
-        this.role = role;
-        logger.info("New User with role");
+        logger.info("New empty User");
     }
 
     // getters & setters
@@ -78,7 +114,7 @@ public class User {
         return bsnNumber;
     }
 
-    public void setBsnNumber(long bsnNumber) {
+    public void setBsnNumber(int bsnNumber) {
         this.bsnNumber = bsnNumber;
     }
 
@@ -98,11 +134,11 @@ public class User {
         this.streetName = streetName;
     }
 
-    public int getHouseNumber() {
+    public String getHouseNumber() {
         return houseNumber;
     }
 
-    public void setHouseNumber(int houseNumber) {
+    public void setHouseNumber(String houseNumber) {
         this.houseNumber = houseNumber;
     }
 

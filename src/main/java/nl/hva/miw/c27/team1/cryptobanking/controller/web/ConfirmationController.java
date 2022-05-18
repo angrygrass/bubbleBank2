@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ConfirmationController {
@@ -24,7 +25,7 @@ public class ConfirmationController {
     }
 
     @PostMapping("/confirm")
-    public String confirmHandler(@ModelAttribute(name="member") User confirmedUser) {
+    public String confirmHandler(@RequestParam(name="member") User confirmedUser) {
         userService.saveUser(confirmedUser);
         logger.info("De bevestigde gebruiker is " + confirmedUser);
         return "home";

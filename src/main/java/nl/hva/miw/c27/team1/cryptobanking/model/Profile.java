@@ -11,6 +11,17 @@ public class Profile {
 
     private final Logger logger = LogManager.getLogger(Profile.class);
 
+    public Profile(String userName, String passWord, User user) {
+        this.userName = userName;
+        this.passWord = passWord;
+        this.user = user;
+    }
+
+    public Profile(String userName, String passWord) {
+        this.userName = userName;
+        this.passWord = passWord;
+    }
+
     public Profile() {
         super();
         logger.info("New empty Profile");

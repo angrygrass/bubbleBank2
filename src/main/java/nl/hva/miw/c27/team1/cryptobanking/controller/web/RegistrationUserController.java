@@ -1,12 +1,17 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.web;
 
+import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
+import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Date;
 
 @Controller
 public class RegistrationUserController {
@@ -19,22 +24,23 @@ public class RegistrationUserController {
   }
 
   @PostMapping("/new_user")
-  public String newUserHandler(
+  public ResponseEntity<?> newUserHandler(
           @RequestParam(name="first_name") String firstName,
           @RequestParam(name="prefix") String prefix,
           @RequestParam(name="surname") String surName,
-          @RequestParam(name="date_of_birth") String birthDate,
+          @RequestParam(name="bsn_number") int bsnNumber,
+          @RequestParam(name="date_of_birth") Date birthDate,
           @RequestParam(name="streetname") String streetName,
           @RequestParam(name="house_number") String houseNumber,
           @RequestParam(name="zipcode") String zipCode,
           @RequestParam(name="residence") String residence,
+          @RequestParam(name="country") String country,
           @RequestParam(name="user_name") String userName,
-          @RequestParam(name="password") String passWord,
-          Model model) {
+          @RequestParam(name="password") String passWord) {
 
-    User newUser = new User(); // new User needs attributes
-    model.addAttribute("user", newUser);
-    // or direct to profile?
-    return "confirmation";
+    User newUser = new Customer(firstName,prefix,surName,bsnNumber,birthDate,streetName,
+                  houseNumber,zipCode,residence, country, new Profile(userName,passWord)); // correct?
+
+    return null;
   }
 }
