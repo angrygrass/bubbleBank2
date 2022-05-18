@@ -31,14 +31,14 @@ public class User {
     public User(int id) {
         super();
         this.id = id;
-        logger.info("New User");
+        logger.info("New User with id");
     }
 
     public User(int id, String role) {
         super();
         this.id = id;
         this.role = role;
-        logger.info("New User with Role");
+        logger.info("New User with role");
     }
 
     // getters & setters

@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class RegistrationController {
+public class RegistrationUserController {
 
-  private final Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+  private final Logger logger = LoggerFactory.getLogger(RegistrationUserController.class);
 
-  public RegistrationController() {
+  public RegistrationUserController() {
     super();
     logger.info("New RegistrationController.");
   }
 
   @PostMapping("/new_user")
-  public String newMemberHandler(
+  public String newUserHandler(
           @RequestParam(name="first_name") String firstName,
           @RequestParam(name="prefix") String prefix,
           @RequestParam(name="surname") String surName,
@@ -34,6 +34,7 @@ public class RegistrationController {
 
     User newUser = new User(); // new User needs attributes
     model.addAttribute("user", newUser);
+    // or direct to profile?
     return "confirmation";
   }
 }

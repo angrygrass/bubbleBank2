@@ -17,7 +17,7 @@ import java.util.Optional;
 // under ProfileApiController?
 @RestController
 @RequestMapping(value=("/users"))
-public class UserApiController {
+public class UserApiController extends BaseApiController {
 
     private final Logger logger = LogManager.getLogger(UserApiController.class);
     private UserService userService;
@@ -52,8 +52,7 @@ public class UserApiController {
         return userService.getUserByRole(role);
     }
 
-    @GetMapping
-    @ResponseBody
+    @GetMapping("all_users")
     public List getAllUsers() {
         return userService.getAllUsers();
     }

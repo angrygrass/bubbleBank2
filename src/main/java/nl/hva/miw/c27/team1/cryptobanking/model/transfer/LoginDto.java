@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 /*
 A Dto class limits the amount of sensitive data send. Only provided what is needed.
-In Java applications - we use entity classes to represent tables in a relational database. Without DTOs,
+In Java applications - entity classes are used to represent tables in a relational database. Without DTOs,
 we'd have to expose the entire entities to a remote interface. This causes a strong coupling between
 an API and a persistence model.
 */
