@@ -1,7 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
-import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.CustomerDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +8,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value=("/users"))
@@ -24,15 +21,16 @@ public class UserApiController extends BaseApiController {
         logger.info("New UserApiController");
     }
 
-/*    @PostMapping("register")
+    @PostMapping("register")
     public ResponseEntity<Customer> registerMemberHandler(@RequestBody CustomerDto customerdto) {
         Customer customer = new Customer(customerdto);
         userService.register(customer);
         return ResponseEntity.ok().body(customer);
     }
 
-    @PostMapping("login")
-    public ResponseEntity<UserDto> loginHandler(@RequestBody LoginDto loginDto) {
+ /*   @PostMapping("login")
+    public ResponseEntity<CustomerDto> loginHandler(@RequestBody LoginDto loginDto) {
+        // user en niet customer omdat een admin ook moet inloggen (?)
         User user = userService.validateLogin(
                 loginDto.getUsername(), loginDto.getPassword());
         if (user != null) {
