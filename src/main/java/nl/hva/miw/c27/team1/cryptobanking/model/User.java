@@ -110,7 +110,7 @@ public abstract class User {
         this.surName = surName;
     }
 
-    public long getBsnNumber() {
+    public int getBsnNumber() {
         return bsnNumber;
     }
 
@@ -172,6 +172,14 @@ public abstract class User {
 
     public void setResidence(String residence) {
         this.residence = residence;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 
     public Logger getLogger() {
