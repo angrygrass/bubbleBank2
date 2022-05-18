@@ -1,7 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
-import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
-import nl.hva.miw.c27.team1.cryptobanking.model.User;
+import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,8 @@ public class JdbcUserDao implements UserDao {
     private PreparedStatement insertUserStatement(User user, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
                 "insert into user (firstname, prefix, surname, dateofbirth, fiscalnumber, streetname," +
-                        "housenumber, zipcode, residence, country, role, staffId) values (?, ?, ?, ?, ?, ?, ?," +
-                        "?, ?, ?, ?, ?)",
+                        "housenumber, zipcode, residence, country, role) values (?, ?, ?, ?, ?, ?, ?," +
+                        "?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, user.getFirstName());
         ps.setString(2, user.getPrefix());
@@ -45,7 +44,7 @@ public class JdbcUserDao implements UserDao {
         ps.setString(9, user.getResidence());
         ps.setString(10, user.getCountry());
         ps.setString(11, user.getRole());
-        ps.setInt(12, user.getStaffId);
+
 
         return ps;
     }
@@ -87,10 +86,16 @@ public class JdbcUserDao implements UserDao {
             String residence = resultSet.getString("residence");
             String country = resultSet.getString("country");
             String role = resultSet.getString("role");
-            int staffId = resultSet.getInt(("staffId");
-
-            User user = new User(id, firstname, prefix, surname, date, fiscalnumber, streetname, housenumber, zipcode,
-                    residence, country, role, staffId);
+            int staffId = resultSet.getInt("staffId");
+            User user = new Customer(id, role);
+            if (role.equals("Customer")) {
+                user = new Customer(firstname, prefix, surname, fiscalnumber, date, streetname, housenumber, zipcode,
+                        residence, country, new Profile());
+            }
+            if (role.equals("Admin")) {
+                user = new Admin(firstname, prefix, surname, fiscalnumber, date, streetname, housenumber, zipcode,
+                        residence, country, new Profile(), staffId);
+            }
             user.setId(id);
             return user;
         }

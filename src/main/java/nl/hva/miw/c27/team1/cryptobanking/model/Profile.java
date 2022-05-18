@@ -17,16 +17,13 @@ public class Profile {
         this.user = user;
     }
 
-/*
-<<<<<<< HEAD
+
     public Profile(String userName, String passWord) {
         this.userName = userName;
         this.passWord = passWord;
     }
 
-=======
->>>>>>>
-*/
+
     public Profile() {
         super();
         logger.info("New empty Profile");
