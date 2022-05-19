@@ -3,7 +3,7 @@ package nl.hva.miw.c27.team1.cryptobanking.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
+import java.time.LocalDate;
 
 public abstract class User {
 
@@ -13,7 +13,7 @@ public abstract class User {
     private String prefix;
     private String surName;
     private int bsnNumber;
-    private Date birthDate;
+    private LocalDate birthDate;
     private String streetName;
     private String houseNumber;
     private String zipCode;
@@ -21,11 +21,12 @@ public abstract class User {
     private String country;
     private Profile profile;
 
+
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
     private User(int id, String role, String firstName, String prefix, String surName,
-                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
+                 int bsnNumber, LocalDate birthDate, String streetName, String houseNumber,
                  String zipCode, String residence, String country, Profile profile) {
         this.id = id;
         this.role = role;
@@ -44,19 +45,11 @@ public abstract class User {
     }
 
     public User(String firstName, String prefix, String surName,
-                int bsnNumber, Date birthDate, String streetName, String houseNumber,
+                int bsnNumber, LocalDate birthDate, String streetName, String houseNumber,
                 String zipCode, String residence, String country, Profile profile) {
-        this.firstName = firstName;
-        this.prefix = prefix;
-        this.surName = surName;
-        this.bsnNumber = bsnNumber;
-        this.birthDate = birthDate;
-        this.streetName = streetName;
-        this.houseNumber = houseNumber;
-        this.zipCode = zipCode;
-        this.residence = residence;
-        this.country = country;
-        this.profile = profile;
+        this(0,"Customer",firstName,prefix,surName,bsnNumber,birthDate,streetName,houseNumber,
+                zipCode,residence,country, profile);
+
     }
 
     public User(int id, String role) {
@@ -102,6 +95,14 @@ public abstract class User {
         this.firstName = firstName;
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
     public String getSurName() {
         return surName;
     }
@@ -118,11 +119,11 @@ public abstract class User {
         this.bsnNumber = bsnNumber;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -150,22 +151,6 @@ public abstract class User {
         this.zipCode = zipCode;
     }
 
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
     public String getResidence() {
         return residence;
     }
@@ -180,6 +165,14 @@ public abstract class User {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public Logger getLogger() {

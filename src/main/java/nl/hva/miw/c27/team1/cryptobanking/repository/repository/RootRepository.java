@@ -8,14 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-// or below can go into 1 rootRepository which would also have methods from
-// other classes (see Kwebbelweb). Perhaps useful if we need information from
-// 2 DAOs in one method (e.g. when we need to link User to Profile)
 
 // class needs db queries
 @Repository

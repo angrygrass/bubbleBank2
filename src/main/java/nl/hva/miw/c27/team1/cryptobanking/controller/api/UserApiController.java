@@ -21,6 +21,9 @@ public class UserApiController extends BaseApiController {
         logger.info("New UserApiController");
     }
 
+    // lijkt te werken met PostMan.
+    // In een customerdto wordt geen userId meegegeven bij registratie.
+    // Lijkt me dat deze bij de repository moet worden toegevoegd ?
     @PostMapping("register")
     public ResponseEntity<Customer> registerMemberHandler(@RequestBody CustomerDto customerdto) {
         Customer customer = new Customer(customerdto);
@@ -28,7 +31,8 @@ public class UserApiController extends BaseApiController {
         return ResponseEntity.ok().body(customer);
     }
 
- /*   @PostMapping("login")
+
+/*    @PostMapping("login")
     public ResponseEntity<CustomerDto> loginHandler(@RequestBody LoginDto loginDto) {
         // user en niet customer omdat een admin ook moet inloggen (?)
         User user = userService.validateLogin(
@@ -40,9 +44,9 @@ public class UserApiController extends BaseApiController {
                     .body(new UserDto(user));
         }
         throw new LoginException();
-    }
+    }*/
 
-    @PostMapping("validate")
+/*    @PostMapping("validate")
     public ResponseEntity<String> validationHandler(@RequestHeader String authorization) {
         try {
             UUID uuid = UUID.fromString(authorization);
@@ -56,8 +60,6 @@ public class UserApiController extends BaseApiController {
             throw new LoginException();
         }
     }*/
-
-
 
 
 }

@@ -13,8 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
-// should this Controller also handle login, registration, validation
-// under ProfileApiController?
 @RestController
 @RequestMapping(value=("/admins"))
 public class AdminApiController extends BaseApiController {
@@ -79,8 +77,6 @@ public class AdminApiController extends BaseApiController {
     }
 
     // getters & setters
-
-
     public Logger getLogger() {
         return logger;
     }

@@ -1,11 +1,11 @@
 package nl.hva.miw.c27.team1.cryptobanking.model.transfer;
 
-import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
-import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 
 /*
 A Dto class limits the amount of sensitive data send. Only provided what is needed.
@@ -16,24 +16,26 @@ an API and a persistence model.
 
 public class CustomerDto {
 
-    private int id;
-    private String role;
     private String firstName;
     private String prefix;
     private String surName;
     private int bsnNumber;
-    private Date birthDate;
+    private LocalDate birthDate;
     private String streetName;
     private String houseNumber;
     private String zipCode;
     private String residence;
     private String country;
     private String userName;
+    private String passWord;
     private Profile profile;
+    private BankAccount bankAccount;
+    private Portfolio portfolio;
+    private List<Transaction> transactionList;
 
+    @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(CustomerDto.class);
 
-    // wordt gebruikt in @postmapping "register"
     public CustomerDto(Customer customer) {
         super();
         this.firstName = customer.getFirstName();
@@ -47,6 +49,8 @@ public class CustomerDto {
         this.residence = customer.getResidence();
         this.country = customer.getCountry();
         this.userName = customer.getProfile().getUserName();
+        // of weglaten?
+        this.passWord = customer.getProfile().getPassWord();
         logger.info("New CustomerDto using all-args");
     }
 
@@ -61,21 +65,7 @@ public class CustomerDto {
     }
 
     // getters & setters
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -109,11 +99,11 @@ public class CustomerDto {
         this.bsnNumber = bsnNumber;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -165,12 +155,44 @@ public class CustomerDto {
         this.userName = userName;
     }
 
+    public String getPassWord() {
+        return passWord;
+    }
+
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
+    }
+
     public Profile getProfile() {
         return profile;
     }
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public Portfolio getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
+    }
+
+    public List<Transaction> getTransactionList() {
+        return transactionList;
+    }
+
+    public void setTransactionList(List<Transaction> transactionList) {
+        this.transactionList = transactionList;
     }
 
     public Logger getLogger() {

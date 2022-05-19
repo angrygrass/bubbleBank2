@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,11 +90,11 @@ public class JdbcUserDao implements UserDao {
             int staffId = resultSet.getInt("staffId");
             User user = new Customer(id, role);
             if (role.equals("Customer")) {
-                user = new Customer(firstname, prefix, surname, fiscalnumber, date, streetname, housenumber, zipcode,
+                user = new Customer(firstname, prefix, surname, fiscalnumber, LocalDate, streetname, housenumber, zipcode,
                         residence, country, new Profile());
             }
             if (role.equals("Admin")) {
-                user = new Admin(firstname, prefix, surname, fiscalnumber, date, streetname, housenumber, zipcode,
+                user = new Admin(firstname, prefix, surname, fiscalnumber, LocalDate, streetname, housenumber, zipcode,
                         residence, country, new Profile(), staffId);
             }
             user.setId(id);
