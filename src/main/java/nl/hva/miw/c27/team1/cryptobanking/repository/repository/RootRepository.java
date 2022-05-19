@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.repository.dao.ProfileDao;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.UserDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,22 +19,25 @@ public class RootRepository {
 
     private List<User> userList;
     private final UserDao userDao;
+    private final ProfileDao profileDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
-    public RootRepository(UserDao userDao) {
+    public RootRepository(UserDao userDao, ProfileDao profileDao) {
+        this.profileDao = profileDao;
         this.userList = new ArrayList<>();
-        fillUserLIst();
+        fillUserList();
         this.userDao = userDao;
-        logger.info("New UserRepository");
+        logger.info("New RootRepository");
     }
 
     public void save(User user) {
-        userList.add(user);
+        userDao.save(user);
+        profileDao.save(user.getProfile());
     }
 
-    public void fillUserLIst() {
+    public void fillUserList() {
         userList.add(new Customer(1, "Client"));
         userList.add(new Admin(2, "Admin"));
     }

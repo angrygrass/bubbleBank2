@@ -19,6 +19,7 @@ public abstract class User {
     private String zipCode;
     private String residence;
     private String country;
+    private int staffId;
     private Profile profile;
 
 
@@ -45,7 +46,29 @@ public abstract class User {
     }
 
     public User(String firstName, String prefix, String surName,
+<<<<<<< HEAD
                 int bsnNumber, LocalDate birthDate, String streetName, String houseNumber,
+=======
+                int bsnNumber, Date birthDate, String streetName, String houseNumber,
+                String zipCode, String residence, String country, int staffId, Profile profile) {
+        this.firstName = firstName;
+        this.prefix = prefix;
+        this.surName = surName;
+        this.bsnNumber = bsnNumber;
+        this.birthDate = birthDate;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+        this.zipCode = zipCode;
+        this.residence = residence;
+        this.country = country;
+        this.staffId = staffId;
+        this.profile = profile;
+    }
+
+
+    public User(String firstName, String prefix, String surName,
+                int bsnNumber, Date birthDate, String streetName, String houseNumber,
+>>>>>>> user_and_profile_DAOS2
                 String zipCode, String residence, String country, Profile profile) {
         this(0,"Customer",firstName,prefix,surName,bsnNumber,birthDate,streetName,houseNumber,
                 zipCode,residence,country, profile);
@@ -167,15 +190,32 @@ public abstract class User {
         this.country = country;
     }
 
+<<<<<<< HEAD
     public Profile getProfile() {
         return profile;
     }
 
     public void setProfile(Profile profile) {
         this.profile = profile;
+=======
+    public int getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(int staffId) {
+        this.staffId = staffId;
+>>>>>>> user_and_profile_DAOS2
     }
 
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", surName='" + surName + '\'' +
+                '}';
     }
 }

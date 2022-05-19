@@ -11,7 +11,12 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+
+
 import java.time.LocalDate;
+
+import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +42,7 @@ public class JdbcUserDao implements UserDao {
         ps.setString(1, user.getFirstName());
         ps.setString(2, user.getPrefix());
         ps.setString(3, user.getSurName());
-        ps.setDate(4, (Date) user.getBirthDate());
+        //ps.setDate(4, (Date) user.getBirthDate());
         ps.setInt(5, user.getBsnNumber());
         ps.setString(6, user.getStreetName());
         ps.setString(7, user.getHouseNumber());
@@ -45,6 +50,7 @@ public class JdbcUserDao implements UserDao {
         ps.setString(9, user.getResidence());
         ps.setString(10, user.getCountry());
         ps.setString(11, user.getRole());
+
 
 
         return ps;
@@ -69,16 +75,21 @@ public class JdbcUserDao implements UserDao {
             return Optional.of(users.get(0));
         }
     }
+    public Optional<List<User>> getAllUsers() {
+        List<User> users =
+                jdbcTemplate.query("select * from user", new UserRowMapper());
 
+        return Optional.of(users);
+    }
 
     private static class UserRowMapper implements RowMapper<User> {
 
         @Override
         public User mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             int id = resultSet.getInt("userid");
-            String firstname = resultSet.getString("full_name");
-            String prefix = resultSet.getString("username");
-            String surname = resultSet.getString("password");
+            String firstname = resultSet.getString("firstname");
+            String prefix = resultSet.getString("prefix");
+            String surname = resultSet.getString("surname");
             Date date = resultSet.getDate("dateOfBirth");
             int fiscalnumber = resultSet.getInt("fiscalnumber");
             String streetname = resultSet.getString("streetname");
