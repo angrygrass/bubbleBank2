@@ -1,4 +1,3 @@
-/*
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
@@ -69,11 +68,11 @@ public class JdbcProfileDao implements ProfileDao {
         public Profile mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             String userName = resultSet.getString("userName");
             String password = resultSet.getString("password");
+            int userId = resultSet.getInt("userId");
+            return new Profile(userName, password, new Customer(userId));
 
-            return new Profile(userName, password);
 
         }
     }
 
 }
-*/

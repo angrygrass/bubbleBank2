@@ -14,6 +14,7 @@ we'd have to expose the entire entities to a remote interface. This causes a str
 an API and a persistence model.
 */
 
+// registrationDto
 public class CustomerDto {
 
     private String firstName;
@@ -65,8 +66,6 @@ public class CustomerDto {
     }
 
     // getters & setters
-
-
     public String getFirstName() {
         return firstName;
     }

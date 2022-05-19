@@ -42,7 +42,7 @@ public class JdbcUserDao implements UserDao {
         ps.setString(1, user.getFirstName());
         ps.setString(2, user.getPrefix());
         ps.setString(3, user.getSurName());
-        //ps.setDate(4, (Date) user.getBirthDate());
+        ps.setDate(4, user.getBirthDate());
         ps.setInt(5, user.getBsnNumber());
         ps.setString(6, user.getStreetName());
         ps.setString(7, user.getHouseNumber());

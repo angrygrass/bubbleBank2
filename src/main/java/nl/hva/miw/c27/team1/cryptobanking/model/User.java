@@ -22,7 +22,6 @@ public abstract class User {
     private int staffId;
     private Profile profile;
 
-
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(User.class);
 

@@ -32,12 +32,17 @@ public class Customer extends User {
         logger.info("New Customer met 2 attributen");
     }
 
+    public Customer(int id) {
+          super(id);
+    }
+
     public Customer(CustomerDto dto) {
         this(dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 dto.getProfile(),dto.getBankAccount(),dto.getPortfolio(),dto.getTransactionList());
     }
 
+    // getters & setters
     public BankAccount getBankAccount() {
         return bankAccount;
     }

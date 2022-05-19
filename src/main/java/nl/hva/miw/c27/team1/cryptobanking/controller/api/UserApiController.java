@@ -32,6 +32,7 @@ public class UserApiController extends BaseApiController {
     }
 
 
+
 /*    @PostMapping("login")
     public ResponseEntity<CustomerDto> loginHandler(@RequestBody LoginDto loginDto) {
         // user en niet customer omdat een admin ook moet inloggen (?)
