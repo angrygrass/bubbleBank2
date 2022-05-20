@@ -29,13 +29,18 @@ public class BankAccount {
         logger.info("New empty BankAccount");
     }
 
-    // getters & setters
+    public BankAccount(String iban, long balanceInEuros) {
+        this.iban = iban;
+        this.balanceInEuros = balanceInEuros;
+    }
+
     public String getIban() {
         return iban;
     }
 
     public void setIban(String iban) {
         this.iban = iban;
+
     }
 
     public long getBalanceInEuros() {

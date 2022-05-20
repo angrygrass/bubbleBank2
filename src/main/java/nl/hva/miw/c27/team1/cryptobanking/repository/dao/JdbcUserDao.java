@@ -11,12 +11,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-
-
-import java.time.LocalDate;
-
-import java.util.ArrayList;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +36,7 @@ public class JdbcUserDao implements UserDao {
         ps.setString(1, user.getFirstName());
         ps.setString(2, user.getPrefix());
         ps.setString(3, user.getSurName());
-        ps.setDate(4, user.getBirthDate());
+        ps.setDate(4, (Date) user.getBirthDate());
         ps.setInt(5, user.getBsnNumber());
         ps.setString(6, user.getStreetName());
         ps.setString(7, user.getHouseNumber());
@@ -50,8 +44,6 @@ public class JdbcUserDao implements UserDao {
         ps.setString(9, user.getResidence());
         ps.setString(10, user.getCountry());
         ps.setString(11, user.getRole());
-
-
 
         return ps;
     }
@@ -90,7 +82,7 @@ public class JdbcUserDao implements UserDao {
             String firstname = resultSet.getString("firstname");
             String prefix = resultSet.getString("prefix");
             String surname = resultSet.getString("surname");
-            Date date = resultSet.getDate("dateOfBirth");
+            Date dateOfBirth = resultSet.getDate("dateOfBirth");
             int fiscalnumber = resultSet.getInt("fiscalnumber");
             String streetname = resultSet.getString("streetname");
             String housenumber = resultSet.getString("housenumber");
@@ -101,12 +93,12 @@ public class JdbcUserDao implements UserDao {
             int staffId = resultSet.getInt("staffId");
             User user = new Customer(id, role);
             if (role.equals("Customer")) {
-                user = new Customer(firstname, prefix, surname, fiscalnumber, LocalDate, streetname, housenumber, zipcode,
-                        residence, country, new Profile());
+                user = new Customer(firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
+                        residence, country);
             }
             if (role.equals("Admin")) {
-                user = new Admin(firstname, prefix, surname, fiscalnumber, LocalDate, streetname, housenumber, zipcode,
-                        residence, country, new Profile(), staffId);
+                user = new Admin(firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
+                        residence, country, staffId);
             }
             user.setId(id);
             return user;

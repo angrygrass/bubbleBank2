@@ -4,29 +4,51 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
+import java.util.Date;
 
 public abstract class User {
 
     private int id;
-    private String role;
     private String firstName;
     private String prefix;
     private String surName;
     private int bsnNumber;
-    private LocalDate birthDate;
+    private Date birthDate;
     private String streetName;
     private String houseNumber;
     private String zipCode;
     private String residence;
     private String country;
+    private String role;
     private int staffId;
+
     private Profile profile;
+
+    public User(int id, String role, String firstName, String prefix,
+                String surName, int bsnNumber, Date birthDate, String streetName,
+                String houseNumber, String zipCode, String residence, String country,
+                int staffId, Profile profile) {
+        this.id = id;
+        this.role = role;
+        this.firstName = firstName;
+        this.prefix = prefix;
+        this.surName = surName;
+        this.bsnNumber = bsnNumber;
+        this.birthDate = birthDate;
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+        this.zipCode = zipCode;
+        this.residence = residence;
+        this.country = country;
+        this.staffId = staffId;
+        this.profile = profile;
+    }
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
     private User(int id, String role, String firstName, String prefix, String surName,
-                 int bsnNumber, LocalDate birthDate, String streetName, String houseNumber,
+                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
                  String zipCode, String residence, String country, Profile profile) {
         this.id = id;
         this.role = role;
@@ -45,11 +67,8 @@ public abstract class User {
     }
 
     public User(String firstName, String prefix, String surName,
-<<<<<<< HEAD
-                int bsnNumber, LocalDate birthDate, String streetName, String houseNumber,
-=======
                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
-                String zipCode, String residence, String country, int staffId, Profile profile) {
+                String zipCode, String residence, String country) {
         this.firstName = firstName;
         this.prefix = prefix;
         this.surName = surName;
@@ -60,14 +79,12 @@ public abstract class User {
         this.zipCode = zipCode;
         this.residence = residence;
         this.country = country;
-        this.staffId = staffId;
-        this.profile = profile;
+
     }
 
 
     public User(String firstName, String prefix, String surName,
                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
->>>>>>> user_and_profile_DAOS2
                 String zipCode, String residence, String country, Profile profile) {
         this(0,"Customer",firstName,prefix,surName,bsnNumber,birthDate,streetName,houseNumber,
                 zipCode,residence,country, profile);
@@ -141,11 +158,11 @@ public abstract class User {
         this.bsnNumber = bsnNumber;
     }
 
-    public LocalDate getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -189,22 +206,15 @@ public abstract class User {
         this.country = country;
     }
 
-<<<<<<< HEAD
     public Profile getProfile() {
         return profile;
     }
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-=======
-    public int getStaffId() {
-        return staffId;
     }
 
-    public void setStaffId(int staffId) {
-        this.staffId = staffId;
->>>>>>> user_and_profile_DAOS2
-    }
+
 
     public Logger getLogger() {
         return logger;

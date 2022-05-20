@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.CustomerDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 public class Customer extends User {
@@ -16,7 +16,7 @@ public class Customer extends User {
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(Customer.class);
 
-    public Customer(String firstName, String prefix, String surName, int bsnNumber, LocalDate birthDate,
+    public Customer(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
                     String streetName, String houseNumber, String zipCode, String residence, String country,
                     Profile profile, BankAccount bankAccount, Portfolio portfolio,
                     List<Transaction> transactionList) {
@@ -27,13 +27,20 @@ public class Customer extends User {
         this.transactionList = transactionList;
     }
 
+    public Customer(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
+                    String streetName, String houseNumber, String zipCode, String residence, String country) {
+
+        super(firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
+                country);
+
+        this.bankAccount = bankAccount;
+        this.portfolio = portfolio;
+        this.transactionList = transactionList;
+    }
+
     public Customer(int id, String role) {
         super(id, role);
         logger.info("New Customer met 2 attributen");
-    }
-
-    public Customer(int id) {
-          super(id);
     }
 
     public Customer(CustomerDto dto) {
@@ -42,7 +49,9 @@ public class Customer extends User {
                 dto.getProfile(),dto.getBankAccount(),dto.getPortfolio(),dto.getTransactionList());
     }
 
-    // getters & setters
+
+
+
     public BankAccount getBankAccount() {
         return bankAccount;
     }

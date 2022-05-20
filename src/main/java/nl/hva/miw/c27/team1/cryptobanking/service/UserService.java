@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -39,9 +40,9 @@ public class UserService {
         }
         // checken if below does not result in NullPointer and that throwing of
         // exception does not lead to .save(user)
-        if (!checkAge(customer)) {
-            throw new RegistrationFailedExceptionAge();
-        }
+//        if (!checkAge(customer)) {
+//            throw new RegistrationFailedExceptionAge();
+//        }
         if (!checkBsn(customer)) {
             throw new RegistrationFailedExceptionBsn();
         }
@@ -53,16 +54,16 @@ public class UserService {
     }
 
     // business logic voor registratie. Double check of hier juiste plaats is
-    public boolean checkAge(User user) {
-        boolean over18 = false;
-        LocalDate dateToday = LocalDate.now();
-        LocalDate birthDay = user.getBirthDate();
-        Period p = Period.between(birthDay, dateToday);
-        if (p.getYears() >= 18) {
-            over18 = true;
-        }
-        return over18;
-    }
+//    public boolean checkAge(User user) {
+//        boolean over18 = false;
+//        Date dateToday = LocalDate.now();
+//        Date birthDay = user.getBirthDate();
+//        Period p = Period.between(birthDay, dateToday);
+//        if (p.getYears() >= 18) {
+//            over18 = true;
+//        }
+//        return over18;
+//    }
 
     public boolean checkBsn(User user) {
         ArrayList<Integer> individualBsnDigits = new ArrayList<>();

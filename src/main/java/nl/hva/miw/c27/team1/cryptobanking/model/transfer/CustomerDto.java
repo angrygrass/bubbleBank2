@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -14,14 +14,13 @@ we'd have to expose the entire entities to a remote interface. This causes a str
 an API and a persistence model.
 */
 
-// registrationDto
 public class CustomerDto {
 
     private String firstName;
     private String prefix;
     private String surName;
     private int bsnNumber;
-    private LocalDate birthDate;
+    private Date birthDate;
     private String streetName;
     private String houseNumber;
     private String zipCode;
@@ -66,6 +65,8 @@ public class CustomerDto {
     }
 
     // getters & setters
+
+
     public String getFirstName() {
         return firstName;
     }
@@ -98,11 +99,11 @@ public class CustomerDto {
         this.bsnNumber = bsnNumber;
     }
 
-    public LocalDate getBirthDate() {
+    public Date getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
+    public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
 
