@@ -1,7 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.hva.miw.c27.team1.cryptobanking.model.transfer.CustomerDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RegisterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
@@ -27,30 +27,29 @@ public class Customer extends User {
         this.transactionList = transactionList;
     }
 
-    public Customer(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
-                    String streetName, String houseNumber, String zipCode, String residence, String country) {
+    public Customer(String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+                    String streetName,String houseNumber, String zipCode,String residence,String country,
+                    Profile profile) {
+        this(firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,profile,
+                null,null,null);
+    }
 
-        super(firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
-                country);
+    public Customer(String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+                    String streetName,String houseNumber, String zipCode,String residence,String country) {
+        this(firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
+                country,null);
+    }
 
-        this.bankAccount = bankAccount;
-        this.portfolio = portfolio;
-        this.transactionList = transactionList;
+    public Customer(RegisterDto dto) {
+        this(dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+                dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
+                dto.getProfile());
     }
 
     public Customer(int id, String role) {
         super(id, role);
         logger.info("New Customer met 2 attributen");
     }
-
-    public Customer(CustomerDto dto) {
-        this(dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
-                dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
-                dto.getProfile(),dto.getBankAccount(),dto.getPortfolio(),dto.getTransactionList());
-    }
-
-
-
 
     public BankAccount getBankAccount() {
         return bankAccount;
