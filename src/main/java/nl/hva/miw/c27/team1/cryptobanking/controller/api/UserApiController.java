@@ -1,7 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
-import nl.hva.miw.c27.team1.cryptobanking.model.transfer.CustomerDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RegisterDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,7 +25,7 @@ public class UserApiController extends BaseApiController {
     // In een customerdto wordt geen userId meegegeven bij registratie.
     // Lijkt me dat deze bij de repository moet worden toegevoegd ?
     @PostMapping("register")
-    public ResponseEntity<Customer> registerMemberHandler(@RequestBody CustomerDto customerdto) {
+    public ResponseEntity<Customer> registerMemberHandler(@RequestBody RegisterDto customerdto) {
         Customer customer = new Customer(customerdto);
         userService.register(customer);
         return ResponseEntity.ok().body(customer);
