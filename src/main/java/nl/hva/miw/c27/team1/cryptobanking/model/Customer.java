@@ -16,32 +16,34 @@ public class Customer extends User {
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(Customer.class);
 
-    public Customer(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
+
+    public Customer(int id, String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
                     String streetName, String houseNumber, String zipCode, String residence, String country,
                     Profile profile, BankAccount bankAccount, Portfolio portfolio,
                     List<Transaction> transactionList) {
-        super(firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
+        super(id, firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
                 country, profile);
+
         this.bankAccount = bankAccount;
         this.portfolio = portfolio;
         this.transactionList = transactionList;
     }
 
-    public Customer(String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
                     String streetName,String houseNumber, String zipCode,String residence,String country,
                     Profile profile) {
-        this(firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,profile,
+        this(id,firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,profile,
                 null,null,null);
     }
 
-    public Customer(String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
                     String streetName,String houseNumber, String zipCode,String residence,String country) {
-        this(firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
-                country,null);
+        this(id, firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
+                country, null);
     }
 
     public Customer(RegisterDto dto) {
-        this(dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+        this(dto.getUserId(), dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 dto.getProfile());
     }

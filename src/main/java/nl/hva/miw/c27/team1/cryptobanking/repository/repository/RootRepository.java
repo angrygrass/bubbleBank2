@@ -64,9 +64,10 @@ public class RootRepository {
         }
     }
 
-    // needs query
+
     public Optional<Profile> getProfileOfUser(String userName) {
-        return null;
+
+        return profileDao.findByUserName(userName);
     }
 
     public void delete(int id) {
@@ -88,6 +89,14 @@ public class RootRepository {
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
+    }
+
+    public ProfileDao getProfileDao() {
+        return profileDao;
     }
 
     public Logger getLogger() {
