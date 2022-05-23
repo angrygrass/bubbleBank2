@@ -24,12 +24,12 @@ public class UserApiController extends BaseApiController {
         logger.info("New UserApiController");
     }
 
-    // lijkt te werken met PostMan.
-    // In een customerdto wordt geen userId meegegeven bij registratie.
-    // Lijkt me dat deze bij de repository moet worden toegevoegd ?
+  /* client geeft een dto object mee in json-formaat. Dit wordt opgeslagen als een Customer object dmv
+     een constructor.
+  */
     @PostMapping("register")
-    public ResponseEntity<Customer> registerMemberHandler(@RequestBody RegisterDto customerdto) {
-        Customer customer = new Customer(customerdto);
+    public ResponseEntity<Customer> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
+        Customer customer = new Customer(registerDto);
         userService.register(customer);
         return ResponseEntity.ok().body(customer);
     }

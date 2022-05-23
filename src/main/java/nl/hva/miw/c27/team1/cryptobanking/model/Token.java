@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -13,6 +14,7 @@ public class Token {
     private Timestamp validuntil;
     private User user;
 
+    @JsonIgnore
     private final Logger logger = LogManager.getLogger(Profile.class);
 
     public Token(String tokenId, Timestamp validuntil, User user) {

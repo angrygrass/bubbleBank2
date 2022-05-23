@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Portfolio {
     private BankAccount bankAccount;
     private Customer customer;
 
+    @JsonIgnore
     private final Logger logger = LogManager.getLogger(Portfolio.class);
 
     public Portfolio() {

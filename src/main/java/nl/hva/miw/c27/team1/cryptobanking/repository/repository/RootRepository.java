@@ -37,17 +37,18 @@ public class RootRepository {
         profileDao.save(user.getProfile());
     }
 
+    // testlijst, is niet gelinkt aan DAO
     public void fillUserList() {
         userList.add(new Customer(1, "Client"));
         userList.add(new Admin(2, "Admin"));
     }
 
     public List<User> getAllUsers() {
-        return userList;
+        return userDao.getAllUsers().get();
     }
 
     public Optional <User> getUserById(int id) {
-        return userList.stream().filter(u -> u.getId() == id).findFirst();
+        return userDao.findById(id);
     }
 
     public User getUserByRole(String role) {
@@ -63,7 +64,6 @@ public class RootRepository {
             return null;
         }
     }
-
 
     public Optional<Profile> getProfileOfUser(String userName) {
 
