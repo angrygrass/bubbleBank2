@@ -18,7 +18,7 @@ import java.util.Optional;
 public class JdbcUserDao implements UserDao {
 
     private JdbcTemplate jdbcTemplate;
-    private final Logger logger = LogManager.getLogger(Transaction.class);
+    private final Logger logger = LogManager.getLogger(JdbcUserDao.class);
 
     @Autowired
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {

@@ -25,7 +25,7 @@ public class JdbcBankAccountDao implements BankAccountDao{
 
     //Bank Account ??? is there space between Bank and account
     public BankAccount findById(int id) {
-        String sql = "SELECT * FROM Bank Account WHERE userId = ?;";
+        String sql = "SELECT * FROM `Bank Account` WHERE userId = ?;";
         try {
             return this.jdbcTemplate.queryForObject(sql,new BankAccountRowMapper(),id);
         } catch (EmptyResultDataAccessException e){
@@ -35,13 +35,13 @@ public class JdbcBankAccountDao implements BankAccountDao{
     }
 
     public int save(BankAccount bankAccount) {
-        String sql = "INSERT INTO Bank Account(IBAN, balanceInEuro, userId) VALUES (?,?,?);";
+        String sql = "INSERT INTO `Bank Account` (IBAN, balanceInEuro, userId) VALUES (?,?,?);";
         return jdbcTemplate.update(sql,bankAccount.getIban(),bankAccount.getBalanceInEuros(),
                 bankAccount.getCustomer().getId());
     }
 
     public List<BankAccount> getAll() {
-        String sql = "SELECT * FROM Bank Account;";
+        String sql = "SELECT * FROM `Bank Account`;";
         try{
             return jdbcTemplate.query(sql, new BankAccountRowMapper());
         }catch(EmptyResultDataAccessException e){
@@ -51,19 +51,19 @@ public class JdbcBankAccountDao implements BankAccountDao{
     }
 
     public int updateOne(BankAccount bankAccount) {
-        String sql = "UPDATE Bank Account SET IBAN = ?, balanceInEuro = ? WHERE userId = ?;";
+        String sql = "UPDATE `Bank Account` SET IBAN = ?, balanceInEuro = ? WHERE userId = ?;";
         return jdbcTemplate.update(sql, bankAccount.getIban(),bankAccount.getBalanceInEuros(),
                 bankAccount.getCustomer().getId());
     }
 
     public int deleteOne(int id) {
-        String sql = "DELETE FROM Bank Account WHERE userId = ?;";
+        String sql = "DELETE FROM `Bank Account` WHERE userId = ?;";
         return jdbcTemplate.update(sql, id);
     }
 
     @Override
     public BankAccount findByIban(String Iban) {
-        String sql = "SELECT * FROM Bank Account WHERE IBAN = ?;";
+        String sql = "SELECT * FROM `Bank Account` WHERE IBAN = ?;";
         try{
             return jdbcTemplate.queryForObject(sql, new BankAccountRowMapper());
         }catch(DataAccessException e){
