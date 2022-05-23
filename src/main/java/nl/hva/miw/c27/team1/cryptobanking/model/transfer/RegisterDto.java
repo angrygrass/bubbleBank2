@@ -15,6 +15,7 @@ an API and a persistence model.
 */
 public class RegisterDto {
 
+    private int userId;
     private String firstName;
     private String prefix;
     private String surName;
@@ -34,6 +35,7 @@ public class RegisterDto {
 
     public RegisterDto(Customer customer) {
         super();
+        this.userId = customer.getId();
         this.firstName = customer.getFirstName();
         this.prefix = customer.getPrefix();
         this.surName = customer.getSurName();
@@ -55,6 +57,16 @@ public class RegisterDto {
     }
 
     // getters & setters
+
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public String getFirstName() {
         return firstName;
     }
