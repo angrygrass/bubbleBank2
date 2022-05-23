@@ -43,7 +43,7 @@ public class Customer extends User {
     }
 
     public Customer(RegisterDto dto) {
-        this(dto.getUserId(), dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+        this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 dto.getProfile());
     }
