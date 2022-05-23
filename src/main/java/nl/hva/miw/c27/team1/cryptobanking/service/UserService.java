@@ -4,10 +4,7 @@ import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
-import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionAge;
-import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionBsn;
-import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionExistingUser;
-import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionIban;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.iban4j.IbanFormatException;
@@ -19,6 +16,7 @@ import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -49,21 +47,28 @@ public class UserService {
         if (!checkIban(customer)) {
             throw new RegistrationFailedExceptionIban();
         }
+        if (!checkEmail(customer)) {
+            throw new RegistrationFailedExceptionEmail();
+        }
+        if (!checkAge(customer)) {
+            throw new RegistrationFailedExceptionAge();
+        }
+
         rootRepository.save(customer);
         return customer;
     }
 
     // business logic voor registratie. Double check of hier juiste plaats is
-//    public boolean checkAge(User user) {
-//        boolean over18 = false;
-//        Date dateToday = LocalDate.now();
-//        Date birthDay = user.getBirthDate();
-//        Period p = Period.between(birthDay, dateToday);
-//        if (p.getYears() >= 18) {
+
+    public boolean checkAge(User user) {
+        boolean over18 = false;
+//        LocalDate birthDay = user.getBirthDate();
+//        Period p = Period.between(birthDay, LocalDate.now());
+//        if (p.getYears() >=18) {
 //            over18 = true;
 //        }
-//        return over18;
-//    }
+        return over18=true;
+    }
 
     public boolean checkBsn(User user) {
         ArrayList<Integer> individualBsnDigits = new ArrayList<>();
@@ -83,6 +88,19 @@ public class UserService {
             correcteFormat = true;
         }
         return correcteFormat;
+    }
+
+    public boolean checkEmail(Customer customer) {
+        String email = customer.getProfile().getUserName();
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
+                "[a-zA-Z0-9_+&*-]+)*@" +
+                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
+                "A-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        if (email == null) {
+            return false;
+        }
+        return pattern.matcher(email).matches();
     }
 
     // needs test if method is correct

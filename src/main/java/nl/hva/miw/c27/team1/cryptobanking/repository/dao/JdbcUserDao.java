@@ -37,7 +37,9 @@ public class JdbcUserDao implements UserDao {
         ps.setString(1, user.getFirstName());
         ps.setString(2, user.getPrefix());
         ps.setString(3, user.getSurName());
-        ps.setDate(4, (Date) user.getBirthDate());
+        java.util.Date utilDate = user.getBirthDate();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        ps.setDate(4, sqlDate);
         ps.setInt(5, user.getBsnNumber());
         ps.setString(6, user.getStreetName());
         ps.setString(7, user.getHouseNumber());

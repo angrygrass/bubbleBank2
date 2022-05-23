@@ -3,7 +3,7 @@ package nl.hva.miw.c27.team1.cryptobanking.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.time.LocalDate;
+
 import java.util.Date;
 
 public abstract class User {
@@ -62,6 +62,14 @@ public abstract class User {
 
     }
 
+
+    public User(String firstName, String prefix, String surName,
+                int bsnNumber, Date birthDate, String streetName, String houseNumber,
+                String zipCode, String residence, String country, Profile profile) {
+        this(0, "Customer", firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber,
+                zipCode, residence, country, profile);
+
+    }
 
     public User(int id, String role) {
         super();
@@ -132,73 +140,73 @@ public abstract class User {
         this.bsnNumber = bsnNumber;
     }
 
-    public Date getBirthDate() {
-        return birthDate;
+
+        public Date getBirthDate () {
+            return birthDate;
+        }
+
+        public void setBirthDate (Date birthDate){
+            this.birthDate = birthDate;
+        }
+
+        public String getStreetName () {
+            return streetName;
+        }
+
+        public void setStreetName (String streetName){
+            this.streetName = streetName;
+        }
+
+        public String getHouseNumber () {
+            return houseNumber;
+        }
+
+        public void setHouseNumber (String houseNumber){
+            this.houseNumber = houseNumber;
+        }
+
+        public String getZipCode () {
+            return zipCode;
+        }
+
+        public void setZipCode (String zipCode){
+            this.zipCode = zipCode;
+        }
+
+        public String getResidence () {
+            return residence;
+        }
+
+        public void setResidence (String residence){
+            this.residence = residence;
+        }
+
+        public String getCountry () {
+            return country;
+        }
+
+        public void setCountry (String country){
+            this.country = country;
+        }
+
+        public Profile getProfile () {
+            return profile;
+        }
+
+        public void setProfile (Profile profile){
+            this.profile = profile;
+        }
+
+
+        public Logger getLogger () {
+            return logger;
+        }
+
+        @Override
+        public String toString () {
+            return "User{" +
+                    "firstName='" + firstName + '\'' +
+                    ", surName='" + surName + '\'' +
+                    '}';
+        }
     }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
-    }
-
-    public String getStreetName() {
-        return streetName;
-    }
-
-    public void setStreetName(String streetName) {
-        this.streetName = streetName;
-    }
-
-    public String getHouseNumber() {
-        return houseNumber;
-    }
-
-    public void setHouseNumber(String houseNumber) {
-        this.houseNumber = houseNumber;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getResidence() {
-        return residence;
-    }
-
-    public void setResidence(String residence) {
-        this.residence = residence;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
-
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", surName='" + surName + '\'' +
-                '}';
-    }
-}
