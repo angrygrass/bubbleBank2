@@ -7,7 +7,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 @RequestMapping(value=("/users"))
@@ -31,8 +34,34 @@ public class UserApiController extends BaseApiController {
         return ResponseEntity.ok().body(customer);
     }
 
+    //gets html from a default 'resources/public' or 'resources/static' folder
+    //todo jjs
+//    @RequestMapping(path="/login")
+//    public String getWelcomePage(){
+//        return "login.html";
+//    }
 
-/*    @PostMapping("login")
+    //test jjs
+    @RequestMapping("/welcome")
+    public String welcomepage() {
+        return "Welcome to Yawin Tutor";
+    }
+
+    @RequestMapping("/login2")
+    public ModelAndView welcome2() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login.html");
+        return modelAndView;
+    }
+
+
+    @GetMapping("/greeting")
+    public String greeting(Model model) {
+        //model.addAttribute("name", name);
+        return "greeting";
+    }
+
+ /*   @PostMapping("login")
     public ResponseEntity<CustomerDto> loginHandler(@RequestBody LoginDto loginDto) {
         // user en niet customer omdat een admin ook moet inloggen (?)
         User user = userService.validateLogin(
@@ -44,9 +73,9 @@ public class UserApiController extends BaseApiController {
                     .body(new UserDto(user));
         }
         throw new LoginException();
-    }*/
+    }
 
-/*    @PostMapping("validate")
+    @PostMapping("validate")
     public ResponseEntity<String> validationHandler(@RequestHeader String authorization) {
         try {
             UUID uuid = UUID.fromString(authorization);
@@ -60,6 +89,8 @@ public class UserApiController extends BaseApiController {
             throw new LoginException();
         }
     }*/
+
+
 
 
 }
