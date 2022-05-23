@@ -1,7 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import nl.hva.miw.c27.team1.cryptobanking.model.transfer.CustomerDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RegisterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,41 +18,42 @@ public class Customer extends User {
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(Customer.class);
 
-    public Customer(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
+
+    public Customer(int id, String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
                     String streetName, String houseNumber, String zipCode, String residence, String country,
                     Profile profile, BankAccount bankAccount, Portfolio portfolio,
                     List<Transaction> transactionList) {
-        super(firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
+        super(id, firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
                 country, profile);
+
         this.bankAccount = bankAccount;
         this.portfolio = portfolio;
         this.transactionList = transactionList;
     }
 
-    public Customer(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
-                    String streetName, String houseNumber, String zipCode, String residence, String country) {
+    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+                    String streetName,String houseNumber, String zipCode,String residence,String country,
+                    Profile profile) {
+        this(id,firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,profile,
+                null,null,null);
+    }
 
-        super(firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
-                country);
+    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+                    String streetName,String houseNumber, String zipCode,String residence,String country) {
+        this(id, firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
+                country, null);
+    }
 
-        this.bankAccount = bankAccount;
-        this.portfolio = portfolio;
-        this.transactionList = transactionList;
+    public Customer(RegisterDto dto) {
+        this(dto.getUserId(), dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+                dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
+                dto.getProfile());
     }
 
     public Customer(int id, String role) {
         super(id, role);
         logger.info("New Customer met 2 attributen");
     }
-
-    public Customer(CustomerDto dto) {
-        this(dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
-                dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
-                dto.getProfile(),dto.getBankAccount(),dto.getPortfolio(),dto.getTransactionList());
-    }
-
-
-
 
     public BankAccount getBankAccount() {
         return bankAccount;

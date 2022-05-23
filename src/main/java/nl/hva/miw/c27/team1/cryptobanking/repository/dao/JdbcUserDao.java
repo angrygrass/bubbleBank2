@@ -32,6 +32,7 @@ public class JdbcUserDao implements UserDao {
                 "insert into user (firstname, prefix, surname, dateofbirth, fiscalnumber, streetname," +
                         "housenumber, zipcode, residence, country, role) values (?, ?, ?, ?, ?, ?, ?," +
                         "?, ?, ?, ?)",
+
                 Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, user.getFirstName());
         ps.setString(2, user.getPrefix());
@@ -69,6 +70,23 @@ public class JdbcUserDao implements UserDao {
             return Optional.of(users.get(0));
         }
     }
+
+    @Override
+    public Optional<User> findByToken(Token token) {
+        List<User> users =
+                jdbcTemplate.query("select * from user where userId = (select userId from" +
+                        " token where idToken = ?;", new UserRowMapper(), token.getTokenId());
+        if (users.size() != 1) {
+            return Optional.empty();
+        } else {
+            return Optional.of(users.get(0));
+        }
+    }
+
+
+
+
+    @Override
     public Optional<List<User>> getAllUsers() {
         List<User> users =
                 jdbcTemplate.query("select * from user", new UserRowMapper());
@@ -93,16 +111,16 @@ public class JdbcUserDao implements UserDao {
             String country = resultSet.getString("country");
             String role = resultSet.getString("role");
             int staffId = resultSet.getInt("staffId");
-            User user = new Customer(id, role);
+            User user = null;
             if (role.equals("Customer")) {
-                user = new Customer(firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
+                user = new Customer(id, firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country);
             }
             if (role.equals("Admin")) {
-                user = new Admin(firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
+                user = new Admin(id, firstname, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country, staffId);
             }
-            user.setId(id);
+
             return user;
         }
     }

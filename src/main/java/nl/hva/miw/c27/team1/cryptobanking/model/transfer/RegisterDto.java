@@ -15,9 +15,9 @@ In Java applications - entity classes are used to represent tables in a relation
 we'd have to expose the entire entities to a remote interface. This causes a strong coupling between
 an API and a persistence model.
 */
+public class RegisterDto {
 
-public class CustomerDto {
-
+    private int userId;
     private String firstName;
     private String prefix;
     private String surName;
@@ -31,15 +31,13 @@ public class CustomerDto {
     private String userName;
     private String passWord;
     private Profile profile;
-    private BankAccount bankAccount;
-    private Portfolio portfolio;
-    private List<Transaction> transactionList;
 
     @JsonIgnore
-    private final Logger logger = LoggerFactory.getLogger(CustomerDto.class);
+    private final Logger logger = LoggerFactory.getLogger(RegisterDto.class);
 
-    public CustomerDto(Customer customer) {
+    public RegisterDto(Customer customer) {
         super();
+        this.userId = customer.getId();
         this.firstName = customer.getFirstName();
         this.prefix = customer.getPrefix();
         this.surName = customer.getSurName();
@@ -51,23 +49,25 @@ public class CustomerDto {
         this.residence = customer.getResidence();
         this.country = customer.getCountry();
         this.userName = customer.getProfile().getUserName();
-        // of weglaten?
         this.passWord = customer.getProfile().getPassWord();
         logger.info("New CustomerDto using all-args");
     }
 
-/*    public CustomerDto(Customer customer) {
-        this(customer, false);
-        logger.info("New CustomerDto");
-    }*/
-
-    public CustomerDto() {
+    public RegisterDto() {
         super();
-        logger.info("New CustomerDto");
+        logger.info("New empty CustomerDto");
     }
 
     // getters & setters
 
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -171,30 +171,6 @@ public class CustomerDto {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    public BankAccount getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
-    public Portfolio getPortfolio() {
-        return portfolio;
-    }
-
-    public void setPortfolio(Portfolio portfolio) {
-        this.portfolio = portfolio;
-    }
-
-    public List<Transaction> getTransactionList() {
-        return transactionList;
-    }
-
-    public void setTransactionList(List<Transaction> transactionList) {
-        this.transactionList = transactionList;
     }
 
     public Logger getLogger() {

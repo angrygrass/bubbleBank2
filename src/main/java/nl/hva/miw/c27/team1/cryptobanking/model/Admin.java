@@ -12,17 +12,17 @@ public class Admin extends User {
 
     private final Logger logger = LoggerFactory.getLogger(Admin.class);
 
-    public Admin(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
+    public Admin(int id, String firstName, String surName, int bsnNumber, Date birthDate,
                  String streetName, String houseNumber, String zipCode, String residence, String country,
                  Profile profile, int staffId) {
-        super(firstName, null, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
+        super(id, firstName, null, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
                 country, profile);
         this.staffId = staffId;
     }
-    public Admin(String firstName, String prefix, String surName, int bsnNumber, Date birthDate,
+    public Admin(int id, String firstName, String surName, int bsnNumber, Date birthDate,
                  String streetName, String houseNumber, String zipCode, String residence, String country,
                  int staffId) {
-        super(firstName, null, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
+        super(id, firstName, null, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
                 country);
         this.staffId = staffId;
     }

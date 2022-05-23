@@ -19,10 +19,12 @@ public class JdbcProfileDao implements ProfileDao {
     private final Logger logger = LogManager.getLogger(Transaction.class);
 
 
+
     @Autowired
     public JdbcProfileDao(JdbcTemplate jdbcTemplate) {
         super();
         this.jdbcTemplate = jdbcTemplate;
+
         logger.info("New JdbcProfileDao.");
     }
 
@@ -62,8 +64,10 @@ public class JdbcProfileDao implements ProfileDao {
         public Profile mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             String userName = resultSet.getString("userName");
             String password = resultSet.getString("password");
+            int userId = resultSet.getInt("userId");
 
-            return new Profile(userName, password);
+            JdbcUserDao jdbcUserDao = new JdbcUserDao(new JdbcTemplate());
+            return new Profile(userName, password, jdbcUserDao.findById(userId).orElse(null));
         }
     }
 

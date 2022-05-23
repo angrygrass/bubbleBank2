@@ -20,14 +20,14 @@ public abstract class User {
     private String residence;
     private String country;
     private String role;
-    private int staffId;
+
 
     private Profile profile;
 
     public User(int id, String role, String firstName, String prefix,
                 String surName, int bsnNumber, Date birthDate, String streetName,
                 String houseNumber, String zipCode, String residence, String country,
-                int staffId, Profile profile) {
+                Profile profile) {
         this.id = id;
         this.role = role;
         this.firstName = firstName;
@@ -40,45 +40,25 @@ public abstract class User {
         this.zipCode = zipCode;
         this.residence = residence;
         this.country = country;
-        this.staffId = staffId;
         this.profile = profile;
     }
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(User.class);
 
-    private User(int id, String role, String firstName, String prefix, String surName,
+    public User(int id, String firstName, String prefix, String surName,
                  int bsnNumber, Date birthDate, String streetName, String houseNumber,
                  String zipCode, String residence, String country, Profile profile) {
-        this.id = id;
-        this.role = role;
-        this.firstName = firstName;
-        this.prefix = prefix;
-        this.surName = surName;
-        this.bsnNumber = bsnNumber;
-        this.birthDate = birthDate;
-        this.streetName = streetName;
-        this.houseNumber = houseNumber;
-        this.zipCode = zipCode;
-        this.residence = residence;
-        this.country = country;
-        this.profile = profile;
+        this(id, null, firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence, country,
+        profile);
         logger.info("New private User");
     }
 
-    public User(String firstName, String prefix, String surName,
+    public User(int id, String firstName, String prefix, String surName,
                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
                 String zipCode, String residence, String country) {
-        this.firstName = firstName;
-        this.prefix = prefix;
-        this.surName = surName;
-        this.bsnNumber = bsnNumber;
-        this.birthDate = birthDate;
-        this.streetName = streetName;
-        this.houseNumber = houseNumber;
-        this.zipCode = zipCode;
-        this.residence = residence;
-        this.country = country;
+        this(id, firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode,
+                residence, country, null);
 
     }
 
@@ -108,6 +88,8 @@ public abstract class User {
         super();
         logger.info("New empty User");
     }
+
+
 
     // getters & setters
     public int getId() {

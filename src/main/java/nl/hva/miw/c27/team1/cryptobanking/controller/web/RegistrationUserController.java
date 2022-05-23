@@ -1,3 +1,4 @@
+/*
 package nl.hva.miw.c27.team1.cryptobanking.controller.web;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
@@ -46,3 +47,4 @@ public class RegistrationUserController {
     return ResponseEntity.ok().body(newUser);
   }
 }
+*/
