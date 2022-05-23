@@ -24,7 +24,7 @@ public class JdbcAssetDao implements AssetDao {
 
     @Override
     public int save(Asset asset) {
-        String sql = "INSERT INTO Assett(assetCode,assetName, rateInEuro) VALUES (?,?,?);";
+        String sql = "INSERT INTO Asset(assetCode,assetName, rateInEuro) VALUES (?,?,?);";
         return jdbcTemplate.update(sql, asset.getAssetCode(), asset.getAssetName(),
                 asset.getRateInEuros());
     }

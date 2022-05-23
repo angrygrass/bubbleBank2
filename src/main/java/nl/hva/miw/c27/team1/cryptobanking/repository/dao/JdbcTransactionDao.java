@@ -32,7 +32,7 @@ public class JdbcTransactionDao implements TransactionDao{
 
     @Override
     public int save(Transaction transaction) {
-        String sql = "INSERT INTO TransationHistory(transactionId,quantity, rateInEuro,dateTime,transactionCosts,buyerId,sellerId,assetCode)" +
+        String sql = "INSERT INTO TransactionHistory(transactionId,quantity, rateInEuro,dateTime,transactionCosts,buyerId,sellerId,assetCode)" +
                 " VALUES (?,?,?,?,?,?,?,?);";
         return jdbcTemplate.update(sql,transaction.getTransactionId(),transaction.getTransactionValue(),transaction.getTransactionCostPercentage(),
         transaction.getDateTimeOfTransaction(),transaction.getTransactionCosts(),transaction.getBuyer().getId(),transaction.getSeller().getId(),

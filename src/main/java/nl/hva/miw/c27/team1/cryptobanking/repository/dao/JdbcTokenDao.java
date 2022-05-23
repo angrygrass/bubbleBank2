@@ -20,7 +20,7 @@ import java.util.Optional;
 public class JdbcTokenDao implements TokenDao {
 
         private JdbcTemplate jdbcTemplate;
-        private final Logger logger = LogManager.getLogger(Transaction.class);
+        private final Logger logger = LogManager.getLogger(JdbcTokenDao.class);
 
 
 

@@ -16,7 +16,7 @@ import java.util.Optional;
 public class JdbcProfileDao implements ProfileDao {
 
     private JdbcTemplate jdbcTemplate;
-    private final Logger logger = LogManager.getLogger(Transaction.class);
+    private final Logger logger = LogManager.getLogger(JdbcProfileDao.class);
 
 
 
