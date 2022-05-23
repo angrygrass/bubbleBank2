@@ -1,14 +1,16 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RegisterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Customer extends User {
 
     private BankAccount bankAccount;
@@ -25,30 +27,32 @@ public class Customer extends User {
                     List<Transaction> transactionList) {
         super(id, firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence,
                 country, profile);
-
         this.bankAccount = bankAccount;
         this.portfolio = portfolio;
         this.transactionList = transactionList;
     }
 
     public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
-                    String streetName,String houseNumber, String zipCode,String residence,String country,
-                    Profile profile) {
-        this(id,firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,profile,
-                null,null,null);
+                    String streetName,String houseNumber, String zipCode,String residence,String country) {
+        this(id,firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,
+                new Profile(), new BankAccount(),new Portfolio(),new ArrayList<>());
     }
 
-    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
-                    String streetName,String houseNumber, String zipCode,String residence,String country) {
-        this(id, firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
-                country, null);
-    }
 
     public Customer(RegisterDto dto) {
         this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
-                dto.getProfile());
+                new Profile(), new BankAccount(), new Portfolio(), new ArrayList<>());
+        this.setBankAccount(new BankAccount(dto.getIban(),5000, new Portfolio(), this));
+        this.setProfile(new Profile(dto.getUserName(), dto.getPassWord(), this));
     }
+
+/*    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
+                    String streetName,String houseNumber, String zipCode,String residence,String country,
+                    Profile profile, BankAccount bankAccount) {
+        this(id, firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
+                country, profile, bankAccount);
+    }*/
 
     public Customer(int id, String role) {
         super(id, role);

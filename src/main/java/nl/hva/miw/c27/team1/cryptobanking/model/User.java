@@ -49,7 +49,7 @@ public abstract class User {
     public User(int id, String firstName, String prefix, String surName,
                  int bsnNumber, Date birthDate, String streetName, String houseNumber,
                  String zipCode, String residence, String country, Profile profile) {
-        this(id, null, firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence, country,
+        this(id, "Customer", firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence, country,
         profile);
         logger.info("New private User");
     }

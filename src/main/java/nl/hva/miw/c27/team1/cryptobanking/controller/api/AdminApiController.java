@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.service.AdminService;
 import org.apache.logging.log4j.LogManager;
@@ -19,7 +20,9 @@ import java.util.Optional;
 @RequestMapping(value=("/admins"))
 public class AdminApiController extends BaseApiController {
 
+    @JsonIgnore
     private final Logger logger = LogManager.getLogger(AdminApiController.class);
+
     private AdminService adminService;
 
     @Autowired

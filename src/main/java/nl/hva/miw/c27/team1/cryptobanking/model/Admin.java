@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,6 +11,7 @@ public class Admin extends User {
 
     private int staffId;
 
+    @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(Admin.class);
 
     public Admin(int id, String firstName, String surName, int bsnNumber, Date birthDate,

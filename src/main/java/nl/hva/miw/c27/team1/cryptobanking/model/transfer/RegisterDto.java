@@ -7,14 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 
-/*
-A Dto class limits the amount of sensitive data send. Only provided what is needed.
-In Java applications - entity classes are used to represent tables in a relational database. Without DTOs,
-we'd have to expose the entire entities to a remote interface. This causes a strong coupling between
-an API and a persistence model.
-*/
 public class RegisterDto {
 
     private int userId;
@@ -29,8 +22,10 @@ public class RegisterDto {
     private String residence;
     private String country;
     private String userName;
+    private String iban;
     private String passWord;
     private Profile profile;
+    private BankAccount bankAccount;
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(RegisterDto.class);
@@ -48,6 +43,7 @@ public class RegisterDto {
         this.zipCode = customer.getZipCode();
         this.residence = customer.getResidence();
         this.country = customer.getCountry();
+        this.iban = customer.getBankAccount().getIban();
         this.userName = customer.getProfile().getUserName();
         this.passWord = customer.getProfile().getPassWord();
         logger.info("New CustomerDto using all-args");
@@ -59,8 +55,6 @@ public class RegisterDto {
     }
 
     // getters & setters
-
-
     public int getUserId() {
         return userId;
     }
@@ -173,7 +167,24 @@ public class RegisterDto {
         this.profile = profile;
     }
 
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
+    }
+
+    public BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(BankAccount bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
     public Logger getLogger() {
         return logger;
     }
+
 }
