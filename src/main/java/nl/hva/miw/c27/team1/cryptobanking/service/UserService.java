@@ -126,9 +126,7 @@ public class UserService {
     }
 
     /**
-     * Verifies whether an email conforms to format for local and domain part. Allows for
-     * upper/lowercase, values 0-9, and special characters like hyphens and dots. Consecutive
-     * dots and dots at start/end are not allowed. Max 64 characters.
+     * Verifies whether an email conforms to an email format with a '@' sign.
      */
     public boolean checkEmail(Customer customer) {
         String email = customer.getProfile().getUserName();
