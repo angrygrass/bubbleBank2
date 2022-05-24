@@ -29,8 +29,6 @@ public class RegisterDto {
     private String userName;
     private String iban;
     private String passWord;
-    private Profile profile;
-    private BankAccount bankAccount;
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(RegisterDto.class);
@@ -164,28 +162,12 @@ public class RegisterDto {
         this.passWord = passWord;
     }
 
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
     public String getIban() {
         return iban;
     }
 
     public void setIban(String iban) {
         this.iban = iban;
-    }
-
-    public BankAccount getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
     }
 
     public Logger getLogger() {

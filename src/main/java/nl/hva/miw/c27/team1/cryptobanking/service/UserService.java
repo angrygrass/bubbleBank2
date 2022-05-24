@@ -104,6 +104,28 @@ public class UserService {
     }
 
     /**
+     * Verifies whether a Dutch zipcode starts with 1-9, followed by 3 numbers between
+     * 0-9 and 2 letters (lower/all-caps).
+     **/
+    public boolean checkZipCode(Customer customer) {
+        String zipcode = customer.getZipCode();
+        try {
+            return zipcode.matches("[1-9]{1}[0-9]{3}[a-zA-Z]{2}");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean checkIban(Customer customer) {
+        try {
+            IbanUtil.validate(customer.getBankAccount().getIban());
+            return true;
+        } catch (IbanFormatException e) {
+            return false;
+        }
+    }
+
+    /**
      * Verifies whether an email conforms to format for local and domain part. Allows for
      * upper/lowercase, values 0-9, and special characters like hyphens and dots. Consecutive
      * dots and dots at start/end are not allowed. Max 64 characters.
@@ -127,28 +149,6 @@ public class UserService {
                             "(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,64}$")) {
             return true;
         } else {
-            return false;
-        }
-    }
-
-    public boolean checkIban(Customer customer) {
-        try {
-            IbanUtil.validate(customer.getBankAccount().getIban());
-            return true;
-        } catch (IbanFormatException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Verifies whether a Dutch zipcode starts with 1-9, followed by 3 numbers between
-     * 0-9 and 2 letters (lower/all-caps).
-     **/
-    public boolean checkZipCode(Customer customer) {
-        String zipcode = customer.getZipCode();
-        try {
-            return zipcode.matches("[1-9]{1}[0-9]{3}[a-zA-Z]{2}");
-        } catch (Exception e) {
             return false;
         }
     }

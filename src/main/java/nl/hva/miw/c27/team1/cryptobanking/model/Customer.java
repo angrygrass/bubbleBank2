@@ -13,9 +13,9 @@ import java.util.List;
  * classes). Spring serializes the back-reference rahter than the whole reference.
  * in this case, the back reference is identied by the 'id' property
  */
-@JsonIdentityInfo(
+/*@JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+        property = "id")*/
 public class Customer extends User {
 
     private BankAccount bankAccount;
@@ -42,7 +42,6 @@ public class Customer extends User {
         this(id,firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,country,
                 new Profile(), new BankAccount(),new Portfolio(),new ArrayList<>());
     }
-
 
     public Customer(RegisterDto dto) {
         this(dto.getUserId(), dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
