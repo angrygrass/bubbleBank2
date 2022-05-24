@@ -6,6 +6,7 @@ import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -39,10 +40,13 @@ public class UserApiController extends BaseApiController {
     @PostMapping("register")
     public ResponseEntity<String> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
         Customer customer = new Customer(registerDto);
-        userService.register(customer);
-        //return ResponseEntity.ok().body(customer);
-        return new ResponseEntity<>("Customer created",
-                HttpStatus.CREATED);
+        try {
+            userService.register(customer);
+            return new ResponseEntity<>("Customer created",
+                    HttpStatus.CREATED);
+        } catch (DuplicateKeyException e) {
+            return new ResponseEntity<>("user already exists", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
 

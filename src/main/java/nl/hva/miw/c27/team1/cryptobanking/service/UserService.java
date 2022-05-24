@@ -11,14 +11,12 @@ import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 /**
  * This class lies between the UserApiController class and the rootRepository.
@@ -38,10 +36,6 @@ public class UserService {
     }
 
     public User register(Customer customer) {
-        Optional<User> existing = rootRepository.getUserById(customer.getId());
-        if (existing.isPresent()) {
-            throw new RegistrationFailedExceptionExistingUser();
-        }
        if (!checkAge(customer)) {
             throw new RegistrationFailedExceptionAge();
        }
@@ -116,14 +110,25 @@ public class UserService {
      */
     public boolean checkEmail(Customer customer) {
         String email = customer.getProfile().getUserName();
-        String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+" +
-                "(\\\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+" +
-                "(\\\\.[A-Za-z0-9-]+)*(\\\\.[A-Za-z]{2,})$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        if (email == null) {
+        if (email.matches("^(.+)@(\\S+)")) {
+            return true;
+        } else {
             return false;
         }
-        return pattern.matcher(email).matches();
+    }
+
+    /**
+     * Verifies whether password contains at least one digit, one upper and lower case character,
+     * one special character and is between 8-64 characters long
+     */
+    public boolean checkPassWord(Customer customer) {
+        String passWord = customer.getProfile().getPassWord();
+        if (passWord.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])" +
+                            "(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,64}$")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean checkIban(Customer customer) {
@@ -138,24 +143,11 @@ public class UserService {
     /**
      * Verifies whether a Dutch zipcode starts with 1-9, followed by 3 numbers between
      * 0-9 and 2 letters (lower/all-caps).
-     */
+     **/
     public boolean checkZipCode(Customer customer) {
         String zipcode = customer.getZipCode();
         try {
             return zipcode.matches("[1-9]{1}[0-9]{3}[a-zA-Z]{2}");
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
-     * Verifies whether password contains at least one uppercase character, one
-     * special character and is between 8-64 characters long
-     */
-    public boolean checkPassWord(Customer customer) {
-        String passWord = customer.getProfile().getPassWord();
-        try {
-            return passWord.matches("^(?=.*[A-Z])(?=.[!@#\\$%\\^&])(?=.{8,64})");
         } catch (Exception e) {
             return false;
         }

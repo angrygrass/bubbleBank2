@@ -4,5 +4,5 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "Password needs to have at least 8 characters," +
-                                                    "and at least one upper case and one special character")
+                                                    "one digit [0-9], one upper/lower case, one special character")
 public class RegistrationFailedExceptionPassWord extends RuntimeException {}
