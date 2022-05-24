@@ -8,6 +8,11 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.Date;
 
+/**
+ * Ensures that a registration of a new Customer is handled by the DTO object. An instance
+ * of a RegisterDto is then used to make a Customer object. Through constuctor-chaining other
+ * properties are allocated.
+ */
 public class RegisterDto {
 
     private int userId;
@@ -46,12 +51,12 @@ public class RegisterDto {
         this.iban = customer.getBankAccount().getIban();
         this.userName = customer.getProfile().getUserName();
         this.passWord = customer.getProfile().getPassWord();
-        logger.info("New CustomerDto using all-args");
+        logger.info("New RegisterDto using all-args");
     }
 
     public RegisterDto() {
         super();
-        logger.info("New empty CustomerDto");
+        logger.info("New empty RegisterDto");
     }
 
     // getters & setters

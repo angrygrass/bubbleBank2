@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * This class lies between the AdminApiController class and the rootRepository.
+ * Contains business logic. In next sprints this will be furhter developed.
+ */
 @Service
 public class AdminService {
 
