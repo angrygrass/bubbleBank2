@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -11,11 +12,17 @@ public class LoginService {
     private final HashService hashService;
 
     //todo jjs {STUB} parameter list to be extended with types of private fields above
+
+    @Autowired
     public LoginService(HashService hashService) {
         //todo jjs {STUB}{PSEUDO} this.someUserDatabaseObject  = someUserDatabaseObject;
         //todo jjs {STUB}{PSEUDO} this.someTokenDatabaseObject  = someTokenDatabaseObject;
         this.hashService = hashService;
     }
+
+//    public LoginService() {
+//        this.hashService = null;
+//    }
 
     public String login(String username, String password) {
         String token = null;
@@ -27,7 +34,8 @@ public class LoginService {
             token = UUID.randomUUID().toString();
             //todo jjs {STUB} store token in database with user
             //todo jjs {PSEUDO} DAO.updateUser(User user, token)
-        };
+        }
+        ;
         return token;
     }
 }
