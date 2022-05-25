@@ -17,6 +17,7 @@ import java.util.Optional;
 @Repository
 public class RootRepository {
 
+    // userList was used as mock. Not needed anymore
     private List<User> userList;
     private final UserDao userDao;
     private final ProfileDao profileDao;

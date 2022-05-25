@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDate;
 import java.util.Date;
 
+/**
+ * Ensures that a registration of a new Customer is handled by the DTO object. An instance
+ * of a RegisterDto is then used to make a Customer object. Through constuctor-chaining other
+ * properties are allocated.
+ */
 public class RegisterDto {
 
     private int userId;
@@ -24,8 +27,6 @@ public class RegisterDto {
     private String userName;
     private String iban;
     private String passWord;
-    private Profile profile;
-    private BankAccount bankAccount;
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(RegisterDto.class);
@@ -46,12 +47,12 @@ public class RegisterDto {
         this.iban = customer.getBankAccount().getIban();
         this.userName = customer.getProfile().getUserName();
         this.passWord = customer.getProfile().getPassWord();
-        logger.info("New CustomerDto using all-args");
+        logger.info("New RegisterDto using all-args");
     }
 
     public RegisterDto() {
         super();
-        logger.info("New empty CustomerDto");
+        logger.info("New empty RegisterDto");
     }
 
     // getters & setters
@@ -159,28 +160,12 @@ public class RegisterDto {
         this.passWord = passWord;
     }
 
-    public Profile getProfile() {
-        return profile;
-    }
-
-    public void setProfile(Profile profile) {
-        this.profile = profile;
-    }
-
     public String getIban() {
         return iban;
     }
 
     public void setIban(String iban) {
         this.iban = iban;
-    }
-
-    public BankAccount getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
     }
 
     public Logger getLogger() {

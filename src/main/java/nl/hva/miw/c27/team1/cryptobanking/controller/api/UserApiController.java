@@ -6,6 +6,8 @@ import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,12 +29,26 @@ public class UserApiController extends BaseApiController {
   /* client geeft een dto object mee in json-formaat. Dit wordt opgeslagen als een Customer object dmv
      een constructor.
   */
-    @PostMapping("register")
+  /*  @PostMapping("register")
     public ResponseEntity<Customer> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
         Customer customer = new Customer(registerDto);
         userService.register(customer);
-        return ResponseEntity.ok().body(customer);
+        //return ResponseEntity.ok().body(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }*/
+
+    @PostMapping("register")
+    public ResponseEntity<String> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
+        Customer customer = new Customer(registerDto);
+        try {
+            userService.register(customer);
+            return new ResponseEntity<>("Customer created",
+                    HttpStatus.CREATED);
+        } catch (DuplicateKeyException e) {
+            return new ResponseEntity<>("user already exists", HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
+
 
     //gets html from a default 'resources/public' or 'resources/static' folder
     //todo jjs

@@ -13,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
+/**
+ * This class lies between the UserApiController class and the rootRepository.
+ * Contains business logic to handle client requests.
+ */
 @Service
 public class UserService {
 
@@ -32,17 +36,14 @@ public class UserService {
     }
 
     public User register(Customer customer) {
-        Optional<User> existing = rootRepository.getUserById(customer.getId());
-        if (existing.isPresent()) {
-            throw new RegistrationFailedExceptionExistingUser();
-        }
-        // checken if below does not result in NullPointer and that throwing of
-        // exception does not lead to .save(user)
-//        if (!checkAge(customer)) {
-//            throw new RegistrationFailedExceptionAge();
-//        }
+       if (!checkAge(customer)) {
+            throw new RegistrationFailedExceptionAge();
+       }
         if (!checkBsn(customer)) {
             throw new RegistrationFailedExceptionBsn();
+        }
+        if(!checkZipCode(customer)) {
+            throw new RegistrationFailedExceptionZipCode();
         }
         if (!checkIban(customer)) {
             throw new RegistrationFailedExceptionIban();
@@ -50,26 +51,38 @@ public class UserService {
         if (!checkEmail(customer)) {
             throw new RegistrationFailedExceptionEmail();
         }
-        if (!checkAge(customer)) {
-            throw new RegistrationFailedExceptionAge();
+        if (!checkPassWord(customer)) {
+            throw new RegistrationFailedExceptionPassWord();
         }
-
         rootRepository.save(customer);
         return customer;
     }
 
-    // business logic voor registratie. Double check of hier juiste plaats is
+    /**
+     * Helper method required to convert Data to LocalDate for calculation of checkAge()
+     */
+    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
 
     public boolean checkAge(User user) {
         boolean over18 = false;
-//        LocalDate birthDay = user.getBirthDate();
-//        Period p = Period.between(birthDay, LocalDate.now());
-//        if (p.getYears() >=18) {
-//            over18 = true;
-//        }
-        return over18=true;
+        Date birthDayDateFormat = user.getBirthDate();
+        LocalDate birthDayLocalDateFormat = convertToLocalDateViaInstant(birthDayDateFormat);
+        Period p = Period.between(birthDayLocalDateFormat, LocalDate.now());
+        if (p.getYears() >=18) {
+            over18 = true;
+        }
+        return over18;
     }
 
+    /**
+     * Adds individual digits of a bsn number to the ArrayList by using % 10. It then
+     * multiplies each number with the 11-proef weighted number in integer[] lijst. If
+     * the total % 11 == 0, then bsn is correct format.
+     */
     public boolean checkBsn(User user) {
         ArrayList<Integer> individualBsnDigits = new ArrayList<>();
         // numbers for '11-proef' BSN number
@@ -90,27 +103,50 @@ public class UserService {
         return correcteFormat;
     }
 
-    public boolean checkEmail(Customer customer) {
-        String email = customer.getProfile().getUserName();
-        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
-                "[a-zA-Z0-9_+&*-]+)*@" +
-                "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
-                "A-Z]{2,7}$";
-        Pattern pattern = Pattern.compile(emailRegex);
-        if (email == null) {
+    /**
+     * Verifies whether a Dutch zipcode starts with 1-9, followed by 3 numbers between
+     * 0-9 and 2 letters (lower/all-caps).
+     **/
+    public boolean checkZipCode(Customer customer) {
+        String zipcode = customer.getZipCode();
+        try {
+            return zipcode.matches("[1-9]{1}[0-9]{3}[a-zA-Z]{2}");
+        } catch (Exception e) {
             return false;
         }
-        return pattern.matcher(email).matches();
     }
 
-    // needs test if method is correct
     public boolean checkIban(Customer customer) {
-        boolean correcteIban = false;
         try {
             IbanUtil.validate(customer.getBankAccount().getIban());
             return true;
         } catch (IbanFormatException e) {
-            e.getMessage();
+            return false;
+        }
+    }
+
+    /**
+     * Verifies whether an email conforms to an email format with a '@' sign.
+     */
+    public boolean checkEmail(Customer customer) {
+        String email = customer.getProfile().getUserName();
+        if (email.matches("^(.+)@(\\S+)")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Verifies whether password contains at least one digit, one upper and lower case character,
+     * one special character and is between 8-64 characters long
+     */
+    public boolean checkPassWord(Customer customer) {
+        String passWord = customer.getProfile().getPassWord();
+        if (passWord.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])" +
+                            "(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,64}$")) {
+            return true;
+        } else {
             return false;
         }
     }
@@ -130,8 +166,6 @@ public class UserService {
         rootRepository.save(user);
     }
 
-
     // getters & setters
-
 
 }
