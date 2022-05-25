@@ -8,9 +8,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@JsonIdentityInfo(
+/**
+ * Annotation handles circular references (e.g. bi-directional relationships between
+ * classes). Spring serializes the back-reference rahter than the whole reference.
+ * in this case, the back reference is identied by the 'id' property
+ */
+/*@JsonIdentityInfo(
         generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
+        property = "id")*/
 public class Customer extends User {
 
     private BankAccount bankAccount;
@@ -38,7 +43,6 @@ public class Customer extends User {
                 new Profile(), new BankAccount(),new Portfolio(),new ArrayList<>());
     }
 
-
     public Customer(RegisterDto dto) {
         this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
@@ -47,16 +51,9 @@ public class Customer extends User {
         this.setProfile(new Profile(dto.getUserName(), dto.getPassWord(), this));
     }
 
-/*    public Customer(int id, String firstName, String preFix,String surName,int bsnNumber,Date birthDate,
-                    String streetName,String houseNumber, String zipCode,String residence,String country,
-                    Profile profile, BankAccount bankAccount) {
-        this(id, firstName,preFix,surName,bsnNumber,birthDate,streetName,houseNumber,zipCode,residence,
-                country, profile, bankAccount);
-    }*/
-
     public Customer(int id, String role) {
         super(id, role);
-        logger.info("New Customer met 2 attributen");
+        logger.info("New Customer met 2 attributen voor mock ArrayLijst");
     }
 
     public BankAccount getBankAccount() {

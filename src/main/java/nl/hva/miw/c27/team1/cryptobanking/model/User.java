@@ -20,9 +20,10 @@ public abstract class User {
     private String residence;
     private String country;
     private String role;
-
-
     private Profile profile;
+
+    @JsonIgnore
+    private final Logger logger = LoggerFactory.getLogger(User.class);
 
     public User(int id, String role, String firstName, String prefix,
                 String surName, int bsnNumber, Date birthDate, String streetName,
@@ -41,17 +42,15 @@ public abstract class User {
         this.residence = residence;
         this.country = country;
         this.profile = profile;
+        logger.info("New public User");
     }
-
-    @JsonIgnore
-    private final Logger logger = LoggerFactory.getLogger(User.class);
 
     public User(int id, String firstName, String prefix, String surName,
                  int bsnNumber, Date birthDate, String streetName, String houseNumber,
                  String zipCode, String residence, String country, Profile profile) {
-        this(id, "Customer", firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber, zipCode, residence, country,
+        this(id, "Customer", firstName, prefix, surName, bsnNumber, birthDate, streetName, houseNumber,
+                zipCode, residence, country,
         profile);
-        logger.info("New private User");
     }
 
     public User(int id, String firstName, String prefix, String surName,
@@ -61,7 +60,6 @@ public abstract class User {
                 residence, country, null);
 
     }
-
 
     public User(String firstName, String prefix, String surName,
                 int bsnNumber, Date birthDate, String streetName, String houseNumber,
