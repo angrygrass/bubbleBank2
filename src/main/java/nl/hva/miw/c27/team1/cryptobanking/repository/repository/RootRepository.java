@@ -1,8 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
-import nl.hva.miw.c27.team1.cryptobanking.repository.dao.ProfileDao;
-import nl.hva.miw.c27.team1.cryptobanking.repository.dao.UserDao;
+import nl.hva.miw.c27.team1.cryptobanking.repository.dao.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,80 +16,109 @@ import java.util.Optional;
 @Repository
 public class RootRepository {
 
-    // userList was used as mock. Not needed anymore
-    private List<User> userList;
+
     private final UserDao userDao;
     private final ProfileDao profileDao;
+    private final BankAccountDao bankAccountDao;
+    private final TokenDao tokenDao;
+    private final TransactionDao transactionDao;
+    private final AssetDao assetDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
-    public RootRepository(UserDao userDao, ProfileDao profileDao) {
+    public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
+    TransactionDao transactionDao, AssetDao assetDao) {
         this.profileDao = profileDao;
-        this.userList = new ArrayList<>();
-        fillUserList();
         this.userDao = userDao;
+        this.bankAccountDao = bankAccountDao;
+        this.tokenDao = tokenDao;
+        this.transactionDao = transactionDao;
+        this.assetDao = assetDao;
         logger.info("New RootRepository");
     }
 
-    public void save(User user) {
-        userDao.save(user);
-        profileDao.save(user.getProfile());
+    // methods for Customer
+
+    public void saveCustomer(Customer customer) {
+        userDao.save(customer);
+        profileDao.save(customer.getProfile());
+        bankAccountDao.save(customer.getBankAccount());
     }
 
-    // testlijst, is niet gelinkt aan DAO
-    public void fillUserList() {
-        userList.add(new Customer(1, "Client"));
-        userList.add(new Admin(2, "Admin"));
-    }
+    public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
+
+    // methods for User
+
 
     public List<User> getAllUsers() {
-        return userDao.getAllUsers().get();
+        return userDao.getAllUsers();
     }
 
     public Optional <User> getUserById(int id) {
         return userDao.findById(id);
     }
 
-    public User getUserByRole(String role) {
-        return userList.stream().filter(u -> u.getRole().equals(role)).findFirst().get();
+    public Optional<User> getUserByToken(Token token) {return userDao.findByToken(token);}
+
+
+
+    public Optional<User> getUserByRole(String role) {return userDao.getByRole(role);}
+
+    public void deleteUser(int id) {userDao.deleteUserById(id);}
+
+    // methods for Admin
+
+    public void saveAdmin(Admin admin) {
+        userDao.save(admin);
+        profileDao.save(admin.getProfile());
     }
 
-    public User update(User user) {
-        int indexOfUserToUpdate = userList.indexOf(user);
-        if (indexOfUserToUpdate >= 0) {
-            userList.set(indexOfUserToUpdate, user);
-            return userList.get(indexOfUserToUpdate);
-        } else {
-            return null;
-        }
-    }
+    // methods for Profile
 
-    public Optional<Profile> getProfileOfUser(String userName) {
+    public Optional<Profile> getProfileByUsername(String username) {return profileDao.findByUserName(username);}
 
-        return profileDao.findByUserName(userName);
-    }
+    // methods for Token
 
-    public void delete(int id) {
-        Optional<User> user = getUserById(id);
-        int indexOfUserToUpdate = userList.indexOf(user);
-        System.out.println(indexOfUserToUpdate);
-        if (indexOfUserToUpdate >= 0) {
-            userList.remove(indexOfUserToUpdate);
-        } else {
-            System.out.println("niet gelukt");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-    }
+    public void saveToken(Token token) {tokenDao.save(token);}
+
+    public Optional<Token> getTokenByUserId(int userId) {return tokenDao.findByUserId(userId);}
+
+    public void revokeTokenFromUser(User user) {tokenDao.revokeToken(user);}
+
+    // methods for Bank Account
+
+    public Optional<BankAccount> findBankAccountByUserId (int id) {return bankAccountDao.findById(id);}
+
+    public List<BankAccount> getAllBankAccounts() {return bankAccountDao.getAll();}
+
+    public void updateBankAccountBalance(BankAccount bankAccount) {bankAccountDao.updateBalance(bankAccount);}
+
+    public void deleteBankAccountByUserId(int userId) {bankAccountDao.deleteBankAccountByUserId(userId);}
+
+    public Optional<BankAccount> findBankAccountByIban(String iban) {return bankAccountDao.findByIban(iban);}
+
+    // methods for Transaction
+
+    public Optional<Transaction> findTransactionById (int id) {return transactionDao.findById(id);}
+
+    public void saveTransaction(Transaction transaction) {transactionDao.save(transaction);}
+
+    public List<Transaction> getAllTransactions() {return transactionDao.getAll();}
+
+    // methods for Asset
+
+    public void saveAsset(Asset asset) {assetDao.save(asset);}
+
+    public Optional<Asset> findAssetByCode (String code) {return assetDao.findByCode(code);}
+
+    public Optional<Asset> findAssetByName (String name) {return assetDao.findByName(name);}
+
+    public List<Asset> getAllAssets() {return assetDao.getAll();}
+
 
     // getters & setters
-    public List<User> getUserList() {
-        return userList;
-    }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
 
     public UserDao getUserDao() {
         return userDao;
@@ -100,9 +128,27 @@ public class RootRepository {
         return profileDao;
     }
 
+    public BankAccountDao getBankAccountDao() {
+        return bankAccountDao;
+    }
+
+    public TokenDao getTokenDao() {
+        return tokenDao;
+    }
+
+    public TransactionDao getTransactionDao() {
+        return transactionDao;
+    }
+
+    public AssetDao getAssetDao() {
+        return assetDao;
+    }
+
     public Logger getLogger() {
         return logger;
     }
+
+
 
 }
 

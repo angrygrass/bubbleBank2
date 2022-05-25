@@ -15,7 +15,7 @@ public class Token {
     private User user;
 
     @JsonIgnore
-    private final Logger logger = LogManager.getLogger(Profile.class);
+    private final Logger logger = LogManager.getLogger(Token.class);
 
     public Token(String tokenId, Timestamp validuntil, User user) {
         this.tokenId = tokenId;

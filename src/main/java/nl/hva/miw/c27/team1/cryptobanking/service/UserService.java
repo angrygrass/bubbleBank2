@@ -10,12 +10,14 @@ import org.apache.logging.log4j.Logger;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,9 +56,13 @@ public class UserService {
         if (!checkPassWord(customer)) {
             throw new RegistrationFailedExceptionPassWord();
         }
-        rootRepository.save(customer);
+        if (!checkUserName(customer)) {
+            throw new RegistrationFailedExceptionUsername();
+
+        }
+        rootRepository.saveCustomer(customer);
         return customer;
-    }
+            }
 
     /**
      * Helper method required to convert Data to LocalDate for calculation of checkAge()
@@ -150,9 +156,20 @@ public class UserService {
             return false;
         }
     }
+    public boolean checkUserName(Customer customer) {
+        if (rootRepository.getProfileByUsername(customer.getProfile().getUserName()).orElse(null) != null) {
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+
 
     public Profile validateLogin(String userName, String passWord) {
-        Optional<Profile> optionalProfile = rootRepository.getProfileOfUser(userName);
+        Optional<Profile> optionalProfile = rootRepository.getProfileByUsername(userName);
         Profile profile = optionalProfile.orElse(null);
         if (profile != null && profile.getPassWord().equals(passWord)) {
             return profile;
@@ -161,11 +178,12 @@ public class UserService {
         }
     }
 
-    // not sure if method is required/necessary here
-    public void saveUser(User user) {
-        rootRepository.save(user);
-    }
 
-    // getters & setters
+   /*  -- method can probably be removed -- DK
+   public void saveUser(User user) {
+        rootRepository.saveUser(user);
+    }
+*/
+
 
 }

@@ -1,198 +1,233 @@
+CREATE DATABASE  IF NOT EXISTS `cryptobank` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `cryptobank`;
+-- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+--
+-- Host: localhost    Database: cryptobank
+-- ------------------------------------------------------
+-- Server version	8.0.28
 
-CREATE SCHEMA IF NOT EXISTS `Cryptobank` DEFAULT CHARACTER SET utf8 ;
-USE `Cryptobank` ;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- -----------------------------------------------------
--- Table `Cryptobank`.`User`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`User` (
-  `userId` INT NOT NULL AUTO_INCREMENT,
-  `firstName` VARCHAR(45) NOT NULL,
-  `prefix` VARCHAR(45) NULL,
-  `surname` VARCHAR(45) NOT NULL,
-  `dateOfBirth` DATE NOT NULL,
-  `fiscalNumber` INT NOT NULL,
-  `streetName` VARCHAR(45) NOT NULL,
-  `houseNumber` VARCHAR(45) NOT NULL,
-  `zipCode` VARCHAR(45) NOT NULL,
-  `residence` VARCHAR(45) NOT NULL,
-  `country` VARCHAR(45) NOT NULL,
-  `role` VARCHAR(45) NOT NULL,
-  `staffId` INT NULL,
+--
+-- Table structure for table `asset`
+--
+
+DROP TABLE IF EXISTS `asset`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `asset` (
+  `assetCode` varchar(3) NOT NULL,
+  `assetName` varchar(45) NOT NULL,
+  `rateInEuro` double NOT NULL,
+  PRIMARY KEY (`assetCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `assetofcustomer`
+--
+
+DROP TABLE IF EXISTS `assetofcustomer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assetofcustomer` (
+  `assetCode` varchar(3) NOT NULL,
+  `userId` int NOT NULL,
+  `quantityOfAsset` double NOT NULL,
+  PRIMARY KEY (`assetCode`,`userId`),
+  KEY `verzinzelf5_idx` (`assetCode`),
+  KEY `verzinzelf4_idx` (`userId`),
+  CONSTRAINT `verzinzelf4` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`),
+  CONSTRAINT `verzinzelf5` FOREIGN KEY (`assetCode`) REFERENCES `asset` (`assetCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `assetofcustomerhistory`
+--
+
+DROP TABLE IF EXISTS `assetofcustomerhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assetofcustomerhistory` (
+  `dateTime` datetime NOT NULL,
+  `assetCode` varchar(3) NOT NULL,
+  `userId` int NOT NULL,
+  `quantityOfAsset` double NOT NULL,
+  PRIMARY KEY (`dateTime`,`assetCode`,`userId`),
+  KEY `verzinzelf7_idx` (`assetCode`,`userId`),
+  CONSTRAINT `verzinzelf7` FOREIGN KEY (`assetCode`, `userId`) REFERENCES `assetofcustomer` (`assetCode`, `userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `assetratehistory`
+--
+
+DROP TABLE IF EXISTS `assetratehistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assetratehistory` (
+  `dateTime` datetime NOT NULL,
+  `assetCode` varchar(3) NOT NULL,
+  `rate` double NOT NULL,
+  PRIMARY KEY (`dateTime`,`assetCode`),
+  KEY `verzinzelf6_idx` (`assetCode`),
+  CONSTRAINT `verzinzelf6` FOREIGN KEY (`assetCode`) REFERENCES `asset` (`assetCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `bank account`
+--
+
+DROP TABLE IF EXISTS `bank account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `bank account` (
+  `IBAN` varchar(45) NOT NULL,
+  `balanceInEuro` double NOT NULL,
+  `userId` int NOT NULL,
   PRIMARY KEY (`userId`),
-  UNIQUE INDEX `staffId_UNIQUE` (`staffId` ASC) VISIBLE)
-ENGINE = InnoDB;
+  CONSTRAINT `verzinzelf2` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `profile`
+--
 
--- -----------------------------------------------------
--- Table `Cryptobank`.`Bank Account`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`Bank Account` (
-  `IBAN` VARCHAR(45) NOT NULL,
-  `balanceInEuro` DOUBLE NOT NULL,
-  `userId` INT NOT NULL,
+DROP TABLE IF EXISTS `profile`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `profile` (
+  `userName` varchar(80) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  `userId` int NOT NULL,
   PRIMARY KEY (`userId`),
-  CONSTRAINT `verzinzelf2`
-    FOREIGN KEY (`userId`)
-    REFERENCES `Cryptobank`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+  UNIQUE KEY `userName_UNIQUE` (`userName`),
+  CONSTRAINT `verzinzelf1` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `token`
+--
 
--- -----------------------------------------------------
--- Table `Cryptobank`.`Asset`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`Asset` (
-  `assetCode` VARCHAR(3) NOT NULL,
-  `assetName` VARCHAR(45) NOT NULL,
-  `rateInEuro` DOUBLE NOT NULL,
-  PRIMARY KEY (`assetCode`))
-ENGINE = InnoDB;
+DROP TABLE IF EXISTS `token`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `token` (
+  `idToken` varchar(64) NOT NULL,
+  `valid until` datetime NOT NULL,
+  `userId` int NOT NULL,
+  PRIMARY KEY (`idToken`),
+  KEY `verzinzelf12_idx` (`userId`),
+  CONSTRAINT `verzinzelf12` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `transactioncosts`
+--
 
--- -----------------------------------------------------
--- Table `Cryptobank`.`AssetOfCustomer`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`AssetOfCustomer` (
-  `assetCode` VARCHAR(3) NOT NULL,
-  `userId` INT NOT NULL,
-  `quantityOfAsset` DOUBLE NOT NULL,
-  PRIMARY KEY (`assetCode`, `userId`),
-  INDEX `verzinzelf5_idx` (`assetCode` ASC) VISIBLE,
-  INDEX `verzinzelf4_idx` (`userId` ASC) VISIBLE,
-  CONSTRAINT `verzinzelf5`
-    FOREIGN KEY (`assetCode`)
-    REFERENCES `Cryptobank`.`Asset` (`assetCode`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `verzinzelf4`
-    FOREIGN KEY (`userId`)
-    REFERENCES `Cryptobank`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+DROP TABLE IF EXISTS `transactioncosts`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transactioncosts` (
+  `transactionCosts` double NOT NULL,
+  PRIMARY KEY (`transactionCosts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `transactionhistory`
+--
 
--- -----------------------------------------------------
--- Table `Cryptobank`.`TransactionCosts`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`TransactionCosts` (
-  `transactionCosts` DOUBLE NOT NULL,
-  PRIMARY KEY (`transactionCosts`))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Cryptobank`.`AssetRateHistory`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`AssetRateHistory` (
-  `dateTime` DATETIME NOT NULL,
-  `assetCode` VARCHAR(3) NOT NULL,
-  `rate` DOUBLE NOT NULL,
-  PRIMARY KEY (`dateTime`, `assetCode`),
-  INDEX `verzinzelf6_idx` (`assetCode` ASC) VISIBLE,
-  CONSTRAINT `verzinzelf6`
-    FOREIGN KEY (`assetCode`)
-    REFERENCES `Cryptobank`.`Asset` (`assetCode`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Cryptobank`.`AssetOfCustomerHistory`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`AssetOfCustomerHistory` (
-  `dateTime` DATETIME NOT NULL,
-  `assetCode` VARCHAR(3) NOT NULL,
-  `userId` INT NOT NULL,
-  `quantityOfAsset` DOUBLE NOT NULL,
-  PRIMARY KEY (`dateTime`, `assetCode`, `userId`),
-  INDEX `verzinzelf7_idx` (`assetCode` ASC, `userId` ASC) VISIBLE,
-  CONSTRAINT `verzinzelf7`
-    FOREIGN KEY (`assetCode` , `userId`)
-    REFERENCES `Cryptobank`.`AssetOfCustomer` (`assetCode` , `userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Cryptobank`.`TriggerTransaction`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`TriggerTransaction` (
-  `assetCode` VARCHAR(3) NOT NULL,
-  `userId` INT NOT NULL,
-  `sellYesNo` TINYINT NOT NULL,
-  `triggerRate` DOUBLE NOT NULL,
-  `quantityToBuyOrSell` DOUBLE NOT NULL,
-  PRIMARY KEY (`assetCode`, `userId`, `sellYesNo`),
-  INDEX `verzinzelf9_idx` (`assetCode` ASC) VISIBLE,
-  INDEX `verzinzelf3_idx` (`userId` ASC) VISIBLE,
-  CONSTRAINT `verzinzelf9`
-    FOREIGN KEY (`assetCode`)
-    REFERENCES `Cryptobank`.`Asset` (`assetCode`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `verzinzelf3`
-    FOREIGN KEY (`userId`)
-    REFERENCES `Cryptobank`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `Cryptobank`.`TransactionHistory`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`TransactionHistory` (
-  `transactionId` INT NOT NULL AUTO_INCREMENT,
-  `quantity` DOUBLE NOT NULL,
-  `rateInEuro` DOUBLE NOT NULL,
-  `dateTime` DATETIME NOT NULL,
-  `transactionCosts` DOUBLE NOT NULL,
-  `buyerId` INT NOT NULL,
-  `sellerId` INT NOT NULL,
-  `assetCode` VARCHAR(3) NOT NULL,
+DROP TABLE IF EXISTS `transactionhistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transactionhistory` (
+  `transactionId` int NOT NULL AUTO_INCREMENT,
+  `quantity` double NOT NULL,
+  `rateInEuro` double NOT NULL,
+  `dateTime` datetime NOT NULL,
+  `transactionCosts` double NOT NULL,
+  `buyerId` int NOT NULL,
+  `sellerId` int NOT NULL,
+  `assetCode` varchar(3) NOT NULL,
   PRIMARY KEY (`transactionId`),
-  INDEX `verzinzelf10_idx` (`sellerId` ASC) VISIBLE,
-  INDEX `verzinzelf11_idx` (`assetCode` ASC) VISIBLE,
-  CONSTRAINT `verzinzelf8`
-    FOREIGN KEY (`buyerId`)
-    REFERENCES `Cryptobank`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `verzinzelf10`
-    FOREIGN KEY (`sellerId`)
-    REFERENCES `Cryptobank`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `verzinzelf11`
-    FOREIGN KEY (`assetCode`)
-    REFERENCES `Cryptobank`.`Asset` (`assetCode`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+  KEY `verzinzelf10_idx` (`sellerId`),
+  KEY `verzinzelf11_idx` (`assetCode`),
+  KEY `verzinzelf8` (`buyerId`),
+  CONSTRAINT `verzinzelf10` FOREIGN KEY (`sellerId`) REFERENCES `user` (`userId`),
+  CONSTRAINT `verzinzelf11` FOREIGN KEY (`assetCode`) REFERENCES `asset` (`assetCode`),
+  CONSTRAINT `verzinzelf8` FOREIGN KEY (`buyerId`) REFERENCES `user` (`userId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `triggertransaction`
+--
 
--- -----------------------------------------------------
--- Table `Cryptobank`.`Profile`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Cryptobank`.`Profile` (
-  `userName` VARCHAR(80) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
-  `userId` INT NOT NULL,
-  UNIQUE INDEX `userName_UNIQUE` (`userName` ASC) VISIBLE,
-  PRIMARY KEY (`userId`),
-  CONSTRAINT `verzinzelf1`
-    FOREIGN KEY (`userId`)
-    REFERENCES `Cryptobank`.`User` (`userId`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+DROP TABLE IF EXISTS `triggertransaction`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `triggertransaction` (
+  `assetCode` varchar(3) NOT NULL,
+  `userId` int NOT NULL,
+  `sellYesNo` tinyint NOT NULL,
+  `triggerRate` double NOT NULL,
+  `quantityToBuyOrSell` double NOT NULL,
+  PRIMARY KEY (`assetCode`,`userId`,`sellYesNo`),
+  KEY `verzinzelf9_idx` (`assetCode`),
+  KEY `verzinzelf3_idx` (`userId`),
+  CONSTRAINT `verzinzelf3` FOREIGN KEY (`userId`) REFERENCES `user` (`userId`),
+  CONSTRAINT `verzinzelf9` FOREIGN KEY (`assetCode`) REFERENCES `asset` (`assetCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `user`
+--
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+DROP TABLE IF EXISTS `user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user` (
+  `userId` int NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(45) NOT NULL,
+  `prefix` varchar(45) DEFAULT NULL,
+  `surname` varchar(45) NOT NULL,
+  `dateOfBirth` date NOT NULL,
+  `fiscalNumber` int NOT NULL,
+  `streetName` varchar(45) NOT NULL,
+  `houseNumber` varchar(45) NOT NULL,
+  `zipCode` varchar(45) NOT NULL,
+  `residence` varchar(45) NOT NULL,
+  `country` varchar(45) NOT NULL,
+  `role` varchar(45) NOT NULL,
+  `staffId` int DEFAULT NULL,
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=3085 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2022-05-25 10:55:15

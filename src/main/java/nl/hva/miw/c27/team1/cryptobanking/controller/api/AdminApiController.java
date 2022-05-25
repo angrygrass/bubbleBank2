@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.service.AdminService;
 import org.apache.logging.log4j.LogManager;
@@ -31,12 +32,6 @@ public class AdminApiController extends BaseApiController {
         logger.info("New AdminApiController");
     }
 
-    @PostMapping
-    @ResponseBody
-    ResponseEntity<?> createUser(@RequestBody User user) {
-        adminService.saveUser(user);
-        return ResponseEntity.ok(user);
-    }
 
     @GetMapping(value="/find/{id}")
     User getUserById(@PathVariable("id") int id) {
@@ -50,7 +45,7 @@ public class AdminApiController extends BaseApiController {
 
     @GetMapping(value="/find")
     User findUserByRole(@RequestParam("role") String role) {
-        return adminService.getUserByRole(role);
+        return adminService.getUserByRole(role).orElse(null);
     }
 
     @GetMapping("all_users")
@@ -59,22 +54,19 @@ public class AdminApiController extends BaseApiController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<?> updateUser(@RequestBody User user, @PathVariable("id") int id) {
+    ResponseEntity<?> updateUser(@RequestBody Customer customer, @PathVariable("id") int id) {
         Optional<User> optUser = adminService.getUserById(id);
-        if (optUser.isPresent()) {
-            adminService.updateUser(user);
-            return ResponseEntity.ok().body(user);
-        } else {
-            adminService.saveUser(user);
-            return ResponseEntity.ok().body(user);
+            adminService.updateUser(customer);
+            return ResponseEntity.ok().body(customer);
+
         }
-    }
+
 
     @DeleteMapping("/{id}")
     ResponseEntity<?> deleteUser(@PathVariable("id") int id) {
         Optional<User> optUser = adminService.getUserById(id);
         if (optUser.isPresent()) {
-            adminService.deleteUser(id);
+            adminService.deleteUserById(id);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();

@@ -20,7 +20,7 @@ import java.util.Optional;
 public class JdbcTokenDao implements TokenDao {
 
         private JdbcTemplate jdbcTemplate;
-        private final Logger logger = LogManager.getLogger(Transaction.class);
+        private final Logger logger = LogManager.getLogger(JdbcTokenDao.class);
 
 
 
@@ -34,7 +34,7 @@ public class JdbcTokenDao implements TokenDao {
 
         private PreparedStatement insertTokenStatement(Token token, Connection connection) throws SQLException {
             PreparedStatement ps = connection.prepareStatement(
-                    "insert into token (idToken, `valid until`, userId) values (?, ?, ?)",
+                    "insert into token(idToken, `valid until`, userId) values (?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, token.getTokenId());
             ps.setTimestamp(2, token.getValiduntil());

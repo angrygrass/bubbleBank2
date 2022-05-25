@@ -21,6 +21,7 @@ public class Customer extends User {
     private BankAccount bankAccount;
     private Portfolio portfolio;
     private List<Transaction> transactionList;
+    private double INITIAL_BALANCE = 5000.0;
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(Customer.class);
@@ -44,10 +45,12 @@ public class Customer extends User {
     }
 
     public Customer(RegisterDto dto) {
-        this(0,dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+
+        this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 new Profile(), new BankAccount(), new Portfolio(), new ArrayList<>());
-        this.setBankAccount(new BankAccount(dto.getIban(),5000, new Portfolio(), this));
+        this.setBankAccount(new BankAccount(dto.getIban(), INITIAL_BALANCE,this));
         this.setProfile(new Profile(dto.getUserName(), dto.getPassWord(), this));
     }
 

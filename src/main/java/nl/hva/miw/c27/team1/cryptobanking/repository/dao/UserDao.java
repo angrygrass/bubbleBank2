@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
+import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Token;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 
@@ -13,9 +14,17 @@ public interface UserDao {
 
     Optional<User> findById(int id);
 
-    Optional<List<User>> getAllUsers();
+    List<User> getAllUsers();
 
     Optional<User> findByToken(Token token);
+
+    Optional<User> getByRole(String role);
+
+    Optional<Customer> updateCustomer(Customer customer);
+
+    void deleteUserById(int id);
+
+
 
 
 }

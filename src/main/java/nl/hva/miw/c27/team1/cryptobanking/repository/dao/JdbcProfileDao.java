@@ -16,14 +16,15 @@ import java.util.Optional;
 public class JdbcProfileDao implements ProfileDao {
 
     private JdbcTemplate jdbcTemplate;
-    private final Logger logger = LogManager.getLogger(Transaction.class);
-
+    private final Logger logger = LogManager.getLogger(JdbcProfileDao.class);
+    private JdbcUserDao jdbcUserDao;
 
 
     @Autowired
-    public JdbcProfileDao(JdbcTemplate jdbcTemplate) {
+    public JdbcProfileDao(JdbcTemplate jdbcTemplate, JdbcUserDao jdbcUserDao) {
         super();
         this.jdbcTemplate = jdbcTemplate;
+        this.jdbcUserDao = jdbcUserDao;
 
         logger.info("New JdbcProfileDao.");
     }
@@ -58,7 +59,7 @@ public class JdbcProfileDao implements ProfileDao {
     }
 
 
-    private static class ProfileRowMapper implements RowMapper<Profile> {
+    private  class ProfileRowMapper implements RowMapper<Profile> {
 
         @Override
         public Profile mapRow(ResultSet resultSet, int rowNum) throws SQLException {
@@ -66,7 +67,6 @@ public class JdbcProfileDao implements ProfileDao {
             String password = resultSet.getString("password");
             int userId = resultSet.getInt("userId");
 
-            JdbcUserDao jdbcUserDao = new JdbcUserDao(new JdbcTemplate());
             return new Profile(userName, password, jdbcUserDao.findById(userId).orElse(null));
         }
     }

@@ -41,10 +41,13 @@ public class UserApiController extends BaseApiController {
     public ResponseEntity<String> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
         Customer customer = new Customer(registerDto);
         try {
+
             userService.register(customer);
+
             return new ResponseEntity<>("Customer created",
                     HttpStatus.CREATED);
         } catch (DuplicateKeyException e) {
+
             return new ResponseEntity<>("user already exists", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
