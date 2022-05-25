@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcAssetDao implements AssetDao {
@@ -23,17 +24,17 @@ public class JdbcAssetDao implements AssetDao {
     }
 
     @Override
-    public int save(Asset asset) {
+    public void save(Asset asset) {
         String sql = "INSERT INTO Asset(assetCode,assetName, rateInEuro) VALUES (?,?,?);";
-        return jdbcTemplate.update(sql, asset.getAssetCode(), asset.getAssetName(),
+        jdbcTemplate.update(sql, asset.getAssetCode(), asset.getAssetName(),
                 asset.getRateInEuros());
     }
 
     @Override
-    public Asset findByCode(String assetCode) {
+    public Optional<Asset> findByCode(String assetCode) {
         String sql = "SELECT * FROM Asset WHERE assetCode = ?;";
         try {
-            return jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode);
+            return Optional.of(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
         } catch (EmptyResultDataAccessException e) {
             e.getMessage();
             return null;
@@ -42,9 +43,9 @@ public class JdbcAssetDao implements AssetDao {
 
 
     @Override
-    public Asset findByName(String name) {
+    public Optional<Asset> findByName(String name) {
         String sql = "SELECT * FROM Asset WHERE assetName = ?;";
-        return jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name);
+        return Optional.of(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
     }
 
     @Override

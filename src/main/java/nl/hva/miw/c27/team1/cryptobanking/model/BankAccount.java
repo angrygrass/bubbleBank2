@@ -7,22 +7,22 @@ import org.apache.logging.log4j.Logger;
 public class BankAccount {
 
     private String iban;
-    private long balanceInEuros;
+    private double balanceInEuros;
     private Portfolio portfolio;
     private Customer customer;
+
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(BankAccount.class);
 
-    public BankAccount(String iban, long balanceInEuros, Portfolio portfolio, Customer customer) {
+    public BankAccount(String iban, double balanceInEuros, Customer customer) {
         this.iban = iban;
         this.balanceInEuros = balanceInEuros;
-        this.portfolio = portfolio;
         this.customer = customer;
     }
 
     public BankAccount(String iban) {
-        this(iban,0,null,null);
+        this(iban, 0, null);
     }
 
     public BankAccount() {
@@ -30,7 +30,7 @@ public class BankAccount {
         logger.info("New empty BankAccount");
     }
 
-    public BankAccount(String iban, long balanceInEuros) {
+    public BankAccount(String iban, double balanceInEuros) {
         this.iban = iban;
         this.balanceInEuros = balanceInEuros;
     }
@@ -44,11 +44,11 @@ public class BankAccount {
 
     }
 
-    public long getBalanceInEuros() {
+    public double getBalanceInEuros() {
         return balanceInEuros;
     }
 
-    public void setBalanceInEuros(long balanceInEuros) {
+    public void setBalanceInEuros(double balanceInEuros) {
         this.balanceInEuros = balanceInEuros;
     }
 

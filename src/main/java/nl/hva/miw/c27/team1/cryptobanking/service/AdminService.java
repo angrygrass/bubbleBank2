@@ -1,5 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
+import nl.hva.miw.c27.team1.cryptobanking.model.Admin;
+import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import org.apache.logging.log4j.LogManager;
@@ -26,8 +28,8 @@ public class AdminService {
         logger.info("New UserService");
     }
 
-    public void saveUser(User user) {
-        rootRepository.save(user);
+    public void saveUser(Admin admin) {
+        rootRepository.saveAdmin(admin);
     }
 
     public List<User> getAllUsers() {
@@ -38,16 +40,16 @@ public class AdminService {
         return rootRepository.getUserById(id);
     }
 
-    public User getUserByRole(String role) {
+    public Optional<User> getUserByRole(String role) {
         return rootRepository.getUserByRole(role);
     }
 
-    public User updateUser(User user) {
-        return rootRepository.update(user);
+    public Optional<Customer> updateUser(Customer customer) {
+        return rootRepository.updateUser(customer);
     }
 
-    public void deleteUser(int id) {
-        rootRepository.delete(id);
+    public void deleteUserById(int id) {
+        rootRepository.deleteUser(id);
     }
 
     // getters & setters

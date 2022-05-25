@@ -2,6 +2,7 @@ package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,17 +14,26 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcTransactionDao implements TransactionDao{
     private final Logger logger = LoggerFactory.getLogger(JdbcTransactionDao.class);
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    public JdbcTransactionDao(JdbcTemplate jdbcTemplate) {
+        super();
+        this.jdbcTemplate = jdbcTemplate;
+
+        logger.info("New JdbcTokenDao.");
+    }
+
     @Override
-    public Transaction findById(int id) {
+    public Optional<Transaction> findById(int id) {
         String sql = "SELECT * FROM TransActionHistory WHERE transactionId = ?;";
         try {
-            return this.jdbcTemplate.queryForObject(sql, new JdbcTransactionDao.TransactionRowMapper(), id);
+            return Optional.of(this.jdbcTemplate.queryForObject(sql, new JdbcTransactionDao.TransactionRowMapper(), id));
         } catch (EmptyResultDataAccessException e){
             e.getMessage();
             return null;
@@ -31,10 +41,10 @@ public class JdbcTransactionDao implements TransactionDao{
     }
 
     @Override
-    public int save(Transaction transaction) {
+    public void save(Transaction transaction) {
         String sql = "INSERT INTO TransactionHistory(transactionId,quantity, rateInEuro,dateTime,transactionCosts,buyerId,sellerId,assetCode)" +
                 " VALUES (?,?,?,?,?,?,?,?);";
-        return jdbcTemplate.update(sql,transaction.getTransactionId(),transaction.getTransactionValue(),transaction.getTransactionCostPercentage(),
+        jdbcTemplate.update(sql,transaction.getTransactionId(),transaction.getTransactionValue(),transaction.getTransactionCostPercentage(),
         transaction.getDateTimeOfTransaction(),transaction.getTransactionCosts(),transaction.getBuyer().getId(),transaction.getSeller().getId(),
                 transaction.getAsset().getAssetCode()
                 );
@@ -52,22 +62,8 @@ public class JdbcTransactionDao implements TransactionDao{
         }
     }
 
-    @Override
-    public int updateOne(Transaction transaction) {
-        return 0;
-    }
 
-    //Is this method necessary??????????
-    @Override
-    public int deleteOne(int id) {
-        String sql = "DELETE FROM TransActionHistory WHERE  transactionId= ?;";
-        return jdbcTemplate.update(sql, id);
-    }
 
-    @Override
-    public LocalDateTime findByDateTimeOfTransaction(LocalDateTime time) {
-       return null;
-    }
 
     private static class TransactionRowMapper implements RowMapper<Transaction> {
         @Override

@@ -82,17 +82,51 @@ public class JdbcUserDao implements UserDao {
             return Optional.of(users.get(0));
         }
     }
+    @Override
+    public Optional<User> getByRole(String role) {
+        List<User> users =
+                jdbcTemplate.query("select * from user where role = ?", new UserRowMapper(), role);
+        if (users.size() != 1) {
+            return Optional.empty();
+        } else {
+            return Optional.of(users.get(0));
+        }
 
+
+    }
 
 
 
     @Override
-    public Optional<List<User>> getAllUsers() {
+    public Optional<Customer> updateCustomer(Customer user) {
+
+        String sql = "UPDATE `User` SET firstName = ?, prefix = ?, surname = ?, dateOfBirth = ?," +
+                "fiscalNumber = ?, streetName = ?, houseNumber = ?, zipCode = ?, residence = ?, country = ?, " +
+                "role = ? WHERE userId = ?;";
+        jdbcTemplate.update(sql, user.getFirstName(), user.getPrefix(), user.getSurName(), user.getBirthDate(),
+               user.getBsnNumber(), user.getStreetName(), user.getHouseNumber(), user.getZipCode(),
+                user.getResidence(), user.getCountry(), user.getRole());
+        return Optional.of(user);
+
+    }
+    @Override
+    public void deleteUserById(int id) {
+        String sql = "DELETE FROM `User` WHERE userId = ?;";
+        jdbcTemplate.update(sql, id);
+    }
+
+
+    @Override
+    public List<User> getAllUsers() {
         List<User> users =
                 jdbcTemplate.query("select * from user", new UserRowMapper());
 
-        return Optional.of(users);
+        return users;
     }
+
+
+
+
 
     private static class UserRowMapper implements RowMapper<User> {
 
@@ -112,7 +146,7 @@ public class JdbcUserDao implements UserDao {
             String role = resultSet.getString("role");
             int staffId = resultSet.getInt("staffId");
             User user = null;
-            if (role.equals("Customer")) {
+            if (role.equals("Customer") || role.equals("Bank")) {
                 user = new Customer(id, firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country);
             }
