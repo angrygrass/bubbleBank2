@@ -44,7 +44,9 @@ public class Customer extends User {
     }
 
     public Customer(RegisterDto dto) {
+
         this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 new Profile(), new BankAccount(), new Portfolio(), new ArrayList<>());
         this.setBankAccount(new BankAccount(dto.getIban(),5000, new Portfolio(), this));
