@@ -3,19 +3,27 @@ package nl.hva.miw.c27.team1.cryptobanking.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
 import java.util.List;
 
 public class Portfolio {
 
     private double valueOfOwnedAssets;
     private String currencyPreference;
-    private List<Asset> assetsOfUser;
-    private List<Transaction> transactionsOfUser; // correct/juiste plaats?
-    private BankAccount bankAccount;
+    private HashMap<Asset, Double> assetsOfUser;
+
     private Customer customer;
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Portfolio.class);
+
+    public Portfolio(String currencyPreference, HashMap<Asset, Double> assetsOfUser, Customer customer) {
+        this.currencyPreference = currencyPreference;
+        this.assetsOfUser = assetsOfUser;
+        this.customer = customer;
+        logger.info("New complete Portfolio");
+    }
 
     public Portfolio() {
         super();
@@ -41,28 +49,12 @@ public class Portfolio {
         this.currencyPreference = currencyPreference;
     }
 
-    public List<Asset> getAssetsOfUser() {
+    public HashMap<Asset, Double> getAssetsOfUser() {
         return assetsOfUser;
     }
 
-    public void setAssetsOfUser(List<Asset> assetsOfUser) {
+    public void setAssetsOfUser(HashMap<Asset, Double> assetsOfUser) {
         this.assetsOfUser = assetsOfUser;
-    }
-
-    public List<Transaction> getTransactionsOfUser() {
-        return transactionsOfUser;
-    }
-
-    public void setTransactionsOfUser(List<Transaction> transactionsOfUser) {
-        this.transactionsOfUser = transactionsOfUser;
-    }
-
-    public BankAccount getBankAccount() {
-        return bankAccount;
-    }
-
-    public void setBankAccount(BankAccount bankAccount) {
-        this.bankAccount = bankAccount;
     }
 
     public Customer getCustomer() {

@@ -23,18 +23,20 @@ public class RootRepository {
     private final TokenDao tokenDao;
     private final TransactionDao transactionDao;
     private final AssetDao assetDao;
+    private final PortfolioDao portfolioDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao) {
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
         this.tokenDao = tokenDao;
         this.transactionDao = transactionDao;
         this.assetDao = assetDao;
+        this.portfolioDao = portfolioDao;
         logger.info("New RootRepository");
     }
 
@@ -115,6 +117,11 @@ public class RootRepository {
     public Optional<Asset> findAssetByName (String name) {return assetDao.findByName(name);}
 
     public List<Asset> getAllAssets() {return assetDao.getAll();}
+
+    // methods for Portfolio
+
+    public double getQuantityOfAssetInPortfolio(String assetCode, int userId) {
+        return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
 
     // getters & setters
