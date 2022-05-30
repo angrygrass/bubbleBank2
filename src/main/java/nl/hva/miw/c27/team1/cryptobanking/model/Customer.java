@@ -59,6 +59,11 @@ public class Customer extends User {
         logger.info("New Customer met 2 attributen voor mock ArrayLijst");
     }
 
+    public Customer() {
+        this(0, "Customer");
+        logger.info("New empty Customer");
+    }
+
     public BankAccount getBankAccount() {
         return bankAccount;
     }

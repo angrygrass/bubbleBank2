@@ -14,18 +14,23 @@ public class Asset {
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Asset.class);
 
-    public Asset(String ac, String an, Double re) {
-        super();
-        logger.info("New empty Asset");
-    }
-
-
-
     public Asset(String assetName, String assetCode, double rateInEuros, Portfolio userPortfolio) {
         this.assetName = assetName;
         this.assetCode = assetCode;
         this.rateInEuros = rateInEuros;
         this.userPortfolio = userPortfolio;
+        logger.info("New all-args Asset");
+    }
+
+    public Asset(String assetName, String assetCode, Double rateInEuros) {
+        this(assetName,assetCode,rateInEuros, new Portfolio());
+        logger.info("New Asset with 3 constructors");
+    }
+
+    public Asset(String assetCode) {
+        this("",assetCode,0.0);
+        logger.info("New Asset with assetCode");
+
     }
 
     public String getAssetCode() {
