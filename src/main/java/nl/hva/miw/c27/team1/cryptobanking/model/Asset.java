@@ -19,9 +19,7 @@ public class Asset {
         logger.info("New empty Asset");
     }
 
-    public String getAssetName() {
-        return assetName;
-    }
+
 
     public Asset(String assetName, String assetCode, double rateInEuros, Portfolio userPortfolio) {
         this.assetName = assetName;
@@ -36,6 +34,26 @@ public class Asset {
 
     public double getRateInEuros() {
         return rateInEuros;
+    }
+
+    public String getAssetName() {
+        return assetName;
+    }
+
+    public void setAssetName(String assetName) {
+        this.assetName = assetName;
+    }
+
+    public void setAssetCode(String assetCode) {
+        this.assetCode = assetCode;
+    }
+
+    public void setRateInEuros(double rateInEuros) {
+        this.rateInEuros = rateInEuros;
+    }
+
+    public void setUserPortfolio(Portfolio userPortfolio) {
+        this.userPortfolio = userPortfolio;
     }
 
     public Portfolio getUserPortfolio() {
