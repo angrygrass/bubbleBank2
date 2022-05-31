@@ -9,22 +9,17 @@ public class Asset {
     private String assetName;
     private String assetCode;
     private double rateInEuros;
-    private Portfolio userPortfolio;
+    // was in here initially but removed it, does not seem to make sense
+    //private Portfolio userPortfolio;
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Asset.class);
 
-    public Asset(String assetName, String assetCode, double rateInEuros, Portfolio userPortfolio) {
+    public Asset(String assetName, String assetCode, double rateInEuros) {
         this.assetName = assetName;
         this.assetCode = assetCode;
         this.rateInEuros = rateInEuros;
-        this.userPortfolio = userPortfolio;
         logger.info("New all-args Asset");
-    }
-
-    public Asset(String assetName, String assetCode, Double rateInEuros) {
-        this(assetName,assetCode,rateInEuros, new Portfolio());
-        logger.info("New Asset with 3 constructors");
     }
 
     public Asset(String assetCode) {
@@ -55,14 +50,6 @@ public class Asset {
 
     public void setRateInEuros(double rateInEuros) {
         this.rateInEuros = rateInEuros;
-    }
-
-    public void setUserPortfolio(Portfolio userPortfolio) {
-        this.userPortfolio = userPortfolio;
-    }
-
-    public Portfolio getUserPortfolio() {
-        return userPortfolio;
     }
 
     public Logger getLogger() {
