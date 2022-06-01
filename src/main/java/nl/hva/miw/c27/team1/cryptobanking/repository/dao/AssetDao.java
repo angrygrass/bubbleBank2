@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface AssetDao {
 
     void save(Asset asset);
+    void saveAllAssets(List<Asset> assetList);
     Optional<Asset> findByCode(String code);
     Optional<Asset> findByName(String name);
     List<Asset> getAll();

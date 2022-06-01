@@ -44,6 +44,7 @@ public class RootRepository {
         userDao.save(customer);
         profileDao.save(customer.getProfile());
         bankAccountDao.save(customer.getBankAccount());
+        //todo - portfolio.save
     }
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
@@ -99,6 +100,10 @@ public class RootRepository {
 
     // methods for Asset
     public void saveAsset(Asset asset) {assetDao.save(asset);}
+
+    public void saveAssets(List<Asset> assetList) {
+        assetDao.saveAllAssets(assetList);
+    }
 
     public Optional<Asset> findAssetByCode (String code) {return assetDao.findByCode(code);}
 

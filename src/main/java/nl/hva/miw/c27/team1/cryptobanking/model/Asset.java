@@ -1,16 +1,18 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Asset {
 
+    @JsonProperty("id")
     private String assetName;
+    @JsonProperty("symbol")
     private String assetCode;
+    @JsonProperty("current_price")
     private double rateInEuros;
-    // was in here initially but removed it, does not seem to make sense
-    //private Portfolio userPortfolio;
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Asset.class);
@@ -26,6 +28,10 @@ public class Asset {
         this("",assetCode,0.0);
         logger.info("New Asset with assetCode");
 
+    }
+
+    public Asset() {
+        logger.info("Empty Asset");
     }
 
     public String getAssetCode() {
@@ -54,5 +60,14 @@ public class Asset {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public String toString() {
+        return "Asset{" +
+                "assetName='" + assetName + '\'' +
+                ", assetCode='" + assetCode + '\'' +
+                ", rateInEuros=" + rateInEuros +
+                '}';
     }
 }
