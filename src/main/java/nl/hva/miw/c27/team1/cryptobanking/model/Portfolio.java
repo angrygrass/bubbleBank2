@@ -31,7 +31,11 @@ public class Portfolio {
     }
 
     public Portfolio() {
+
         this(new HashMap<>(), new Customer());
+
+
+
         logger.info("New empty Portfolio");
     }
 
@@ -54,7 +58,11 @@ public class Portfolio {
         this.currencyPreference = currencyPreference;
     }
 
+
     public Map<Asset, Double> getAssetsOfUser() {
+
+
+
         return assetsOfUser;
     }
 

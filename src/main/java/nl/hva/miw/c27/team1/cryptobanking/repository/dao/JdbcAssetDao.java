@@ -25,7 +25,7 @@ public class JdbcAssetDao implements AssetDao {
 
     @Override
     public void save(Asset asset) {
-        String sql = "INSERT INTO Asset(assetCode,assetName, rateInEuro) VALUES (?,?,?);";
+        String sql = "INSERT INTO asset(assetCode,assetName, rateInEuro) VALUES (?,?,?);";
         jdbcTemplate.update(sql, asset.getAssetCode(), asset.getAssetName(),
                 asset.getRateInEuros());
     }
@@ -41,7 +41,7 @@ public class JdbcAssetDao implements AssetDao {
 
     @Override
     public Optional<Asset> findByCode(String assetCode) {
-        String sql = "SELECT * FROM Asset WHERE assetCode = ?;";
+        String sql = "SELECT * FROM asset WHERE assetCode = ?;";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
         } catch (EmptyResultDataAccessException e) {
@@ -53,13 +53,13 @@ public class JdbcAssetDao implements AssetDao {
 
     @Override
     public Optional<Asset> findByName(String name) {
-        String sql = "SELECT * FROM Asset WHERE assetName = ?;";
+        String sql = "SELECT * FROM asset WHERE assetName = ?;";
         return Optional.of(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
     }
 
     @Override
     public List<Asset> getAll() {
-        String sql = "SELECT * FROM Asset;";
+        String sql = "SELECT * FROM asset;";
         return jdbcTemplate.query(sql, new AssetRowMapper());
     }
 

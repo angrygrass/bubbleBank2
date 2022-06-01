@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.BuyAssetDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.BuyAssetService;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,13 +34,11 @@ public class BuyAssetApiController extends BaseApiController {
 
     @ResponseBody
     @PostMapping("/buyfrombank")
-    public String buyAsset(@RequestBody int userId,
-            String assetCode,
-            double quantity)
+    public String buyAsset(@RequestBody BuyAssetDto buyAssetDto)
     {
 
 
-        return buyAssetService.buyFromBank(userId, assetCode, quantity);
+        return buyAssetService.buyFromBank(buyAssetDto.getUserid(), buyAssetDto.getAssetCode(), buyAssetDto.getQuantity());
 
 
     }
