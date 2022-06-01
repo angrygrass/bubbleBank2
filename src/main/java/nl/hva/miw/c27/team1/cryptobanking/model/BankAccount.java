@@ -8,9 +8,7 @@ public class BankAccount {
 
     private String iban;
     private double balanceInEuros;
-    private Portfolio portfolio;
     private Customer customer;
-
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(BankAccount.class);
@@ -52,13 +50,6 @@ public class BankAccount {
         this.balanceInEuros = balanceInEuros;
     }
 
-    public Portfolio getPortfolio() {
-        return portfolio;
-    }
-
-    public void setPortfolio(Portfolio portfolio) {
-        this.portfolio = portfolio;
-    }
 
     public Customer getCustomer() {
         return customer;

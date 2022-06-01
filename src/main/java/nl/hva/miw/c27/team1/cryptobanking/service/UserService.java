@@ -163,11 +163,6 @@ public class UserService {
         return true;
     }
 
-
-
-
-
-
     public Profile validateLogin(String userName, String passWord) {
         Optional<Profile> optionalProfile = rootRepository.getProfileByUsername(userName);
         Profile profile = optionalProfile.orElse(null);
@@ -177,13 +172,5 @@ public class UserService {
             return null;
         }
     }
-
-
-   /*  -- method can probably be removed -- DK
-   public void saveUser(User user) {
-        rootRepository.saveUser(user);
-    }
-*/
-
 
 }

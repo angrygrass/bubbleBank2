@@ -30,6 +30,15 @@ public class JdbcAssetDao implements AssetDao {
                 asset.getRateInEuros());
     }
 
+    // check if correct
+    public void saveAllAssets(List<Asset> assetList) {
+         String sql = "UPDATE 'asset' SET assetName = ?, rateInEuros = ? WHERE assetCode = ?;";
+        for (Asset assets : assetList) {
+            jdbcTemplate.update(sql, assets.getAssetName(), assets.getRateInEuros(), assets.getAssetCode());
+        }
+    }
+
+
     @Override
     public Optional<Asset> findByCode(String assetCode) {
         String sql = "SELECT * FROM Asset WHERE assetCode = ?;";

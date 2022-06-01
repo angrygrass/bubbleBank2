@@ -16,7 +16,6 @@ import java.util.Optional;
 @Repository
 public class RootRepository {
 
-
     private final UserDao userDao;
     private final ProfileDao profileDao;
     private final BankAccountDao bankAccountDao;
@@ -41,18 +40,16 @@ public class RootRepository {
     }
 
     // methods for Customer
-
     public void saveCustomer(Customer customer) {
         userDao.save(customer);
         profileDao.save(customer.getProfile());
         bankAccountDao.save(customer.getBankAccount());
+        //todo - portfolio.save
     }
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
 
     // methods for User
-
-
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
     }
@@ -63,25 +60,20 @@ public class RootRepository {
 
     public Optional<User> getUserByToken(Token token) {return userDao.findByToken(token);}
 
-
-
     public Optional<User> getUserByRole(String role) {return userDao.getByRole(role);}
 
     public void deleteUser(int id) {userDao.deleteUserById(id);}
 
     // methods for Admin
-
     public void saveAdmin(Admin admin) {
         userDao.save(admin);
         profileDao.save(admin.getProfile());
     }
 
     // methods for Profile
-
     public Optional<Profile> getProfileByUsername(String username) {return profileDao.findByUserName(username);}
 
     // methods for Token
-
     public void saveToken(Token token) {tokenDao.save(token);}
 
     public Optional<Token> getTokenByUserId(int userId) {return tokenDao.findByUserId(userId);}
@@ -89,7 +81,6 @@ public class RootRepository {
     public void revokeTokenFromUser(User user) {tokenDao.revokeToken(user);}
 
     // methods for Bank Account
-
     public Optional<BankAccount> findBankAccountByUserId (int id) {return bankAccountDao.findById(id);}
 
     public List<BankAccount> getAllBankAccounts() {return bankAccountDao.getAll();}
@@ -101,7 +92,6 @@ public class RootRepository {
     public Optional<BankAccount> findBankAccountByIban(String iban) {return bankAccountDao.findByIban(iban);}
 
     // methods for Transaction
-
     public Optional<Transaction> findTransactionById (int id) {return transactionDao.findById(id);}
 
     public void saveTransaction(Transaction transaction) {transactionDao.save(transaction);}
@@ -109,8 +99,11 @@ public class RootRepository {
     public List<Transaction> getAllTransactions() {return transactionDao.getAll();}
 
     // methods for Asset
-
     public void saveAsset(Asset asset) {assetDao.save(asset);}
+
+    public void saveAssets(List<Asset> assetList) {
+        assetDao.saveAllAssets(assetList);
+    }
 
     public Optional<Asset> findAssetByCode (String code) {return assetDao.findByCode(code);}
 
@@ -119,14 +112,14 @@ public class RootRepository {
     public List<Asset> getAllAssets() {return assetDao.getAll();}
 
     // methods for Portfolio
-
     public double getQuantityOfAssetInPortfolio(String assetCode, int userId) {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
+    public Portfolio getPortfolioOfCustomer(Customer customer) {
+        return portfolioDao.getPortfolio(customer);
+    }
 
     // getters & setters
-
-
     public UserDao getUserDao() {
         return userDao;
     }

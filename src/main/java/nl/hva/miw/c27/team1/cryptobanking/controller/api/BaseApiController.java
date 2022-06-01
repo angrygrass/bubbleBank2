@@ -1,5 +1,8 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import nl.hva.miw.c27.team1.cryptobanking.model.Portfolio;
+import nl.hva.miw.c27.team1.cryptobanking.service.PortfolioService;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.NoSuchUserException;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.UserExistsException;
@@ -13,13 +16,21 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public abstract class BaseApiController {
 
+    @JsonIgnore
     private final Logger logger = LogManager.getLogger(BaseApiController.class);
 
     protected UserService userService;
+    protected PortfolioService portfolioService;
 
     public BaseApiController(UserService userService) {
         super();
         this.userService = userService;
+        logger.info("New BaseApiController");
+    }
+
+    public BaseApiController(PortfolioService portfolioService) {
+        super();
+        this.portfolioService = portfolioService;
         logger.info("New BaseApiController");
     }
 
