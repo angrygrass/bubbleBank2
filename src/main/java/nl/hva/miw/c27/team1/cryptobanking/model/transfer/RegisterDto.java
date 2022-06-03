@@ -13,7 +13,6 @@ import java.util.Date;
  */
 public class RegisterDto {
 
-//    private int userId;
     private String firstName;
     private String prefix;
     private String surName;
@@ -33,7 +32,6 @@ public class RegisterDto {
 
     public RegisterDto(Customer customer) {
         super();
-//        this.userId = customer.getId();
         this.firstName = customer.getFirstName();
         this.prefix = customer.getPrefix();
         this.surName = customer.getSurName();
