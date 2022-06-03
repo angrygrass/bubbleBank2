@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 // class needs db queries
@@ -117,6 +118,11 @@ public class RootRepository {
     // methods for Asset history
     public void saveAssetHistory(List<AssetHistoryDto> assetHistory) {
         assetHistoryDao.saveAssetHistoryList(assetHistory);
+    }
+
+    public Optional<List> getAllHistoricAssetsDatabase(String assetName, int numberDays) {
+        System.out.println("testroot");
+        return assetHistoryDao.getAllHistoricAssets(assetName, numberDays);
     }
 
 

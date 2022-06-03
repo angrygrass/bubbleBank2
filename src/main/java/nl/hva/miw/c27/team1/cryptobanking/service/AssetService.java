@@ -30,4 +30,8 @@ public class AssetService {
         return rootRepository.findAssetByName(assetName);
     }
 
+    public Optional<List> getHistoricRates(String assetName, int numberDays) {
+        return rootRepository.getAllHistoricAssetsDatabase(assetName, numberDays);
+    }
+
 }
