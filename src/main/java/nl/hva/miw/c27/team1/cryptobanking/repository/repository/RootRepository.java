@@ -124,7 +124,7 @@ public class RootRepository {
 
 
     // methods for Portfolio
-    public double getQuantityOfAssetInPortfolio(String assetCode, int userId) {
+    public Optional<Double> getQuantityOfAssetInPortfolio(String assetCode, int userId) {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
@@ -135,6 +135,9 @@ public class RootRepository {
         System.out.println("rr getporftolioi");return portfolioDao.findById(id);}
 
     public void savePortfolio(Portfolio portfolio) {portfolioDao.save(portfolio);}
+
+    public void editPortfolio(String assetCode, int userId, double quantity) {portfolioDao.editPortfolio(assetCode,
+            userId, quantity);}
 
     // getters & setters
     public UserDao getUserDao() {

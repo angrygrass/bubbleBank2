@@ -41,13 +41,13 @@ public class JdbcPortfolioDao implements PortfolioDao {
     }
 
     @Override
-    public double findQuantityOfAssetInPortfolio (String assetCode, int userId) {
+    public Optional<Double> findQuantityOfAssetInPortfolio (String assetCode, int userId) {
         String sql = "SELECT quantityOfAsset FROM assetofcustomer WHERE assetCode = ? AND userId = ?;";
         try {
-            return jdbcTemplate.queryForObject(sql, Double.class, assetCode, userId);
+            return Optional.of(jdbcTemplate.queryForObject(sql, Double.class, assetCode, userId));
         } catch (EmptyResultDataAccessException e) {
             e.getMessage();
-            return 0.0;
+            return null;
         }
     }
 
@@ -102,13 +102,17 @@ public class JdbcPortfolioDao implements PortfolioDao {
         } else {
             return Optional.of(portfolioList.get(0));
         }
-
-
-
-
-
-
     }
+
+    public void editPortfolio(String assetCode, int userId, double quantity) {
+
+
+            String sql = "UPDATE `assetofcustomer` SET quantityofasset = ? WHERE userId = ? AND assetCode =?;";
+            jdbcTemplate.update(sql, quantity, userId, assetCode);
+        }
+
+
+
 
     private class PortfolioRowMapper implements RowMapper<Portfolio> {
         @Override
