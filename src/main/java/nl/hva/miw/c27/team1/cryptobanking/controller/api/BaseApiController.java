@@ -2,6 +2,7 @@ package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.Portfolio;
+import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
 import nl.hva.miw.c27.team1.cryptobanking.service.PortfolioService;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.NoSuchUserException;
@@ -21,6 +22,7 @@ public abstract class BaseApiController {
 
     protected UserService userService;
     protected PortfolioService portfolioService;
+    protected AssetService assetService;
 
     public BaseApiController(UserService userService) {
         super();
@@ -31,6 +33,12 @@ public abstract class BaseApiController {
     public BaseApiController(PortfolioService portfolioService) {
         super();
         this.portfolioService = portfolioService;
+        logger.info("New BaseApiController");
+    }
+
+    public BaseApiController(AssetService assetService) {
+        super();
+        this.assetService = assetService;
         logger.info("New BaseApiController");
     }
 
