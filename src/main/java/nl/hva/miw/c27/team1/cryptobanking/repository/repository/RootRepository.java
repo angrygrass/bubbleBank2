@@ -131,6 +131,11 @@ public class RootRepository {
         return portfolioDao.getPortfolio(customer);
     }
 
+    public Optional<Portfolio> getPortfolioByCustomerId(int id) {
+        System.out.println("rr getporftolioi");return portfolioDao.findById(id);}
+
+    public void savePortfolio(Portfolio portfolio) {portfolioDao.save(portfolio);}
+
     // getters & setters
     public UserDao getUserDao() {
         return userDao;

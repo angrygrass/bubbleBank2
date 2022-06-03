@@ -1,6 +1,8 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
+import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
+import nl.hva.miw.c27.team1.cryptobanking.model.Portfolio;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InsufficientBankCryptoBalanceException;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InsufficientCustomerBalanceException;
@@ -8,6 +10,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class BuyAssetService {
@@ -30,10 +35,37 @@ public class BuyAssetService {
             throw new InsufficientBankCryptoBalanceException();
         }
 
+
         //todo - add quantity of asset to customer's portfolio, subtract quantity of asset from bank's portfolio,
         //todo - add price of assets to bank's balance, subtract price of assets from customer's balance,
         //todo - and add corresponding methods in RootRepository, PortfolioDao and BankAccountDao interfaces and classes
 
+        Portfolio portfolio = rootRepository.getPortfolioByCustomerId(userId).orElse(new Portfolio());
+
+        HashMap<Asset, Double> assetsOfUser = portfolio.getAssetsOfUser();
+        boolean edited = false;
+        for(Map.Entry<Asset, Double> entry : assetsOfUser.entrySet()) {
+            if (entry.getKey().getAssetCode().equals(assetCode)) {
+                entry.setValue(entry.getValue() + quantity);
+                edited = true;
+
+
+            // do what you have to do here
+            // In your case, another loop.
+        }
+
+
+            }
+        if (edited == false) {
+            assetsOfUser.put(rootRepository.findAssetByCode(assetCode).orElse(null), quantity);
+        }
+        portfolio.setAssetsOfUser(assetsOfUser);
+        portfolio.setCustomer((Customer) rootRepository.getUserById(userId).orElse(null));
+
+        System.out.println("is het hier?");
+
+        System.out.println(portfolio.toString());
+        rootRepository.savePortfolio(portfolio);
 
 
 
@@ -59,13 +91,12 @@ public class BuyAssetService {
 
     }
     private boolean checkBankCryptoBalance(String assetCode, double quantity) {
-        Customer bank = (Customer) rootRepository.getUserById(1).orElse(null);
-        System.out.println(bank.getPortfolio().toString());
-        bank.setPortfolio(rootRepository.getPortfolioOfCustomer(bank));
-        if (bank.getPortfolio().getAssetsOfUser() == null) {return false;}
 
-        else if (quantity >
-                bank.getPortfolio().getAssetsOfUser().get(rootRepository.findAssetByCode(assetCode).orElse(null))) {
+        double bankBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, 1);
+
+
+        if (quantity >
+                bankBalance) {
             return false;
         } else {
             return true;

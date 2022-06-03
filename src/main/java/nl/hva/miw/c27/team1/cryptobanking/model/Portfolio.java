@@ -13,20 +13,20 @@ public class Portfolio {
 
     private double valueOfOwnedAssets;
     private String currencyPreference;
-    private Map<Asset, Double> assetsOfUser;
+    private HashMap<Asset, Double> assetsOfUser;
     private Customer customer;
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Portfolio.class);
 
-    public Portfolio(String currencyPreference, Map<Asset, Double> assetsOfUser, Customer customer) {
+    public Portfolio(String currencyPreference, HashMap<Asset, Double> assetsOfUser, Customer customer) {
         this.currencyPreference = currencyPreference;
         this.assetsOfUser = assetsOfUser;
         this.customer = customer;
         logger.info("New complete Portfolio");
     }
 
-    public Portfolio(Map<Asset, Double> assetsOfUser, Customer customer) {
+    public Portfolio(HashMap<Asset, Double> assetsOfUser, Customer customer) {
         this("EUR", assetsOfUser, customer);
         logger.info("New Portfolio with HashMap");
     }
@@ -60,7 +60,7 @@ public class Portfolio {
     }
 
 
-    public Map<Asset, Double> getAssetsOfUser() {
+    public HashMap<Asset, Double> getAssetsOfUser() {
 
 
 
