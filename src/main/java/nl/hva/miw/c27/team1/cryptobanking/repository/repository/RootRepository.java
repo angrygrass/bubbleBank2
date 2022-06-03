@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,12 +24,13 @@ public class RootRepository {
     private final TransactionDao transactionDao;
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
+    private final AssetHistoryDao assetHistoryDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao) {
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -36,6 +38,7 @@ public class RootRepository {
         this.transactionDao = transactionDao;
         this.assetDao = assetDao;
         this.portfolioDao = portfolioDao;
+        this.assetHistoryDao = assetHistoryDao;
         logger.info("New RootRepository");
     }
 
@@ -110,6 +113,12 @@ public class RootRepository {
     public Optional<Asset> findAssetByName (String name) {return assetDao.findByName(name);}
 
     public List<Asset> getAllAssets() {return assetDao.getAll();}
+
+    // methods for Asset history
+    public void saveAssetHistory(List<AssetHistoryDto> assetHistory) {
+        assetHistoryDao.saveAssetHistoryList(assetHistory);
+    }
+
 
     // methods for Portfolio
     public double getQuantityOfAssetInPortfolio(String assetCode, int userId) {

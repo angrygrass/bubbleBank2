@@ -54,7 +54,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
         }
     }
 
-    private PreparedStatement inserPortfolioStatement(Portfolio portfolio, Connection connection) throws SQLException {
+    private PreparedStatement insertPortfolioStatement(Portfolio portfolio, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
                 "insert into assetofcustomer (assetCode, userId, quantityOfAsset) values (?, ?, ?)");
         for(Map.Entry<Asset, Double>  map : portfolio.getAssetsOfUser().entrySet()) {
@@ -67,7 +67,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
 
     @Override
     public void save(Portfolio portfolio) {
-        jdbcTemplate.update(connection -> inserPortfolioStatement(portfolio, connection));
+        jdbcTemplate.update(connection -> insertPortfolioStatement(portfolio, connection));
     }
 
     @Override
@@ -105,8 +105,6 @@ public class JdbcPortfolioDao implements PortfolioDao {
             String assetCode = resultSet.getString("assetCode");
             int userId = resultSet.getInt("userId");
             double quantityOfAsset = resultSet.getDouble("quantityOfAsset");
-            // perhaps method here that links assetCode to assetName, and then give 3 parameters to
-            // the asset constructor instead of 2?
             assetsOfUser.put(new Asset(assetCode),quantityOfAsset);
             JdbcUserDao jdbcUserDao = new JdbcUserDao(new JdbcTemplate());
             // check of casting is done correctly

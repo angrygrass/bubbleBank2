@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidAssetRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,8 @@ public class JdbcAssetDao implements AssetDao {
                 asset.getRateInEuros());
     }
 
-    // check if correct
     public void saveAllAssets(List<Asset> assetList) {
-         String sql = "UPDATE 'asset' SET assetName = ?, rateInEuros = ? WHERE assetCode = ?;";
+         String sql = "UPDATE asset SET assetName = ?, rateInEuro = ? WHERE assetCode = ?;";
         for (Asset assets : assetList) {
             jdbcTemplate.update(sql, assets.getAssetName(), assets.getRateInEuros(), assets.getAssetCode());
         }
@@ -45,8 +45,7 @@ public class JdbcAssetDao implements AssetDao {
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
         } catch (EmptyResultDataAccessException e) {
-            e.getMessage();
-            return null;
+            throw new InvalidAssetRequest();
         }
     }
 
@@ -54,7 +53,16 @@ public class JdbcAssetDao implements AssetDao {
     @Override
     public Optional<Asset> findByName(String name) {
         String sql = "SELECT * FROM asset WHERE assetName = ?;";
-        return Optional.of(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
+
+
+
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
+        } catch (EmptyResultDataAccessException e) {
+            throw new InvalidAssetRequest();
+        }
+
+
     }
 
     @Override
