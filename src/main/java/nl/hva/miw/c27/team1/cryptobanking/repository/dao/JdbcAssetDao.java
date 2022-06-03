@@ -53,15 +53,11 @@ public class JdbcAssetDao implements AssetDao {
     @Override
     public Optional<Asset> findByName(String name) {
         String sql = "SELECT * FROM asset WHERE assetName = ?;";
-
-
-
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
         } catch (EmptyResultDataAccessException e) {
             throw new InvalidAssetRequest();
         }
-
 
     }
 
