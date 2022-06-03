@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Portfolio {
 
@@ -80,5 +81,16 @@ public class Portfolio {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public String toString() {
+        return "Portfolio{" +
+                "valueOfOwnedAssets=" + valueOfOwnedAssets +
+                ", currencyPreference='" + currencyPreference + '\'' +
+                ", assetsOfUser=" + assetsOfUser +
+                ", customer=" + customer +
+                ", logger=" + logger +
+                '}';
     }
 }

@@ -52,12 +52,15 @@ public class RootRepository {
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
 
+
     // methods for User
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
     }
 
     public Optional <User> getUserById(int id) {
+
+
         return userDao.findById(id);
     }
 

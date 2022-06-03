@@ -47,6 +47,10 @@ public class BuyAssetService {
 
     private boolean checkCustomerBalance(int userId, String assetCode, double quantity) {
         Customer customer = (Customer) rootRepository.getUserById(userId).orElse(null);
+        customer.setBankAccount(rootRepository.findBankAccountByUserId(userId).orElse(null));
+        System.out.println(rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() * quantity);
+        System.out.println(customer.getBankAccount().getIban());
+        System.out.println(customer.getBankAccount().getBalanceInEuros());
         if (rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() * quantity >
                 customer.getBankAccount().getBalanceInEuros()) {
             return false;
@@ -56,12 +60,16 @@ public class BuyAssetService {
     }
     private boolean checkBankCryptoBalance(String assetCode, double quantity) {
         Customer bank = (Customer) rootRepository.getUserById(1).orElse(null);
-        assert bank != null;
-        if (quantity >
+        System.out.println(bank.getPortfolio().toString());
+        bank.setPortfolio(rootRepository.getPortfolioOfCustomer(bank));
+        if (bank.getPortfolio().getAssetsOfUser() == null) {return false;}
+
+        else if (quantity >
                 bank.getPortfolio().getAssetsOfUser().get(rootRepository.findAssetByCode(assetCode).orElse(null))) {
             return false;
+        } else {
+            return true;
         }
-        return true;
 
     }
 
