@@ -16,6 +16,8 @@ public interface PortfolioDao {
 
     void editPortfolio(String assetCode, int userId, double quantity);
 
+    Optional<Boolean> isPresentInPortfolio(String assetCode, int userId);
+
 
 
 

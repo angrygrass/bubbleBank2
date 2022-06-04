@@ -93,7 +93,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
     }
 
     public Optional<Portfolio> findById(int id) {
-        System.out.println("portfoliodao find by id");
+
         List<Portfolio> portfolioList =
                 jdbcTemplate.query("SELECT * FROM assetofcustomer WHERE userId = ?",
                         new PortfolioRowMapper(), id);
@@ -111,16 +111,33 @@ public class JdbcPortfolioDao implements PortfolioDao {
             jdbcTemplate.update(sql, quantity, userId, assetCode);
         }
 
+    public Optional<Boolean> isPresentInPortfolio(String assetCode, int userId) {
+        String sql = "select * from assetofcustomer where assetCode = ? and userId = ?;";
+        try {
+            List<Portfolio> portfolioList = jdbcTemplate.query(sql, new PortfolioRowMapper(),
+                                assetCode, userId
+                                );
 
+            if (!portfolioList.isEmpty())
+            {return Optional.of(true);
+            }
+            else {return Optional.of(false);
+            }
+
+        } catch (EmptyResultDataAccessException e) {
+            e.getMessage();
+            return Optional.empty();
+        }
+
+
+
+
+    }
 
 
     private class PortfolioRowMapper implements RowMapper<Portfolio> {
         @Override
         public Portfolio mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-
-            System.out.println("kom je hier");
-
-
 
 
             HashMap<Asset, Double> assetsOfUser = new HashMap<>();
@@ -137,8 +154,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
             Portfolio portfolio =
                     new Portfolio("EUR", assetsOfUser, new Customer(0, null, null, null, 0, null, null
                     ,null, null, null, null, null, null, null, null));
-            System.out.println("Portfolio rowmap");
-            System.out.println(portfolio.getAssetsOfUser().toString());
+
             return portfolio;
         }
     }
