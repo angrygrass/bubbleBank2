@@ -2,16 +2,14 @@ package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.NewsDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 // class needs db queries
@@ -26,12 +24,13 @@ public class RootRepository {
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
     private final AssetHistoryDao assetHistoryDao;
+    private final NewsDao newsDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao) {
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, NewsDao newsDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -40,6 +39,7 @@ public class RootRepository {
         this.assetDao = assetDao;
         this.portfolioDao = portfolioDao;
         this.assetHistoryDao = assetHistoryDao;
+        this.newsDao = newsDao;
         logger.info("New RootRepository");
     }
 
@@ -132,6 +132,11 @@ public class RootRepository {
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
         return portfolioDao.getPortfolio(customer);
+    }
+
+    // methods for newsCatcherService
+    public void saveArticles(List<NewsDto> articleList) {
+        newsDao.saveArticles(articleList);
     }
 
     // getters & setters
