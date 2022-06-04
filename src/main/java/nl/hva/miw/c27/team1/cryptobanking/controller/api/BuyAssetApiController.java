@@ -30,10 +30,10 @@ public class BuyAssetApiController extends BaseApiController {
         logger.info("New BuyAssetApiController");
     }
 
-    @GetMapping("/welcome")
+    @GetMapping("/buyfrombank")
     public ModelAndView welcome() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("buyasset.html");
+        modelAndView.setViewName("buyfrombank.html");
             //
         return modelAndView;
     }
@@ -43,6 +43,8 @@ public class BuyAssetApiController extends BaseApiController {
     @PostMapping("/buyfrombank")
     public String buyAsset(@RequestBody BuyAssetDto buyAssetDto)
     {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("buyfrombank.html");
 
         return buyAssetService.buyFromBank(buyAssetDto.getUserid(), buyAssetDto.getAssetCode(), buyAssetDto.getQuantity());
 

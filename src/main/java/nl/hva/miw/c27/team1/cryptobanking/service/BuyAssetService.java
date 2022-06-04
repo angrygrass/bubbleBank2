@@ -27,10 +27,9 @@ public class BuyAssetService {
 
     public String buyFromBank(int userId, String assetCode, double quantity) {
 
-        //calculate transaction costs in euro
+        //calculate transaction costs in euro - ATTENTION: TRANSACTIONCOSTS IN THE DATABASE IS A PERCENTAGE!
         double transactionCostsInEuros = rootRepository.getTransactionCosts() * quantity *
                 rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() / 100;
-
 
         //check if customer bank account balance and bank crypto balance are sufficient for the transaction
 
@@ -41,58 +40,37 @@ public class BuyAssetService {
             throw new InsufficientBankCryptoBalanceException();
         }
 
-
-
-        //load customer portfolio
-
-        Portfolio portfolio = rootRepository.getPortfolioByCustomerId(userId).orElse(new Portfolio());
-        HashMap<Asset, Double> assetsOfUser = portfolio.getAssetsOfUser();
-
-
         //check if asset is already in customer's portfolio - if not save the new asset + amount, else update current amount
-
-        if (!checkAssetInPortfolio(assetCode, userId)) {
-            assetsOfUser.put(rootRepository.findAssetByCode(assetCode).orElse(null), quantity);
-            portfolio.setAssetsOfUser(assetsOfUser);
-            portfolio.setCustomer((Customer) rootRepository.getUserById(userId).orElse(null));
-            rootRepository.savePortfolio(portfolio);
-        } else {
-            double customerBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
-            rootRepository.editPortfolio(assetCode, userId, customerBalance + quantity);
-        }
+        editCustomerPortfolio(assetCode, userId, quantity);
 
         // edit the bank's portfolio (subtracting the quantity of the bought asset and adding the transaction costs
         // to the bank's dollar balance (after conversion of course)
-
         editBankPortfolio (assetCode, quantity, transactionCostsInEuros);
 
-
         // edit customer and bank's bank account balance
-
         editCustomerBankAccount(assetCode, quantity, userId, transactionCostsInEuros);
 
         editBankBankAccount(assetCode, quantity);
-
         // save transaction to database
 
-        rootRepository.saveTransaction(new Transaction(1, quantity, rootRepository.findAssetByCode(assetCode).
-                orElse(null).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, userId, 1,
-                assetCode));
-
+        saveTransaction(assetCode, quantity, userId, transactionCostsInEuros);
 
 
         return "Succesfully bought " + quantity + " " + rootRepository.findAssetByCode(assetCode).orElse(null).
                 getAssetName() + " for €" + quantity *
                 rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() + ", of which €" +
                 transactionCostsInEuros + " are transaction costs.";
+    }
+
+    private void saveTransaction (String assetCode, double quantity, int userId, double transactionCostsInEuros) {
+        rootRepository.saveTransaction(new Transaction(1, quantity, rootRepository.findAssetByCode(assetCode).
+                orElse(null).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, userId, 1,
+                assetCode));
 
 
     }
 
     private void editBankPortfolio (String assetCode, double quantity, double transactionCosts) {
-
-
-
 
         double bankBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, 1).orElse(0.0);
         rootRepository.editPortfolio(assetCode, 1, bankBalance - quantity);
@@ -103,6 +81,23 @@ public class BuyAssetService {
 
 
         rootRepository.editPortfolio("usd", 1, bankDollarBalance + transactionCostsInDollar);
+
+    }
+
+    private void editCustomerPortfolio(String assetCode, int userId, double quantity) {
+
+        Portfolio portfolio = rootRepository.getPortfolioByCustomerId(userId).orElse(new Portfolio());
+        HashMap<Asset, Double> assetsOfUser = portfolio.getAssetsOfUser();
+
+        if (!checkAssetInPortfolio(assetCode, userId)) {
+            assetsOfUser.put(rootRepository.findAssetByCode(assetCode).orElse(null), quantity);
+            portfolio.setAssetsOfUser(assetsOfUser);
+            portfolio.setCustomer((Customer) rootRepository.getUserById(userId).orElse(null));
+            rootRepository.savePortfolio(portfolio);
+        } else {
+            double customerBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
+            rootRepository.editPortfolio(assetCode, userId, customerBalance + quantity);
+        }
 
     }
 
