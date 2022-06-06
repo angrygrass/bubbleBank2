@@ -2,7 +2,7 @@ package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
-import nl.hva.miw.c27.team1.cryptobanking.model.transfer.NewsDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RapidNewsDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,13 +24,13 @@ public class RootRepository {
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
     private final AssetHistoryDao assetHistoryDao;
-    private final NewsDao newsDao;
+    private final RapidNewsDao newsDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, NewsDao newsDao) {
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -134,8 +134,8 @@ public class RootRepository {
         return portfolioDao.getPortfolio(customer);
     }
 
-    // methods for newsCatcherService
-    public void saveArticles(List<NewsDto> articleList) {
+    // methods for RapidNewsService
+    public void saveArticles(List<RapidNewsDto> articleList) {
         newsDao.saveArticles(articleList);
     }
 

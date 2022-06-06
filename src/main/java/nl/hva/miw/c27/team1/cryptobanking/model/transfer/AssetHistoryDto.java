@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 
 /**
- * Dto required to save asset history in the database
+ * Dto required to save asset history in the database.
  */
 public class AssetHistoryDto {
 

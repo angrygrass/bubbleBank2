@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import nl.hva.miw.c27.team1.cryptobanking.model.transfer.NewsDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RapidNewsDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,17 +17,13 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class RapidApiNewsService {
 
     private RootRepository rootRepository;
-    private List<NewsDto> articleList;
-    private List<String> assetNames = Arrays.asList("bitcoin", "solana","ethereum","flow","cardano","dai",
-            "apecoin","tether","gas","tron","polkadot","waves","loopring","dogecoin","tezos","chiliz","eos",
-            "uma","radix","kusama");
+    private List<RapidNewsDto> articleList;
     private int id = 1;
 
     @JsonIgnore
@@ -39,12 +35,13 @@ public class RapidApiNewsService {
         logger.info("new News");
     }
 
-    public RapidApiNewsService() throws MalformedURLException {
+    public RapidApiNewsService() {
     }
 
     /**
-     * Calls external news API and gathers 5 recent articles on crypto topics. The API services expects an API key,
-     * so this is added to the header of the request through .setRequestProperty
+     * Calls external news API and gathers 5 recent articles on crypto topics. The API service expects an API key,
+     * so this is added to the header of the request through .setRequestProperty.
+     * Not part of requirements.
      */
     @Scheduled(fixedRate = 90000000)
     public void getArticles() throws IOException {
@@ -63,7 +60,7 @@ public class RapidApiNewsService {
                     articleList = mapper.readValue(sourceString, new TypeReference<>(){});
                     connection.setConnectTimeout(10000);
                     connection.setReadTimeout(10000);
-                        for (NewsDto articleLink : articleList) {
+                        for (RapidNewsDto articleLink : articleList) {
                             articleLink.setId(id);
                             id++;
                         }
