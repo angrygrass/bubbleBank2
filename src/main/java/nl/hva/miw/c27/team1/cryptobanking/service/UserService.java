@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
+import nl.hva.miw.c27.team1.cryptobanking.model.Countries;
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
@@ -10,15 +11,11 @@ import org.apache.logging.log4j.Logger;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * This class lies between the UserApiController class and the rootRepository.
@@ -38,7 +35,13 @@ public class UserService {
     }
 
     public User register(Customer customer) {
-       if (!checkAge(customer)) {
+        // not very clean code. Perhaps do isEmpty check in frontend?
+        if (customer.getFirstName().isEmpty() || customer.getSurName().isEmpty() || customer.getStreetName().isEmpty()
+                || customer.getHouseNumber().isEmpty() || customer.getZipCode().isEmpty()
+                || customer.getCountry().isEmpty()) {
+            throw new RegistrationFailedExceptionFieldEmpty();
+        }
+       if (!checkIfOver18(customer)) {
             throw new RegistrationFailedExceptionAge();
        }
         if (!checkBsn(customer)) {
@@ -46,6 +49,9 @@ public class UserService {
         }
         if(!checkZipCode(customer)) {
             throw new RegistrationFailedExceptionZipCode();
+        }
+        if (!checkCountry(customer)) {
+            throw new RegistrationFailedExceptionCountry();
         }
         if (!checkIban(customer)) {
             throw new RegistrationFailedExceptionIban();
@@ -58,7 +64,6 @@ public class UserService {
         }
         if (!checkUserName(customer)) {
             throw new RegistrationFailedExceptionUsername();
-
         }
         rootRepository.saveCustomer(customer);
         return customer;
@@ -73,7 +78,7 @@ public class UserService {
                 .toLocalDate();
     }
 
-    public boolean checkAge(User user) {
+    public boolean checkIfOver18(User user) {
         boolean over18 = false;
         Date birthDayDateFormat = user.getBirthDate();
         LocalDate birthDayLocalDateFormat = convertToLocalDateViaInstant(birthDayDateFormat);
@@ -120,6 +125,16 @@ public class UserService {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public boolean checkCountry(Customer customer) {
+        boolean correctCountry = false;
+        for (Countries country : Countries.values()) {
+            if (Objects.equals(country.toString(), customer.getCountry())) {
+                correctCountry = true;
+            }
+        }
+        return correctCountry;
     }
 
     public boolean checkIban(Customer customer) {
