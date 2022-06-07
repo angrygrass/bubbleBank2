@@ -5,6 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * JsonProperties are used to map property names of JSON keys during serialization
+ * and deserialization, in order to take only properties from the GET request
+ * response body that is required to make an Asset object.
+ */
 public class Asset {
 
     @JsonProperty("id")
@@ -17,7 +22,7 @@ public class Asset {
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Asset.class);
 
-    public Asset(String assetName, String assetCode, double rateInEuros) {
+    public Asset(String assetCode, String assetName, double rateInEuros) {
         this.assetName = assetName;
         this.assetCode = assetCode;
         this.rateInEuros = rateInEuros;
@@ -31,7 +36,6 @@ public class Asset {
     }
 
     public Asset() {
-        logger.info("Empty Asset");
     }
 
     public String getAssetCode() {

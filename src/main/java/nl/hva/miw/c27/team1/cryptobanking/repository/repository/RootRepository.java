@@ -1,14 +1,14 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RapidNewsDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +23,16 @@ public class RootRepository {
     private final TransactionDao transactionDao;
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
+    private final AssetHistoryDao assetHistoryDao;
+    private final RapidNewsDao newsDao;
+    private final TransactionCostsDao transactionCostsDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao) {
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
+    TransactionCostsDao transactionCostsDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -36,6 +40,9 @@ public class RootRepository {
         this.transactionDao = transactionDao;
         this.assetDao = assetDao;
         this.portfolioDao = portfolioDao;
+        this.assetHistoryDao = assetHistoryDao;
+        this.newsDao = newsDao;
+        this.transactionCostsDao = transactionCostsDao;
         logger.info("New RootRepository");
     }
 
@@ -49,12 +56,15 @@ public class RootRepository {
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
 
+
     // methods for User
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
     }
 
     public Optional <User> getUserById(int id) {
+
+
         return userDao.findById(id);
     }
 
@@ -111,13 +121,45 @@ public class RootRepository {
 
     public List<Asset> getAllAssets() {return assetDao.getAll();}
 
+    // methods for Asset history
+    public void saveAssetHistory(List<AssetHistoryDto> assetHistory) {
+        assetHistoryDao.saveAssetHistoryList(assetHistory);
+    }
+
+    public Optional<List> getAllHistoricAssetsDatabase(String assetName, int numberDays) {
+        System.out.println("testroot");
+        return assetHistoryDao.getAllHistoricAssets(assetName, numberDays);
+    }
+
+
     // methods for Portfolio
-    public double getQuantityOfAssetInPortfolio(String assetCode, int userId) {
+    public Optional<Double> getQuantityOfAssetInPortfolio(String assetCode, int userId) {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
         return portfolioDao.getPortfolio(customer);
     }
+
+    // methods for RapidNewsService
+    public void saveArticles(List<RapidNewsDto> articleList) {
+        newsDao.saveArticles(articleList);
+    }
+
+    public Optional<Portfolio> getPortfolioByCustomerId(int id) {
+        return portfolioDao.findById(id);}
+
+    public void savePortfolio(Portfolio portfolio) {portfolioDao.save(portfolio);}
+
+    public void editPortfolio(String assetCode, int userId, double quantity) {portfolioDao.editPortfolio(assetCode,
+            userId, quantity);}
+
+    public Optional<Boolean> assetPresentInPortfolio(String assetCode, int userId) {return portfolioDao.isPresentInPortfolio(
+            assetCode, userId);}
+
+    // methods for transaction costs
+
+    public double getTransactionCosts() {return transactionCostsDao.get();}
+    public void editTransactionCosts(double transactionCosts) {transactionCostsDao.edit(transactionCosts);}
 
     // getters & setters
     public UserDao getUserDao() {
