@@ -2,14 +2,13 @@ package nl.hva.miw.c27.team1.cryptobanking.repository.repository;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RapidNewsDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,13 +24,14 @@ public class RootRepository {
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
     private final AssetHistoryDao assetHistoryDao;
+    private final RapidNewsDao newsDao;
     private final TransactionCostsDao transactionCostsDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao,
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
     TransactionCostsDao transactionCostsDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
@@ -41,6 +41,7 @@ public class RootRepository {
         this.assetDao = assetDao;
         this.portfolioDao = portfolioDao;
         this.assetHistoryDao = assetHistoryDao;
+        this.newsDao = newsDao;
         this.transactionCostsDao = transactionCostsDao;
         logger.info("New RootRepository");
     }
@@ -125,6 +126,11 @@ public class RootRepository {
         assetHistoryDao.saveAssetHistoryList(assetHistory);
     }
 
+    public Optional<List> getAllHistoricAssetsDatabase(String assetName, int numberDays) {
+        System.out.println("testroot");
+        return assetHistoryDao.getAllHistoricAssets(assetName, numberDays);
+    }
+
 
     // methods for Portfolio
     public Optional<Double> getQuantityOfAssetInPortfolio(String assetCode, int userId) {
@@ -132,6 +138,11 @@ public class RootRepository {
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
         return portfolioDao.getPortfolio(customer);
+    }
+
+    // methods for RapidNewsService
+    public void saveArticles(List<RapidNewsDto> articleList) {
+        newsDao.saveArticles(articleList);
     }
 
     public Optional<Portfolio> getPortfolioByCustomerId(int id) {

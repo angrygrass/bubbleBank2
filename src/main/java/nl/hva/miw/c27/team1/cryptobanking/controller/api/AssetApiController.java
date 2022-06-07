@@ -11,14 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * End point that returns all the aoins and their current values to the customer.
  */
 @RestController
-@RequestMapping(value=("/assets_all"))
+@RequestMapping(value=("/assets"))
 public class AssetApiController extends BaseApiController {
 
     private final Logger logger = LogManager.getLogger(AssetApiController.class);
@@ -45,6 +44,18 @@ public class AssetApiController extends BaseApiController {
         Optional<Asset> optAsset = assetService.getRate(assetName);
         if (optAsset.isPresent()) {
             return ResponseEntity.ok().body(optAsset.get());
+        } else {
+            throw new InvalidAssetRequest();
+        }
+    }
+
+    @GetMapping(value="/history/{name}")
+    public ResponseEntity<List> getHistoricAssetRate(@PathVariable("name") String assetName,
+                                                     @RequestParam("chartdays") int numberDays,
+                                                     @RequestHeader(value="authorization") String authorization) {
+        Optional<List> optList = assetService.getHistoricRates(assetName, numberDays);
+        if (optList.isPresent()) {
+            return ResponseEntity.ok().body(optList.get());
         } else {
             throw new InvalidAssetRequest();
         }

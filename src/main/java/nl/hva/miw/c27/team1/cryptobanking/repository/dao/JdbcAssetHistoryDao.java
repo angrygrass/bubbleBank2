@@ -6,9 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JdbcAssetHistoryDao implements AssetHistoryDao {
@@ -34,7 +40,27 @@ public class JdbcAssetHistoryDao implements AssetHistoryDao {
         } catch (DataIntegrityViolationException e) {
             logger.info(e.getMessage());
         }
+    }
 
+    @Override
+    public Optional<List> getAllHistoricAssets(String assetCode, int numberDays) {
+        var currentDate = LocalDate.now();
+        var dateMinus = currentDate.minusDays(numberDays);
+        var sqlCurrentDate = java.sql.Date.valueOf(currentDate);
+        var sqlDateMinus = java.sql.Date.valueOf(dateMinus);
+        String sql = "select * FROM assetratehistory WHERE assetCode = '" + assetCode +
+                "' AND dateTime BETWEEN '" + sqlDateMinus + "' AND '" + sqlCurrentDate + "';";
+        List<AssetHistoryDto> assetHistoryDtoList = jdbcTemplate.query
+                (sql, new JdbcAssetHistoryDao.HistoricAssetRowMapper());
+        return Optional.of(assetHistoryDtoList);
+    }
+
+    private static class HistoricAssetRowMapper implements RowMapper<AssetHistoryDto> {
+        @Override
+        public AssetHistoryDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new AssetHistoryDto(rs.getObject(1, LocalDate.class),
+                    rs.getString("assetCode"), rs.getDouble("rate"));
+        }
     }
 
 
