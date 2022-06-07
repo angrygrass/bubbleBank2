@@ -43,7 +43,7 @@ public class JdbcAssetDao implements AssetDao {
     public Optional<Asset> findByCode(String assetCode) {
         String sql = "SELECT * FROM asset WHERE assetCode = ?;";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
         } catch (EmptyResultDataAccessException e) {
             throw new InvalidAssetRequest();
         }
@@ -54,7 +54,7 @@ public class JdbcAssetDao implements AssetDao {
     public Optional<Asset> findByName(String name) {
         String sql = "SELECT * FROM asset WHERE assetName = ?;";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
         } catch (EmptyResultDataAccessException e) {
             throw new InvalidAssetRequest();
         }

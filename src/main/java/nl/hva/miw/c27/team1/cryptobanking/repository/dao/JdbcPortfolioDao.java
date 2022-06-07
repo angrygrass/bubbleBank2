@@ -44,7 +44,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
     public Optional<Double> findQuantityOfAssetInPortfolio (String assetCode, int userId) {
         String sql = "SELECT quantityOfAsset FROM assetofcustomer WHERE assetCode = ? AND userId = ?;";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, Double.class, assetCode, userId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Double.class, assetCode, userId));
         } catch (EmptyResultDataAccessException e) {
             e.getMessage();
             return null;
@@ -151,11 +151,8 @@ public class JdbcPortfolioDao implements PortfolioDao {
             JdbcUserDao jdbcUserDao = new JdbcUserDao(jdbcTemplate);
             // check of casting is done correctly
 
-            Portfolio portfolio =
-                    new Portfolio("EUR", assetsOfUser, new Customer(0, null, null, null, 0, null, null
-                    ,null, null, null, null, null, null, null, null));
-
-            return portfolio;
+            return new Portfolio("EUR", assetsOfUser, new Customer(0, null, null, null, 0, null, null
+            ,null, null, null, null, null, null, null, null));
         }
     }
 

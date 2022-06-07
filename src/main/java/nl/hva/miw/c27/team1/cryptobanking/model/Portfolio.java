@@ -35,8 +35,6 @@ public class Portfolio {
 
         this(new HashMap<>(), new Customer());
 
-
-
         logger.info("New empty Portfolio");
     }
 
@@ -60,12 +58,7 @@ public class Portfolio {
     }
 
 
-    public HashMap<Asset, Double> getAssetsOfUser() {
-
-
-
-        return assetsOfUser;
-    }
+    public HashMap<Asset, Double> getAssetsOfUser() { return assetsOfUser; }
 
     public void setAssetsOfUser(HashMap<Asset, Double> assetsOfUser) {
         this.assetsOfUser = assetsOfUser;

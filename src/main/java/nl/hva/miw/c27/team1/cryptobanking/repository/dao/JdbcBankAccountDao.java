@@ -42,7 +42,7 @@ public class JdbcBankAccountDao implements BankAccountDao{
     public Optional<BankAccount> findById(int id) {
         String sql = "SELECT * FROM `bank account` WHERE userId = ?;";
         try {
-            return Optional.of(this.jdbcTemplate.queryForObject(sql,new BankAccountRowMapper(),id));
+            return Optional.ofNullable(this.jdbcTemplate.queryForObject(sql,new BankAccountRowMapper(),id));
         } catch (EmptyResultDataAccessException e){
             e.getMessage();
             return null;
@@ -78,7 +78,7 @@ public class JdbcBankAccountDao implements BankAccountDao{
     public Optional<BankAccount> findByIban(String Iban) {
         String sql = "SELECT * FROM `bank account` WHERE IBAN = ?;";
         try{
-            return Optional.of(jdbcTemplate.queryForObject(sql, new BankAccountRowMapper()));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new BankAccountRowMapper()));
         }catch(DataAccessException e){
             e.getMessage();
             return null;

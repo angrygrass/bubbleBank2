@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class BuyAssetService {
@@ -26,6 +27,7 @@ public class BuyAssetService {
     }
 
     public String buyFromBank(int userId, String assetCode, double quantity) {
+
 
         //calculate transaction costs in euro - ATTENTION: TRANSACTIONCOSTS IN THE DATABASE IS A PERCENTAGE!
         double transactionCostsInEuros = rootRepository.getTransactionCosts() * quantity *
@@ -56,15 +58,15 @@ public class BuyAssetService {
         saveTransaction(assetCode, quantity, userId, transactionCostsInEuros);
 
 
-        return "Succesfully bought " + quantity + " " + rootRepository.findAssetByCode(assetCode).orElse(null).
+        return "Succesfully bought " + quantity + " " + Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).orElse(null)).
                 getAssetName() + " for €" + quantity *
                 rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() + ", of which €" +
                 transactionCostsInEuros + " are transaction costs.";
     }
 
     private void saveTransaction (String assetCode, double quantity, int userId, double transactionCostsInEuros) {
-        rootRepository.saveTransaction(new Transaction(1, quantity, rootRepository.findAssetByCode(assetCode).
-                orElse(null).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, userId, 1,
+        rootRepository.saveTransaction(new Transaction(1, quantity, Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).
+                orElse(null)).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, userId, 1,
                 assetCode));
 
 
@@ -74,7 +76,7 @@ public class BuyAssetService {
 
         double bankBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, 1).orElse(0.0);
         rootRepository.editPortfolio(assetCode, 1, bankBalance - quantity);
-        double transactionCostsInDollar = transactionCosts * (1 / rootRepository.findAssetByCode("USD").orElse(null).
+        double transactionCostsInDollar = transactionCosts * (1 / Objects.requireNonNull(rootRepository.findAssetByCode("USD").orElse(null)).
                 getRateInEuros());
 
         double bankDollarBalance = rootRepository.getQuantityOfAssetInPortfolio("usd", 1).orElse(0.0);
@@ -105,9 +107,10 @@ public class BuyAssetService {
 
 
         BankAccount customerBankAccount = rootRepository.findBankAccountByUserId(userId).orElse(null);
+        assert customerBankAccount != null;
         customerBankAccount.setCustomer((Customer) rootRepository.getUserById(userId).orElse(null));
         customerBankAccount.setBalanceInEuros(customerBankAccount.getBalanceInEuros() - quantity *
-                rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() - transactionCosts);
+                Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).orElse(null)).getRateInEuros() - transactionCosts);
         rootRepository.updateBankAccountBalance(customerBankAccount);
 
     }
@@ -116,9 +119,10 @@ public class BuyAssetService {
     private void editBankBankAccount (String assetCode, double quantity) {
 
         BankAccount bankBankAccount = rootRepository.findBankAccountByUserId(1).orElse(null);
+        assert bankBankAccount != null;
         bankBankAccount.setCustomer((Customer) rootRepository.getUserById(1).orElse(null));
         bankBankAccount.setBalanceInEuros(bankBankAccount.getBalanceInEuros() + quantity *
-                rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros());
+                Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).orElse(null)).getRateInEuros());
         rootRepository.updateBankAccountBalance(bankBankAccount);
 
     }
@@ -126,15 +130,15 @@ public class BuyAssetService {
 
 
     private boolean checkCustomerBalance(int userId, String assetCode, double quantity, double transactionCosts) {
+
         Customer customer = (Customer) rootRepository.getUserById(userId).orElse(null);
+
+        assert customer != null;
         customer.setBankAccount(rootRepository.findBankAccountByUserId(userId).orElse(null));
 
 
-        if (rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() * quantity +
-                transactionCosts > customer.getBankAccount().getBalanceInEuros()) {
-            return false;
-        }
-        return true;
+        return !(Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).orElse(null)).getRateInEuros() * quantity +
+                transactionCosts > customer.getBankAccount().getBalanceInEuros());
 
     }
     private boolean checkBankCryptoBalance(String assetCode, double quantity) {
@@ -144,16 +148,12 @@ public class BuyAssetService {
         }
         double bankBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, 1).orElse(0.0);
 
-        if (quantity >
-                bankBalance) {
-            return false;
-        } else {
-            return true;
-        }
+        return !(quantity >
+                bankBalance);
 
     }
 
-    public boolean checkAssetInPortfolio(String assetCode, int userId) {
+    private boolean checkAssetInPortfolio(String assetCode, int userId) {
         return rootRepository.assetPresentInPortfolio(assetCode, userId).orElse(false);
     }
 

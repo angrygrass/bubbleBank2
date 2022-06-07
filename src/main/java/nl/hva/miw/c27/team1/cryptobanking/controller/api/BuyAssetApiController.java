@@ -34,7 +34,7 @@ public class BuyAssetApiController extends BaseApiController {
     public ModelAndView welcome() {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("buyfrombank.html");
-            //
+
         return modelAndView;
     }
 
