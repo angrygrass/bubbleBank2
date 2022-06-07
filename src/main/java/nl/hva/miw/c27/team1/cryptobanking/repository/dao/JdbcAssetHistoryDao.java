@@ -20,7 +20,7 @@ import java.util.Optional;
 public class JdbcAssetHistoryDao implements AssetHistoryDao {
 
     private JdbcTemplate jdbcTemplate;
-    public LocalDateTime currentDate;
+    private LocalDateTime currentDate;
 
     private final Logger logger = LoggerFactory.getLogger(JdbcAssetDao.class);
 

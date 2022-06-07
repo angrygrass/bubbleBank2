@@ -2,8 +2,10 @@ package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
+import nl.hva.miw.c27.team1.cryptobanking.model.BankAccount;
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Portfolio;
+import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,20 +31,23 @@ public class JdbcPortfolioDao implements PortfolioDao {
 
     private JdbcTemplate jdbcTemplate;
 
+
     @Autowired
     public JdbcPortfolioDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+
+
         logger.info("New JdbcPortfolioDao.");
     }
 
     @Override
-    public double findQuantityOfAssetInPortfolio (String assetCode, int userId) {
-        String sql = "SELECT * FROM assetofcustomer WHERE assetCode = ? AND userId = ?;";
+    public Optional<Double> findQuantityOfAssetInPortfolio (String assetCode, int userId) {
+        String sql = "SELECT quantityOfAsset FROM assetofcustomer WHERE assetCode = ? AND userId = ?;";
         try {
-            return jdbcTemplate.queryForObject(sql, Double.class, assetCode, userId);
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Double.class, assetCode, userId));
         } catch (EmptyResultDataAccessException e) {
             e.getMessage();
-            return 0.0;
+            return null;
         }
     }
 
@@ -88,9 +93,10 @@ public class JdbcPortfolioDao implements PortfolioDao {
     }
 
     public Optional<Portfolio> findById(int id) {
+
         List<Portfolio> portfolioList =
                 jdbcTemplate.query("SELECT * FROM assetofcustomer WHERE userId = ?",
-                        new JdbcPortfolioDao.PortfolioRowMapper(), id);
+                        new PortfolioRowMapper(), id);
         if (portfolioList.size() != 1) {
             return Optional.empty();
         } else {
@@ -98,19 +104,55 @@ public class JdbcPortfolioDao implements PortfolioDao {
         }
     }
 
-    private static class PortfolioRowMapper implements RowMapper<Portfolio> {
+    public void editPortfolio(String assetCode, int userId, double quantity) {
+
+
+            String sql = "UPDATE `assetofcustomer` SET quantityofasset = ? WHERE userId = ? AND assetCode =?;";
+            jdbcTemplate.update(sql, quantity, userId, assetCode);
+        }
+
+    public Optional<Boolean> isPresentInPortfolio(String assetCode, int userId) {
+        String sql = "select * from assetofcustomer where assetCode = ? and userId = ?;";
+        try {
+            List<Portfolio> portfolioList = jdbcTemplate.query(sql, new PortfolioRowMapper(),
+                                assetCode, userId
+                                );
+
+            if (!portfolioList.isEmpty())
+            {return Optional.of(true);
+            }
+            else {return Optional.of(false);
+            }
+
+        } catch (EmptyResultDataAccessException e) {
+            e.getMessage();
+            return Optional.empty();
+        }
+
+
+
+
+    }
+
+
+    private class PortfolioRowMapper implements RowMapper<Portfolio> {
         @Override
         public Portfolio mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-            Map<Asset, Double> assetsOfUser = new HashMap<>();
-            String assetCode = resultSet.getString("assetCode");
-            int userId = resultSet.getInt("userId");
-            double quantityOfAsset = resultSet.getDouble("quantityOfAsset");
-            assetsOfUser.put(new Asset(assetCode),quantityOfAsset);
-            JdbcUserDao jdbcUserDao = new JdbcUserDao(new JdbcTemplate());
+
+
+            HashMap<Asset, Double> assetsOfUser = new HashMap<>();
+            while (resultSet.next()) {
+                String assetCode = resultSet.getString("assetCode");
+                int userId = resultSet.getInt("userId");
+                double quantityOfAsset = resultSet.getDouble("quantityOfAsset");
+
+                assetsOfUser.put(new Asset(assetCode), quantityOfAsset);
+            }
+            JdbcUserDao jdbcUserDao = new JdbcUserDao(jdbcTemplate);
             // check of casting is done correctly
-            Portfolio portfolio =
-                    new Portfolio(assetsOfUser, (Customer) jdbcUserDao.findById(userId).orElse(null));
-            return portfolio;
+
+            return new Portfolio("EUR", assetsOfUser, new Customer(0, null, null, null, 0, null, null
+            ,null, null, null, null, null, null, null, null));
         }
     }
 

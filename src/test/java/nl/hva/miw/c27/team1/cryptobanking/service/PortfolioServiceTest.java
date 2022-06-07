@@ -26,7 +26,7 @@ class PortfolioServiceTest {
 
     private Customer testCustomer;
     private Asset testAsset;
-    private Map<Asset, Double> testMap;
+    private HashMap<Asset, Double> testMap;
     private Portfolio expectedPortfolio;
 
     @BeforeEach

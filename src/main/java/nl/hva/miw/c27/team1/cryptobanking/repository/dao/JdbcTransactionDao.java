@@ -31,7 +31,7 @@ public class JdbcTransactionDao implements TransactionDao{
 
     @Override
     public Optional<Transaction> findById(int id) {
-        String sql = "SELECT * FROM TransActionHistory WHERE transactionId = ?;";
+        String sql = "SELECT * FROM transactionhistory WHERE transactionId = ?;";
         try {
             return Optional.of(this.jdbcTemplate.queryForObject(sql, new JdbcTransactionDao.TransactionRowMapper(), id));
         } catch (EmptyResultDataAccessException e){
@@ -42,18 +42,18 @@ public class JdbcTransactionDao implements TransactionDao{
 
     @Override
     public void save(Transaction transaction) {
-        String sql = "INSERT INTO TransactionHistory(transactionId,quantity, rateInEuro,dateTime,transactionCosts,buyerId,sellerId,assetCode)" +
-                " VALUES (?,?,?,?,?,?,?,?);";
-        jdbcTemplate.update(sql,transaction.getTransactionId(),transaction.getTransactionValue(),transaction.getTransactionCostPercentage(),
-        transaction.getDateTimeOfTransaction(),transaction.getTransactionCosts(),transaction.getBuyer().getId(),transaction.getSeller().getId(),
-                transaction.getAsset().getAssetCode()
+        String sql = "INSERT INTO transactionhistory(quantity, rateInEuro,dateTime,transactionCosts,buyerId,sellerId,assetCode)" +
+                " VALUES (?,?,?,?,?,?,?);";
+        jdbcTemplate.update(sql,transaction.getQuantity(),transaction.getRateInEuro(),
+        transaction.getDateTime(),transaction.getTransactionCosts(),transaction.getBuyerId(),transaction.getSellerId(),
+                transaction.getAssetCode()
                 );
     }
 
     //Seller or Buyer histories ???
     @Override
     public List<Transaction> getAll() {
-        String sql = "SELECT * FROM TransActionHistory ;";
+        String sql = "SELECT * FROM transactionhistory ;";
         try{
             return this.jdbcTemplate.query(sql, new JdbcTransactionDao.TransactionRowMapper());
         }catch(DataAccessException e){
