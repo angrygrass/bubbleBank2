@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -55,7 +56,7 @@ public class JdbcUserDao implements UserDao {
     public void save(User user) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> insertUserStatement(user, connection), keyHolder);
-        int newKey = keyHolder.getKey().intValue();
+        int newKey = Objects.requireNonNull(keyHolder.getKey()).intValue();
         user.setId(newKey);
     }
 

@@ -40,9 +40,9 @@ public class JdbcBankAccountDao implements BankAccountDao{
 
     //Bank Account ??? is there space between Bank and account
     public Optional<BankAccount> findById(int id) {
-        String sql = "SELECT * FROM `Bank Account` WHERE userId = ?;";
+        String sql = "SELECT * FROM `bank account` WHERE userId = ?;";
         try {
-            return Optional.of(this.jdbcTemplate.queryForObject(sql,new BankAccountRowMapper(),id));
+            return Optional.ofNullable(this.jdbcTemplate.queryForObject(sql,new BankAccountRowMapper(),id));
         } catch (EmptyResultDataAccessException e){
             e.getMessage();
             return null;
@@ -54,7 +54,7 @@ public class JdbcBankAccountDao implements BankAccountDao{
     }
 
     public List<BankAccount> getAll() {
-        String sql = "SELECT * FROM `Bank Account`;";
+        String sql = "SELECT * FROM `bank account`;";
         try{
             return jdbcTemplate.query(sql, new BankAccountRowMapper());
         }catch(EmptyResultDataAccessException e){
@@ -64,21 +64,21 @@ public class JdbcBankAccountDao implements BankAccountDao{
     }
 
     public void updateBalance(BankAccount bankAccount) {
-        String sql = "UPDATE `Bank Account` SET balanceInEuro = ? WHERE userId = ?;";
+        String sql = "UPDATE `bank account` SET balanceInEuro = ? WHERE userId = ?;";
         jdbcTemplate.update(sql, bankAccount.getBalanceInEuros(),
                 bankAccount.getCustomer().getId());
     }
 
     public void deleteBankAccountByUserId(int id) {
-        String sql = "DELETE FROM `Bank Account` WHERE userId = ?;";
+        String sql = "DELETE FROM `bank account` WHERE userId = ?;";
         jdbcTemplate.update(sql, id);
     }
 
     @Override
     public Optional<BankAccount> findByIban(String Iban) {
-        String sql = "SELECT * FROM `Bank Account` WHERE IBAN = ?;";
+        String sql = "SELECT * FROM `bank account` WHERE IBAN = ?;";
         try{
-            return Optional.of(jdbcTemplate.queryForObject(sql, new BankAccountRowMapper()));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new BankAccountRowMapper()));
         }catch(DataAccessException e){
             e.getMessage();
             return null;

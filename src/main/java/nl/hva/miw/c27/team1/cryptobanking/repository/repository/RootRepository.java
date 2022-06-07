@@ -25,12 +25,14 @@ public class RootRepository {
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
     private final AssetHistoryDao assetHistoryDao;
+    private final TransactionCostsDao transactionCostsDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao) {
+    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao,
+    TransactionCostsDao transactionCostsDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -39,6 +41,7 @@ public class RootRepository {
         this.assetDao = assetDao;
         this.portfolioDao = portfolioDao;
         this.assetHistoryDao = assetHistoryDao;
+        this.transactionCostsDao = transactionCostsDao;
         logger.info("New RootRepository");
     }
 
@@ -52,12 +55,15 @@ public class RootRepository {
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
 
+
     // methods for User
     public List<User> getAllUsers() {
         return userDao.getAllUsers();
     }
 
     public Optional <User> getUserById(int id) {
+
+
         return userDao.findById(id);
     }
 
@@ -121,12 +127,28 @@ public class RootRepository {
 
 
     // methods for Portfolio
-    public double getQuantityOfAssetInPortfolio(String assetCode, int userId) {
+    public Optional<Double> getQuantityOfAssetInPortfolio(String assetCode, int userId) {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
         return portfolioDao.getPortfolio(customer);
     }
+
+    public Optional<Portfolio> getPortfolioByCustomerId(int id) {
+        return portfolioDao.findById(id);}
+
+    public void savePortfolio(Portfolio portfolio) {portfolioDao.save(portfolio);}
+
+    public void editPortfolio(String assetCode, int userId, double quantity) {portfolioDao.editPortfolio(assetCode,
+            userId, quantity);}
+
+    public Optional<Boolean> assetPresentInPortfolio(String assetCode, int userId) {return portfolioDao.isPresentInPortfolio(
+            assetCode, userId);}
+
+    // methods for transaction costs
+
+    public double getTransactionCosts() {return transactionCostsDao.get();}
+    public void editTransactionCosts(double transactionCosts) {transactionCostsDao.edit(transactionCosts);}
 
     // getters & setters
     public UserDao getUserDao() {

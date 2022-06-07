@@ -22,7 +22,7 @@ public class Asset {
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Asset.class);
 
-    public Asset(String assetName, String assetCode, double rateInEuros) {
+    public Asset(String assetCode, String assetName, double rateInEuros) {
         this.assetName = assetName;
         this.assetCode = assetCode;
         this.rateInEuros = rateInEuros;

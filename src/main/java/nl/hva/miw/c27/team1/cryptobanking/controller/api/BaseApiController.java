@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-public abstract class BaseApiController {
+public abstract class  BaseApiController {
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(BaseApiController.class);
