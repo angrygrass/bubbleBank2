@@ -1,6 +1,6 @@
 //THIS TEST IS NOT YET COMPLETE.
 
-/*
+
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.BankAccount;
@@ -28,6 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WebMvcTest(UserApiController.class)
 class UserApiControllerTest {
@@ -65,10 +67,10 @@ class UserApiControllerTest {
                     .andDo(MockMvcResultHandlers.print())
                     .andExpect(MockMvcResultMatchers.status().isCreated())
                     .andReturn();
-            Assertions.assertThat(result.getResponse().getContentType()).contains("json");
+//            assertEquals(result.getResponse().getStatus(), 201);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-}*/
+}
