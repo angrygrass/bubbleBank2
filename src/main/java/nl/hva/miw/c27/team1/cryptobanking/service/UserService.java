@@ -72,7 +72,6 @@ public class UserService {
         //This method could not be tested yet?????????????
         if (!checkUserName(customer)) {
             throw new RegistrationFailedExceptionUsername();
-
         }
         rootRepository.saveCustomer(customer);
         return customer;
