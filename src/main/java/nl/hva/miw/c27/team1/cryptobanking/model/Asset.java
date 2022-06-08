@@ -30,7 +30,7 @@ public class Asset {
     }
 
     public Asset(String assetCode) {
-        this("",assetCode,0.0);
+        this(assetCode,"",0.0);
         logger.info("New Asset with assetCode");
 
     }
