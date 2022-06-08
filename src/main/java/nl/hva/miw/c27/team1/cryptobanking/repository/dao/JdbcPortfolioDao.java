@@ -70,7 +70,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
         List<Portfolio> portfolioList = jdbcTemplate.query
                 ("SELECT * FROM assetofcustomer  WHERE userId = ?",
                         // hardcoded met 1 geeft resultaat terug, rest niet
-                        new PortfolioRowMapper(), 1);
+                        new PortfolioRowMapper(), userId);
         if (portfolioList.size() < 1) {
             System.out.println("Geen assets in portfolio");
             return null;
@@ -128,7 +128,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
     /**
      * Used by method getPortfolio(Customer customer).
      * Retrieves rows from 3 columns in assetofcustomer via PortfolioRowMapper. Every asset that a customer
-     * has is placed in a hash map. This hash map is used to make a 1 portfolio. This portfolio is returned
+     * has is placed in a hash map. This hash map is used to make 1 portfolio. The portfolio is returned
      * in this method. The assetName is linked to the assetCode, and the total value of the portfolio is calculated.
      */
     private class PortfolioRowMapper implements RowMapper<Portfolio> {
@@ -136,7 +136,7 @@ public class JdbcPortfolioDao implements PortfolioDao {
         public Portfolio mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             HashMap<Asset, Double> assetsOfUser = new HashMap<>();
             double valueOfOwnedAssets = 0;
-            while (resultSet.next()) {
+            do {
                 String assetCode = resultSet.getString("assetCode");
                 int userId = resultSet.getInt("userId");
                 double quantityOfAsset = Utility.roundDecimal(resultSet.getDouble("quantityOfAsset"), 2);
@@ -144,7 +144,8 @@ public class JdbcPortfolioDao implements PortfolioDao {
                 double rateInEuro = populateAssetForPortfolio(assetCode).getRateInEuros();
                 assetsOfUser.put(new Asset(assetCode, assetName,rateInEuro), quantityOfAsset);
                 valueOfOwnedAssets += (quantityOfAsset * rateInEuro);
-            }
+            } while (resultSet.next());
+
             JdbcUserDao jdbcUserDao = new JdbcUserDao(jdbcTemplate); // nodig?
             // relatie customer - portfolio niet bidirectioneel maken ?
             Portfolio portfolio = new Portfolio("EUR", assetsOfUser, new Customer(0, null,
