@@ -12,6 +12,8 @@ public interface BankAccountDao {
     void updateBalance(BankAccount bankAccount);
     void deleteBankAccountByUserId(int id);
     Optional<BankAccount> findByIban(String Iban);
+    double getBalanceByUserId(int userId);
+    void updateBalanceByUserId(int userId, double balance);
 
 
 
