@@ -66,10 +66,8 @@ public class JdbcPortfolioDao implements PortfolioDao {
     @Override
     public Portfolio getPortfolio(Customer customer) {
         int userId = customer.getId();
-        System.out.println(userId);
         List<Portfolio> portfolioList = jdbcTemplate.query
                 ("SELECT * FROM assetofcustomer  WHERE userId = ?",
-                        // hardcoded met 1 geeft resultaat terug, rest niet
                         new PortfolioRowMapper(), userId);
         if (portfolioList.size() < 1) {
             System.out.println("Geen assets in portfolio");

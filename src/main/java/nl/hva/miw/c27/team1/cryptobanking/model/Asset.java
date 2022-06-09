@@ -12,6 +12,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class Asset {
 
+    //todo - decide if we want more attributes for Asset class. CoinGecko json body gives a lot of information related
+    //todo - an asset (24h change perceptage, market cap, volumes etc). Could be useful for our application
     @JsonProperty("id")
     private String assetName;
     @JsonProperty("symbol")

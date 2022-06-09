@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-// class needs db queries
 @Repository
 public class RootRepository {
 
@@ -51,7 +50,6 @@ public class RootRepository {
         userDao.save(customer);
         profileDao.save(customer.getProfile());
         bankAccountDao.save(customer.getBankAccount());
-        //todo - portfolio.save
     }
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}

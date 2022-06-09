@@ -13,10 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.*;
 
 
@@ -38,45 +34,41 @@ public class UserService {
     }
 
     public User register(Customer customer) {
-
         // not very clean code. Perhaps do isEmpty check in frontend?
         if (customer.getFirstName().isEmpty() || customer.getSurName().isEmpty() || customer.getStreetName().isEmpty()
                 || customer.getHouseNumber().isEmpty() || customer.getZipCode().isEmpty()
-                || customer.getCountry().isEmpty()) {
+                || customer.getResidence().isEmpty() || customer.getCountry().isEmpty()
+                || customer.getBankAccount().getIban().isEmpty()) {
             throw new RegistrationFailedExceptionFieldEmpty();
         }
         if (!AgeValidator.checkAge(customer)) {
             throw new RegistrationFailedExceptionAge();
        }
         if (!BSNValidator.checkBsn(customer)) {
-            throw new RegistrationFailedExceptionBsn(); // unhandled exceptions, should be handled in apicontroller to return a 400
+            throw new RegistrationFailedExceptionBsn(); // todo unhandled exceptions, should be handled in apicontroller to return a 400
         }
         if(!ZipCodeValidator.checkZipCode(customer)) {
             throw new RegistrationFailedExceptionZipCode();
         }
-
         if (!IbanValidator.checkIban(customer)) {
             throw new RegistrationFailedExceptionIban();
         }
-
         if (!checkCountry(customer)) {
             throw new RegistrationFailedExceptionCountry();
         }
-
         if (!EmailValidator.checkEmail(customer)) {
             throw new RegistrationFailedExceptionEmail();
         }
         if (!PasswordValidator.checkPassWord(customer)) {
             throw new RegistrationFailedExceptionPassWord();
         }
-        //This method could not be tested yet?????????????
+        // todo This method could not be tested yet?????????????
         if (!checkUserName(customer)) {
             throw new RegistrationFailedExceptionUsername();
         }
         rootRepository.saveCustomer(customer);
         return customer;
         }
-
 
     private boolean checkCountry(Customer customer) {
         boolean correctCountry = false;
