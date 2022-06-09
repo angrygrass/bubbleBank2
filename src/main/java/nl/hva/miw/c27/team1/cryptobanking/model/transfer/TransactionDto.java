@@ -4,27 +4,36 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BuyAssetDto {
-    private int userid;
+public class TransactionDto {
+    private int buyerId;
+    private int sellerId;
     private String assetCode;
     private double quantity;
 
-
     @JsonIgnore
-    private final Logger logger = LoggerFactory.getLogger(BuyAssetDto.class);
+    private final Logger logger = LoggerFactory.getLogger(TransactionDto.class);
 
-    public BuyAssetDto(int userid, String assetCode, double quantity) {
-        this.userid = userid;
+    public TransactionDto(int buyerId, int sellerId, String assetCode, double quantity) {
+        this.buyerId = buyerId;
+        this.sellerId = sellerId;
         this.assetCode = assetCode;
         this.quantity = quantity;
     }
 
-    public int getUserid() {
-        return userid;
+    public int getBuyerId() {
+        return buyerId;
     }
 
-    public void setUserid(int userid) {
-        this.userid = userid;
+    public void setBuyerId(int buyerId) {
+        this.buyerId = buyerId;
+    }
+
+    public int getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(int sellerId) {
+        this.sellerId = sellerId;
     }
 
     public String getAssetCode() {

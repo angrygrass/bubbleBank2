@@ -69,6 +69,26 @@ public class JdbcBankAccountDao implements BankAccountDao{
                 bankAccount.getCustomer().getId());
     }
 
+    public double getBalanceByUserId(int userId) {
+        String sql = "SELECT balanceInEuro FROM `bank account` WHERE userId = ?;";
+
+            Double balance = jdbcTemplate.queryForObject(sql, Double.class, userId);
+            if (balance == null) {
+                return 0.0;
+            } else {
+                return balance;
+            }
+
+    }
+
+    public void updateBalanceByUserId(int userId, double balance) {
+        String sql = "UPDATE `bank account` SET balanceInEuro = ? WHERE userId = ?;";
+        jdbcTemplate.update(sql, balance,
+                userId);
+    }
+
+
+
     public void deleteBankAccountByUserId(int id) {
         String sql = "DELETE FROM `bank account` WHERE userId = ?;";
         jdbcTemplate.update(sql, id);
