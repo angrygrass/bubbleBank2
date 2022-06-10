@@ -23,6 +23,11 @@ public class JdbcRapidNewsDao implements RapidNewsDao {
     }
 
     @Override
+    public void saveArticles(List<RapidNewsDto> newsDto) {
+
+    }
+
+    /*@Override
     public void saveArticles(List<RapidNewsDto> newsDtos) {
         try {
             String sql = "UPDATE article_link SET article_link = ? WHERE id = ?;";
@@ -32,6 +37,6 @@ public class JdbcRapidNewsDao implements RapidNewsDao {
         } catch (DataIntegrityViolationException e) {
             logger.info(e.getMessage());
         }
-    }
+    }*/
 
 }

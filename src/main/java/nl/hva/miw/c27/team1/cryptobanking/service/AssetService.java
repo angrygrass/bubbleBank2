@@ -2,6 +2,7 @@ package nl.hva.miw.c27.team1.cryptobanking.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +31,7 @@ public class AssetService {
         return rootRepository.findAssetByName(assetName);
     }
 
-    public Optional<List> getHistoricRates(String assetName, int numberDays) {
+    public Optional<List<AssetHistoryDto>> getHistoricRates(String assetName, int numberDays) {
         return rootRepository.getAllHistoricAssetsDatabase(assetName, numberDays);
     }
 
