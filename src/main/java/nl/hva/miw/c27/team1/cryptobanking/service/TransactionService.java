@@ -8,9 +8,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.jfunc.json.impl.JSONObject;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+
+
 
 @Service
 public class TransactionService {
@@ -62,12 +66,15 @@ public class TransactionService {
        // pay transaction costs
 
         payTransactionCosts(transactionCostsInEuros, buyerId, sellerId);
+        String jsonString = new JSONObject()
+                .put("Buyer", rootRepository.getUserById(buyerId).orElse(null).getFirstName())
+                .put("Seller", rootRepository.getUserById(sellerId).orElse(null).getFirstName())
+                .put("Asset", rootRepository.findAssetByCode(assetCode).orElse(null).getAssetName())
+                .put("Quantity", quantity).toString();
 
 
-        return "Succesfully bought " + quantity + " " + Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).orElse(null)).
-                getAssetName() + " for €" + (quantity *
-                rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros()) + ", the transaction costs are €" +
-                transactionCostsInEuros + ".";
+
+        return jsonString;
     }
 
 
