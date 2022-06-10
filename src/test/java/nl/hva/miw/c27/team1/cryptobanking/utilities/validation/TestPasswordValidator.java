@@ -25,7 +25,7 @@ public class TestPasswordValidator {
         for (String password:validList
              ) {
             Mockito.when(customer.getProfile()).thenReturn( profile );
-            Mockito.when(profile.getPassWord()).thenReturn(password);
+            Mockito.when(profile.getPassWordAsEntered()).thenReturn(password);
             assertTrue(PasswordValidator.checkPassWord(customer));
         }
 

@@ -1,9 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
-import nl.hva.miw.c27.team1.cryptobanking.model.Countries;
-import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
-import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
-import nl.hva.miw.c27.team1.cryptobanking.model.User;
+import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.*;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.validation.*;
@@ -14,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.*;
 
 
@@ -47,7 +41,7 @@ public class UserService {
         }
         if (!AgeValidator.checkAge(customer)) {
             throw new RegistrationFailedExceptionAge();
-       }
+        }
         if (!BSNValidator.checkBsn(customer)) {
             throw new RegistrationFailedExceptionBsn(); // unhandled exceptions, should be handled in apicontroller to return a 400
         }
@@ -75,7 +69,7 @@ public class UserService {
         }
         rootRepository.saveCustomer(customer);
         return customer;
-        }
+    }
 
 
     private boolean checkCountry(Customer customer) {
@@ -95,14 +89,8 @@ public class UserService {
         return true;
     }
 
-    private Profile validateLogin(String userName, String passWord) {
-        Optional<Profile> optionalProfile = rootRepository.getProfileByUsername(userName);
-        Profile profile = optionalProfile.orElse(null);
-        if (profile != null && profile.getPassWord().equals(passWord)) {
-            return profile;
-        } else {
-            return null;
-        }
+    public Optional<User> getUserByToken(Token token) {
+        return rootRepository.getUserByToken(token);
     }
 
 }

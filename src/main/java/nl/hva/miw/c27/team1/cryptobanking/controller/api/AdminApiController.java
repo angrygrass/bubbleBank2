@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.service.AdminService;
+import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,12 @@ public class AdminApiController extends BaseApiController {
     private final Logger logger = LogManager.getLogger(AdminApiController.class);
 
     private AdminService adminService;
+    private final AuthorisationService authorisationService;
 
     @Autowired
-    public AdminApiController(AdminService adminService) {
+    public AdminApiController(AdminService adminService, AuthorisationService authorisationService) {
         this.adminService = adminService;
+        this.authorisationService = authorisationService;
         logger.info("New AdminApiController");
     }
 
@@ -48,9 +51,15 @@ public class AdminApiController extends BaseApiController {
         return adminService.getUserByRole(role).orElse(null);
     }
 
-    @GetMapping("all_users")
-    public List getAllUsers() {
-        return adminService.getAllUsers();
+    @GetMapping("all_users") //demo authorisation use
+    public ResponseEntity<List> getAllUsers(@RequestHeader("Authorization") String authorisationHeader) {
+        List<User> userList;
+        ResponseEntity<List> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (authorisationService.checkAdminAuthorisation(authorisationHeader)) {
+            userList = adminService.getAllUsers();
+            result = ResponseEntity.ok().body(userList);
+        }
+        return result;
     }
 
     @PutMapping("/{id}")
