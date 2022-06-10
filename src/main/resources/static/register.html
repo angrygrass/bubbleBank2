@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>bubbleBank</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="style.css"/>
+    </head>
+    <body>  
+
+        <!-- Top Navigation Menu -->
+            <div class="topnav">
+                <img style="float:right;" src="BBlogo.png" alt="bubbleBank() logo" width="70" height="70">
+                <img style="float:right;" src="BBnaamlogo.png" alt="bubbleBank() logo" width = "300">
+            <!-- <a href="#home" class="active"></a> -->
+            <div id="myLinks"><br>
+                <a href="index.html">Home</a>
+                <a href="register.html">Mijn account</a>
+                <a href="my_portfolio.html">Mijn portfolio</a>
+                <a href="AboutUs.html">Over ons</a>
+            </div>
+
+            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+              <i class="fa fa-bars"></i>
+            </a>
+          </div>
+
+        <form action="" class="register">
+            <h1>Welkom bij bubbleBank().<br>
+                Maak hier je account aan en doe ook mee aan de cryptobubble!</h1>
+            <fieldset class="row1">
+                <h2>Account gegevens</h2>
+                <p>
+                    <label>E-mail *</label>
+                    <input type="email"/><br>
+                </p>
+                <div class="container">
+                    <form action="/action_page.php">
+                      <label for="psw">Wachtwoord *</label><br>
+                      <input type="password" id="psw" name="psw" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Je wachtwoord moet minimaal 1 getal, 1 kleine letter, 1 hoofdletter en minimaal 8 tekens lang zijn." required>
+                    </form>
+                  </div>                 
+                  <div id="message">
+                    <br>
+                    <h3>Je wachtwoord moet aan deze eisen voldoen:</h3>
+                    <p id="letter" class="invalid">Minimaal 1 <b>kleine</b> letter</p>
+                    <p id="capital" class="invalid">Minimaal 1 <b>Hoofdletter</b></p>
+                    <p id="number" class="invalid">Minimaal 1 <b>getal</b></p>
+                    <p id="length" class="invalid">Minimaal <b>8 tekens</b> lang</p>
+                  </div>
+                <p>
+                    <label class="obinfo">* verplicht</label>
+                </p>
+      
+            <fieldset class="row1">
+                <h2>Persoonlijke gegevens</h2>
+                </legend>
+                <p>
+        <label for="volledige naam">volledige naam*</label>
+    <input type="text" id = "first_name" name="voornaam" placeholder="Voornaam">  <input type="text" id = "prefix" name="tussenvoegsel" placeholder="tussenvoegsel"> <input type="text" id = "surname" name="surname" placeholder="Achternaam"><br>
+<br>
+    <label for="postcode">Postcode*</label>
+    <input type="text" id="field_pc" name="postcode" placeholder="postcode (1234AA)"><br>
+
+    <label for="field_nr">Huisnummer*</label>
+    <input type="number" id="field_nr" name="huisnummer" placeholder="huisnummer"/><p>
+
+    <label for="Straat">Straatnaam</label>
+    <input type="text" id="field_street" name="straatnaam" placeholder="Straatnaam"/><br>
+
+    <label for="Woonplaats">Woonplaats</label>
+    <input type="text" id="field_city" name="woonplaats" placeholder="Woonplaats"/><br>
+
+    <label for="Land">Land</label>
+    <input type="text" id="field_country" name="land" placeholder="Nederland"/><p>
+
+    <label for="BSN">BSN nummer*</label>
+    <input type="text" id="BSN" name="BSN" placeholder="BSN Nummer"><p>
+    
+    <form action="/action_page.php">
+    <label for="dateOfBirth">Geboortedatum*</label>
+    <input type="date" id="dateOfBirth" name="dateOfBirth"><br>
+    </fieldset>
+    <p><strong>Vul svp bovenstaande informatie in en druk op onderstaande knop.</strong></p>
+            </div>
+        <div><button class="button">Registreren &raquo;</button></div>
+
+        <p>Heb je al een account?<a  href="login.html"><u> Log hier in.</a></u></p>
+    </form>
+
+        <div id="error" hidden>
+            <p>postcode, huisnummer combinatie is onbekend</p>
+        </div>
+        
+        <script>
+            // focusout nummer postcode en huisnummer ingevuld
+            // registreer eventhandlers
+            document.querySelector('#field_pc').addEventListener('focusout', checkForAddressPart);
+    
+            document.querySelector('#field_nr').addEventListener('focusout', checkForAddressPart);
+    
+            function checkForAddressPart(){
+                let regex = new RegExp(/^[1-9][0-9]{3}[\s]?[A-Za-z]{2}$/i);
+    
+                // velden moeten niet leg zijn, liefst regex
+                let postcode = document.querySelector('#field_pc').value
+                let huisnummer = document.querySelector('#field_nr').value
+    
+                // als postcode een valide postcode is nummer niet leeg, dan
+                console.log('pc is valide: ' + regex.test(postcode))
+    
+                if(regex.test(postcode) && huisnummer){
+                    // var data = { postcode: postcode, nr: huisnummer};
+                    // stuur data als form data ipv json, want backend accepteert alleen form
+                    let formData = `postcode=${postcode}&number=${huisnummer}` //postcode=1234AB&nr=15
+    
+                    fetch("https://postcode.tech/api/v1/postcode?" + formData , {
+                        headers: {
+                            'Authorization': 'Bearer 1d3dc31e-842e-4d3d-b2c8-bcd127cb0232',
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(json => processAddress(json))
+                        .catch((error) => { console.error('Foutje', error) });
+    
+                }
+    
+            }
+            function processAddress(data){
+                document.querySelector('#error').style.display = 'none';
+                // haal de data uit de request
+                let addressPart = data; // de data is in ASCII format, nu nog naar object omzetten
+                // velden vullen
+                document.querySelector('#field_city').value = addressPart.city; // zonder validatie
+                document.querySelector('#field_street').value = addressPart.street; // zonder validatie
+                // error style weghalen
+                document.querySelector('#field_pc').classList.remove('error');
+                document.querySelector('#field_nr').classList.remove('error');
+            }
+    
+            function myFunction() {
+        var x = document.getElementById("myLinks");
+        if (x.style.display === "block") {
+          x.style.display = "none";
+        } else {
+          x.style.display = "block";
+        }
+      }
+
+       
+var myInput = document.getElementById("psw");
+var letter = document.getElementById("letter");
+var capital = document.getElementById("capital");
+var number = document.getElementById("number");
+var length = document.getElementById("length");
+
+// When the user clicks on the password field, show the message box
+myInput.onfocus = function() {
+  document.getElementById("message").style.display = "block";
+}
+
+// When the user clicks outside of the password field, hide the message box
+myInput.onblur = function() {
+  document.getElementById("message").style.display = "none";
+}
+
+// When the user starts to type something inside the password field
+myInput.onkeyup = function() {
+  // Validate lowercase letters
+  var lowerCaseLetters = /[a-z]/g;
+  if(myInput.value.match(lowerCaseLetters)) {  
+    letter.classList.remove("invalid");
+    letter.classList.add("valid");
+  } else {
+    letter.classList.remove("valid");
+    letter.classList.add("invalid");
+  }
+  
+  // Validate capital letters
+  var upperCaseLetters = /[A-Z]/g;
+  if(myInput.value.match(upperCaseLetters)) {  
+    capital.classList.remove("invalid");
+    capital.classList.add("valid");
+  } else {
+    capital.classList.remove("valid");
+    capital.classList.add("invalid");
+  }
+
+  // Validate numbers
+  var numbers = /[0-9]/g;
+  if(myInput.value.match(numbers)) {  
+    number.classList.remove("invalid");
+    number.classList.add("valid");
+  } else {
+    number.classList.remove("valid");
+    number.classList.add("invalid");
+  }
+  
+  // Validate length
+  if(myInput.value.length >= 8) {
+    length.classList.remove("invalid");
+    length.classList.add("valid");
+  } else {
+    length.classList.remove("valid");
+    length.classList.add("invalid");
+  }
+}
+</script>
+
+    </body>
+</html>
