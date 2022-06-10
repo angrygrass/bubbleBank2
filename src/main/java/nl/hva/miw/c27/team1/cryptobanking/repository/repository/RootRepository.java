@@ -131,7 +131,7 @@ public class RootRepository {
         assetHistoryDao.saveAssetHistoryList(assetHistory);
     }
 
-    public Optional<List> getAllHistoricAssetsDatabase(String assetName, int numberDays) {
+    public Optional<List<AssetHistoryDto>> getAllHistoricAssetsDatabase(String assetName, int numberDays) {
         System.out.println("testroot");
         return assetHistoryDao.getAllHistoricAssets(assetName, numberDays);
     }
