@@ -44,7 +44,7 @@ public class RegisterDto {
         this.country = customer.getCountry();
         this.iban = customer.getBankAccount().getIban();
         this.userName = customer.getProfile().getUserName();
-        this.passWord = customer.getProfile().getPassWord();
+        this.passWord = customer.getProfile().getPassWordAsEntered();
         logger.info("New RegisterDto using all-args");
     }
 

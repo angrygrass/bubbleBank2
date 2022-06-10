@@ -9,10 +9,15 @@ public class SaltMaker {
 
     private int saltLength;
     private final SecureRandom secureRNG;
+    public final static int DEFAULT_HASH_LENGTH = 64;
 
     public SaltMaker(int saltLength) {
         this.saltLength = saltLength;
         secureRNG = new SecureRandom();
+    }
+
+    public SaltMaker() {
+        this(DEFAULT_HASH_LENGTH);
     }
 
     public int getSaltLength() {

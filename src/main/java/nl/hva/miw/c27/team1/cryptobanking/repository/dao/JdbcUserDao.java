@@ -72,10 +72,6 @@ public class JdbcUserDao implements UserDao {
         }
     }
 
-
-
-
-
     @Override
     public Optional<User> findByToken(Token token) {
         List<User> users =
@@ -96,8 +92,6 @@ public class JdbcUserDao implements UserDao {
         } else {
             return Optional.of(users.get(0));
         }
-
-
     }
 
 

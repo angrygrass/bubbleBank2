@@ -31,11 +31,12 @@ public class JdbcProfileDao implements ProfileDao {
 
     private PreparedStatement insertProfileStatement(Profile profile, Connection connection) throws SQLException {
         PreparedStatement ps = connection.prepareStatement(
-                "insert into profile (username, password, userId) values (?, ?, ?)",
+                "insert into profile (username, hash, salt, userId) values (?, ?, ?, ?)",
                 Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, profile.getUserName());
-        ps.setString(2, profile.getPassWord());
-        ps.setInt(3, profile.getUser().getId());
+        ps.setString(2, profile.getHash());
+        ps.setString(3, profile.getSalt());
+        ps.setInt(4, profile.getUser().getId());
 
         return ps;
     }
@@ -64,10 +65,10 @@ public class JdbcProfileDao implements ProfileDao {
         @Override
         public Profile mapRow(ResultSet resultSet, int rowNum) throws SQLException {
             String userName = resultSet.getString("userName");
-            String password = resultSet.getString("password");
+            String hash = resultSet.getString("hash");
+            String salt = resultSet.getString("salt");
             int userId = resultSet.getInt("userId");
-
-            return new Profile(userName, password, jdbcUserDao.findById(userId).orElse(null));
+            return new Profile(userName, hash, salt, jdbcUserDao.findById(userId).orElse(null));
         }
     }
 

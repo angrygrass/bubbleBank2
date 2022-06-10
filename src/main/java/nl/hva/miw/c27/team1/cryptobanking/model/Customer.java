@@ -22,6 +22,8 @@ public class Customer extends User {
     private Portfolio portfolio;
     private List<Transaction> transactionList;
     private double INITIAL_BALANCE = 5000.0;
+    final String INITIAL_HASH = "";     //hash variable might better be moved to a ProfileService class
+
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(Customer.class);
@@ -45,13 +47,11 @@ public class Customer extends User {
     }
 
     public Customer(RegisterDto dto) {
-
         this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
-
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 new Profile(), new BankAccount(), new Portfolio(), new ArrayList<>());
         this.setBankAccount(new BankAccount(dto.getIban(), INITIAL_BALANCE,this));
-        this.setProfile(new Profile(dto.getUserName(), dto.getPassWord(), this));
+        this.setProfile(new Profile(dto.getUserName(), INITIAL_HASH, dto.getPassWord(), this));
     }
 
     public Customer(int id, String role) {

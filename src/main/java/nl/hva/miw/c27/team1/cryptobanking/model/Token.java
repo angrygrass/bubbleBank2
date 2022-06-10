@@ -11,7 +11,9 @@ import java.sql.Timestamp;
 public class Token {
 
     private String tokenId;
+    @JsonIgnore
     private Timestamp validuntil;
+    @JsonIgnore
     private User user;
 
     @JsonIgnore
