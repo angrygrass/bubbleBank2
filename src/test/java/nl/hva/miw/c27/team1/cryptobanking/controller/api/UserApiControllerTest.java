@@ -45,12 +45,12 @@ class UserApiControllerTest {
         this.mockMvc = mockMvc;
     }
 
-    @Test
+    @Test //todo repair broken test due to change in Profile class!
     void register() throws Exception {
         Customer customer = new Customer(0, "de", "Burcht", "test", 111222333,
                 new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01"), "Straat",
                 "30", "1111AA", "Hilversum",
-                "Netherlands", new Profile("profile", "password"),
+                "Netherlands", new Profile("profile", "hash", "salt", "userEnteredPassword"),
                 new BankAccount("NL02ABNA0123456789"), new Portfolio(), new ArrayList<>());
         Mockito.when(mockUserService.register(customer)).thenReturn(customer);
         // maak een request

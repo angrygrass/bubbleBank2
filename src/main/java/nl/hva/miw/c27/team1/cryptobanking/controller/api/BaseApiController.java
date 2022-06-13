@@ -6,6 +6,7 @@ import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
 import nl.hva.miw.c27.team1.cryptobanking.service.PortfolioService;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.NoSuchUserException;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.NoSuchUserPasswordCombination;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.UserExistsException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,7 +48,12 @@ public abstract class  BaseApiController {
 
     @ExceptionHandler(NoSuchUserException.class)
     public String handleNoSuchUserException() {
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such member");
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No such user");
+    }
+
+    @ExceptionHandler(NoSuchUserPasswordCombination.class)
+    public String handleNoSuchUserPasswordCombination() {
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username/password combination not found.");
     }
 
     @ExceptionHandler(UserExistsException.class)

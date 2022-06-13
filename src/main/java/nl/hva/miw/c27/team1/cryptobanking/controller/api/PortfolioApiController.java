@@ -40,7 +40,7 @@ public class PortfolioApiController extends BaseApiController {
             Customer testCustomer = new Customer(3,"Customer", "Van","Hallo",
                     111222333 , new SimpleDateFormat("yyyy-MM-dd").parse("1937-12-16"),
                     "Acoma St","2222", "2316LS","Proston", "Nederland",
-                    new Profile("test@gmail.com","Paswoord12?"),
+                    new Profile(),
                     new BankAccount("NL02ABNA0123456789",5000),new Portfolio(), new ArrayList<>());
             // makes sense?
 

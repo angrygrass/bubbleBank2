@@ -1,12 +1,20 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
 
+import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
+import nl.hva.miw.c27.team1.cryptobanking.model.Token;
+import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
-import nl.hva.miw.c27.team1.cryptobanking.service.HashService;
+import nl.hva.miw.c27.team1.cryptobanking.repository.repository.TokenRepository;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.authorization.Role;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * This class offers authentication either by logging on or by presenting the correct token
@@ -14,43 +22,66 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
 
-    private RootRepository rootRepository;
     private final Logger logger = LogManager.getLogger(AuthenticationService.class);
 
-    //todo jjs {STUB} define some object referring to token in the database
-    //todo jjs {STUB} define some object referring to user in the database
-    private final HashService hashService;
+    final private RootRepository rootRepository;
 
-    //todo jjs {STUB} parameter list to be extended with types of private fields above
+    private final TokenRepository tokenRepository;
+
     @Autowired
-    public AuthenticationService(HashService hashService) {
-        //todo jjs {STUB}{PSEUDO} this.someUserDatabaseObject  = someUserDatabaseObject;
-        //todo jjs {STUB}{PSEUDO} this.someTokenDatabaseObject  = someTokenDatabaseObject;
-        this.hashService = hashService;
+    public AuthenticationService(RootRepository rootRepository, TokenRepository tokenRepository) {
+        this.rootRepository = rootRepository;
+        this.tokenRepository = tokenRepository;
+        logger.info("new AuthenticationService");
     }
 
-    /**
-     *
-     * @param username speaks for itself
-     * @param password speaks for itself
-     * @return success if username and digest match with database
-     */
-    boolean authenticate(String username, String password) {
-        String hash = hashService.hash(password);
-        //todo jjs {STUB} get hash stored in database with user
-        String storedHash = "";
-
-        return hash.equals(storedHash);
+    public String createToken() {
+        return UUID.randomUUID().toString();
     }
 
-    //overloaded version with token instead of username password
-    public boolean authenticate(String token) {
-        //possibly  check UUID
-        //ENSURE token exists?
-        //todo jjs hier verder
+    public Timestamp getTimestampNowWithAddedMinutes(int minutes) {
+        final int MILLISECONDS_IN_MINUTE = 60000;
+        long datetime = System.currentTimeMillis();
+        datetime = datetime + (long) minutes * MILLISECONDS_IN_MINUTE;
+        return new Timestamp(datetime);
+        //System.out.println("Current Time Stamp: "+ timestamp);
+    }
+
+    public Profile validateLogin(String userName, String hashedPassWord) {
+        Optional<Profile> optionalProfile = rootRepository.getProfileByUsername(userName);
+        Profile profile = optionalProfile.orElse(null);
+        if (profile != null && profile.getHash().equals(hashedPassWord)) {
+            return profile;
+        } else {
+            return null;
+        }
+    }
+
+    public boolean validateToken(String strToken, User user) {
         //check if token exists in db at all (or for that specific user)?
-        //todo {PSEUDO} user = DAO.findUserByToken; if (user != null) return true;
-        return true;
+        Token token = tokenRepository.findByUserId(user.getId()).orElse(null);
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        //token should be equal to token in database and still be valid
+        return token != null && token.getTokenId().equals(strToken) && token.getValiduntil().after(now);
+    }
+
+    public void save(Token token) {
+        tokenRepository.save(token);
+    }
+
+    public void revokeTokenFromUser(User user) {
+        if (!user.getRole().isEmpty() && user.getRole().equals(Role.Admin.name())) {
+            rootRepository.revokeTokenFromUser(user);
+        }
+    }
+
+    public String extractTokenFromBearer(String bearerToken) {
+        final String BEARER = "Bearer";
+        String token = "";
+        if (bearerToken.startsWith(BEARER)) {
+            return bearerToken.substring(BEARER.length()).trim();
+        }
+        return token;
     }
 
 }

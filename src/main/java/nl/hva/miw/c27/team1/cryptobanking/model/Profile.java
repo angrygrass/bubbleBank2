@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.model;
 
+import nl.hva.miw.c27.team1.cryptobanking.service.HashService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,22 +8,57 @@ import org.apache.logging.log4j.Logger;
 public class Profile {
 
     private String userName;
-    private String passWord;
+    private String hash;
+    private String salt;
     private User user;
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    @JsonIgnore
+    private HashService hashService;
+
+    @JsonIgnore
+    private String passWordAsEntered;
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(Profile.class);
 
-    public Profile(String userName, String passWord, User user) {
+    public String getPassWordAsEntered() {
+        return passWordAsEntered;
+    }
+
+    public void setPassWordAsEntered(String passWordAsEntered) {
+        this.passWordAsEntered = passWordAsEntered;
+    }
+
+    //todo jjs
+    public Profile(String userName, String hash, String salt, User user) {
         this.userName = userName;
-        this.passWord = passWord;
+        this.hash = hash;
+        //this.passWordAsEntered = passWord;
+        this.salt = salt;
         this.user = user;
     }
 
-
-    public Profile(String userName, String passWord) {
+    public Profile(String userName, String hash, String salt, String passWord) {
         this.userName = userName;
-        this.passWord = passWord;
+        this.hash = hash;
+        this.salt = salt;
+        this.passWordAsEntered = passWord;
     }
 
 
@@ -39,13 +75,6 @@ public class Profile {
         this.userName = userName;
     }
 
-    public String getPassWord() {
-        return passWord;
-    }
-
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
-    }
 
     public User getUser() {
         return user;

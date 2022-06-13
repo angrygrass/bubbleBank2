@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -99,6 +100,10 @@ public class RootRepository {
 
     public Optional<BankAccount> findBankAccountByIban(String iban) {return bankAccountDao.findByIban(iban);}
 
+    public double getBalanceByUserId(int userId) {return bankAccountDao.getBalanceByUserId(userId);}
+
+    public void updateBalanceByUserId(int userId, double balance) {bankAccountDao.updateBalanceByUserId(userId, balance);}
+
     // methods for Transaction
     public Optional<Transaction> findTransactionById (int id) {return transactionDao.findById(id);}
 
@@ -128,7 +133,10 @@ public class RootRepository {
         System.out.println("testroot");
         return assetHistoryDao.getAllHistoricAssets(assetName, numberDays);
     }
-
+    // methods for RapidNewsService
+    public void saveArticles(List<RapidNewsDto> articleList) {
+        newsDao.saveArticles(articleList);
+    }
 
     // methods for Portfolio
     public Optional<Double> getQuantityOfAssetInPortfolio(String assetCode, int userId) {
@@ -138,10 +146,37 @@ public class RootRepository {
         return portfolioDao.getPortfolio(customer);
     }
 
-    // methods for RapidNewsService
-    public void saveArticles(List<RapidNewsDto> articleList) {
-        newsDao.saveArticles(articleList);
+    public boolean checkAssetInPortfolio(String assetCode, int userId) {
+        return assetPresentInPortfolio(assetCode, userId).orElse(false);
     }
+
+    public void addToPortfolio(String assetCode, int userId, double quantity) {
+
+        Portfolio portfolio = getPortfolioByCustomerId(userId).orElse(new Portfolio());
+        HashMap<Asset, Double> assetsOfUser = portfolio.getAssetsOfUser();
+
+        if (!checkAssetInPortfolio(assetCode, userId)) {
+            assetsOfUser.put(findAssetByCode(assetCode).orElse(null), quantity);
+            portfolio.setAssetsOfUser(assetsOfUser);
+            portfolio.setCustomer((Customer) getUserById(userId).orElse(null));
+            savePortfolio(portfolio);
+        } else {
+            double customerBalance = getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
+            editPortfolio(assetCode, userId, customerBalance + quantity);
+        }
+
+    }
+
+    public void subtractFromPortfolio (int userId, String assetCode, double quantity) {
+
+        double sellerBalance = getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
+        editPortfolio(assetCode, userId, sellerBalance - quantity);
+
+    }
+
+
+
+
 
     public Optional<Portfolio> getPortfolioByCustomerId(int id) {
         return portfolioDao.findById(id);}
