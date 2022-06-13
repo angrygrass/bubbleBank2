@@ -52,17 +52,13 @@ class AssetApiControllerTest {
 
     @Test
     void getAllAssetRates() {
-        // Zet eerst de testomgeving op, te beginnen met het vullen van de mock objecten:
-        // De RestApiController is afhankelijk van de RomanNumeralService waarvoor we een
-        // mockobject hebben gemaakt
+
         List<Asset> assetList = new ArrayList<>();
 
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
         assetList.add(asset);
         Mockito.when(assetService.getRates()).thenReturn(assetList);
-        Gson gson = new Gson();
-        String assetJson = gson.toJson(asset);
-        // Maak dan een request object
+
 
         MockHttpServletRequestBuilder asset_request =
                 MockMvcRequestBuilders.get("/assets/");
@@ -70,7 +66,6 @@ class AssetApiControllerTest {
         asset_request.header("authorization", "authorization");
 
 
-        // En nu kunnen we de testomgeving gebruiken:
 
         try {
             ResultActions response = mockMvc.perform(asset_request);
@@ -86,30 +81,24 @@ class AssetApiControllerTest {
     @Test
     void getAssetRate() throws IOException {
 
-        // Zet eerst de testomgeving op, te beginnen met het vullen van de mock objecten:
-        // De RestApiController is afhankelijk van de RomanNumeralService waarvoor we een
-        // mockobject hebben gemaakt
 
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
         Mockito.when(assetService.getRate("bitcoin")).thenReturn(Optional.of(asset));
-        Gson gson = new Gson();
-        String assetJson = gson.toJson(asset);
-        // Maak dan een request object
 
         MockHttpServletRequestBuilder asset_request =
-                MockMvcRequestBuilders.get("/assets/" + asset.getAssetName());
+        MockMvcRequestBuilders.get("/assets/" + asset.getAssetName());
 
         asset_request.header("authorization", "authorization");
 
-
-        // En nu kunnen we de testomgeving gebruiken:
 
         try {
             ResultActions response = mockMvc.perform(asset_request);
             response.andDo(print()).andExpect(status().isOk()); // Dit hadden we al bij de demo.
             String responseBody = response.andReturn().getResponse().getContentAsString(); // dit is nieuw!
+
+
             assertThat(responseBody).isEqualTo("{\"id\":\"" + asset.getAssetName() +
-                    "\",\"symbol\":\"" + asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() +"}"); // En nu kunnen we "gewoon" AssertJ gebruiken.
+                   "\",\"symbol\":\"" + asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() +"}"); // En nu kunnen we "gewoon" AssertJ gebruiken.
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -119,12 +108,14 @@ class AssetApiControllerTest {
     @Test
     void getHistoricAssetRate() {
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
+        Asset asset2 = new Asset("ape", "apecoin", 5.00);
+
         List<AssetHistoryDto> assethistoryList = new ArrayList<>();
         assethistoryList.add(new AssetHistoryDto(null, asset.getAssetCode(), asset.getRateInEuros()));
+        assethistoryList.add(new AssetHistoryDto(null, asset2.getAssetCode(), asset2.getRateInEuros()));
+
         Mockito.when(assetService.getHistoricRates(asset.getAssetCode(), 3)).thenReturn(Optional.of(assethistoryList));
-        Gson gson = new Gson();
-        String assetJson = gson.toJson(asset);
-        // Maak dan een request object
+
 
         MockHttpServletRequestBuilder asset_request =
                 MockMvcRequestBuilders.get("/assets/history/" + asset.getAssetCode() + "/?chartdays=" + 3);
@@ -132,13 +123,13 @@ class AssetApiControllerTest {
         asset_request.header("authorization", "authorization");
 
 
-        // En nu kunnen we de testomgeving gebruiken:
-
         try {
             ResultActions response = mockMvc.perform(asset_request);
             response.andDo(print()).andExpect(status().isOk()); // Dit hadden we al bij de demo.
             String responseBody = response.andReturn().getResponse().getContentAsString(); // dit is nieuw!
-            assertThat(responseBody).isEqualTo("[{\"dateTime\":null,\"symbol\":\""+asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() + "}]"); // En nu kunnen we "gewoon" AssertJ gebruiken.
+            assertThat(responseBody).isEqualTo("[{\"dateTime\":null,\"symbol\":\""+asset.getAssetCode() +
+                    "\",\"current_price\":" + asset.getRateInEuros() + "}," + "{\"dateTime\":null,\"symbol\":\""+asset2.getAssetCode() +
+                    "\",\"current_price\":" + asset2.getRateInEuros() + "}]"); // En nu kunnen we "gewoon" AssertJ gebruiken.
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,4 +137,3 @@ class AssetApiControllerTest {
     }
 }
 
-//"[{\"dateTime\":null,\"symbol\":null,\"current_price\":0.0}]"
