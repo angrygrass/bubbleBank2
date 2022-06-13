@@ -16,6 +16,7 @@ import java.util.*;
 /**
  * End point that returns all the aoins and their current values to the customer.
  */
+@CrossOrigin
 @RestController
 @RequestMapping(value=("/assets"))
 public class AssetApiController extends BaseApiController {
