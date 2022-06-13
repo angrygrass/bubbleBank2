@@ -47,7 +47,7 @@ public class CoinGeckoService extends BaseApiController {
      * If so, a Jackson mapper deserializes the array of json objects based on an input stream, populating an
      * Asset object only with the id, symbol and current_price of the Asset class (see @JsonProperty in Asset).
      */
-    @Scheduled(fixedRate = 4000000)
+    @Scheduled(fixedRate = 8000000)
     public void getRates() throws IOException {
            try {
                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -71,7 +71,7 @@ public class CoinGeckoService extends BaseApiController {
     /**
      * Scheduled task to populate the assetratehistory table every X hours.
      */
-    @Scheduled(cron = "0 0 */2 * * *")
+    @Scheduled(cron = "0 0 */6 * * *")
     public void getHistoricRates() {
         try {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
