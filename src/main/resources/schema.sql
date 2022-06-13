@@ -232,7 +232,8 @@ CREATE TABLE `user` (
   `country` varchar(45) NOT NULL,
   `role` varchar(45) NOT NULL,
   `staffId` int DEFAULT NULL,
-  PRIMARY KEY (`userId`)
+  PRIMARY KEY (`userId`),
+  UNIQUE KEY `fiscalNumber` (`fiscalNumber`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3131 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
