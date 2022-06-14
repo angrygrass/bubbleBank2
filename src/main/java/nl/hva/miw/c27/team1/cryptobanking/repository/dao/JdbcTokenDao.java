@@ -2,7 +2,6 @@ package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Token;
-import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,15 +18,17 @@ import java.util.Optional;
 @Repository
 public class JdbcTokenDao implements TokenDao {
 
-        private JdbcTemplate jdbcTemplate;
+        private final JdbcTemplate jdbcTemplate;
+        private final JdbcUserDao jdbcUserDao;
         private final Logger logger = LogManager.getLogger(JdbcTokenDao.class);
 
 
 
         @Autowired
-        public JdbcTokenDao(JdbcTemplate jdbcTemplate) {
+        public JdbcTokenDao(JdbcTemplate jdbcTemplate, JdbcUserDao jdbcUserDao) {
             super();
             this.jdbcTemplate = jdbcTemplate;
+            this.jdbcUserDao = jdbcUserDao;
 
             logger.info("New JdbcTokenDao.");
         }
@@ -70,15 +71,13 @@ public class JdbcTokenDao implements TokenDao {
         }
 
 
-        private static class TokenRowMapper implements RowMapper<Token> {
+        private class TokenRowMapper implements RowMapper<Token> {
 
             @Override
             public Token mapRow(ResultSet resultSet, int rowNum) throws SQLException {
                 String idToken = resultSet.getString("idToken");
                 Timestamp validuntil = resultSet.getTimestamp("valid until");
                 int userId = resultSet.getInt("userId");
-
-                JdbcUserDao jdbcUserDao = new JdbcUserDao(new JdbcTemplate());
                 return new Token(idToken, validuntil, jdbcUserDao.findById(userId).orElse(null));
             }
         }

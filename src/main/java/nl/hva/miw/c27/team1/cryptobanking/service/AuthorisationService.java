@@ -29,8 +29,9 @@ public class AuthorisationService {
 
     private boolean checkAuthorisationForRole(String authorisationHeader, Role role) {
         String token = authenticationService.extractTokenFromBearer(authorisationHeader);
-        User user = userService.getUserByToken(new Token(token, null, null)).orElse(null);
-        if (user != null && !user.getRole().isEmpty() && user.getRole().equals(role)) return true; else return false;
+        User user = userService.getUserByTokenID(token).orElse(null);
+        if (user != null && !user.getRole().isEmpty() && user.getRole().equals(role.name()) &&
+                authenticationService.validateToken(token, user)) return true; else return false;
     }
 
 
