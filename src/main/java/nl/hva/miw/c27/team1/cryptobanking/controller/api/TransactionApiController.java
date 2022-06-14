@@ -16,12 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+
 import java.util.List;
 import java.util.Optional;
 
 
 @RestController
-@RequestMapping(value=("/assets"))
+@RequestMapping(value=("/transaction"))
 
 public class TransactionApiController extends BaseApiController {
     @JsonIgnore
@@ -52,20 +53,22 @@ public class TransactionApiController extends BaseApiController {
     }
 
     @ResponseBody
-    @PostMapping("/transaction")
+
+    @PostMapping("/buy")
     public ResponseEntity<String> buyAsset(@RequestBody TransactionDto transactionDto,
                                            @RequestHeader(value="authorization") String authorization) {
         ResponseEntity<String> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         if (authorisationService.checkCustomerAuthorisation(authorization))   {
             if (transactionDto.getBuyerId() == transactionDto.getSellerId()) {
                 throw new InvalidTransactionRequestException();
             }
 
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.setViewName("transaction.html");
+
             String transactionMsg = transactionService.doTransaction(transactionDto.getBuyerId(), transactionDto.getSellerId(),
                     transactionDto.getAssetCode(), transactionDto.getQuantity());
             return ResponseEntity.ok().body(transactionMsg);
+
         }
         return result;
     }

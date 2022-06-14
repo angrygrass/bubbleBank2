@@ -43,13 +43,14 @@ public class JdbcAssetHistoryDao implements AssetHistoryDao {
     }
 
     @Override
-    public Optional<List> getAllHistoricAssets(String assetCode, int numberDays) {
+    public Optional<List<AssetHistoryDto>> getAllHistoricAssets(String assetCode, int numberDays) {
         var currentDate = LocalDate.now();
         var dateMinus = currentDate.minusDays(numberDays);
         var sqlCurrentDate = java.sql.Date.valueOf(currentDate);
         var sqlDateMinus = java.sql.Date.valueOf(dateMinus);
         String sql = "select * FROM assetratehistory WHERE assetCode = '" + assetCode +
                 "' AND dateTime BETWEEN '" + sqlDateMinus + "' AND '" + sqlCurrentDate + "';";
+        System.out.println(sql);
         List<AssetHistoryDto> assetHistoryDtoList = jdbcTemplate.query
                 (sql, new JdbcAssetHistoryDao.HistoricAssetRowMapper());
         return Optional.of(assetHistoryDtoList);

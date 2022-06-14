@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
 import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidAssetRequest;
@@ -63,17 +64,22 @@ public class AssetApiController extends BaseApiController {
     }
 
     @GetMapping(value="/history/{name}")
-    public ResponseEntity<List> getHistoricAssetRate(@PathVariable("name") String assetName,
+    public ResponseEntity<List<AssetHistoryDto>> getHistoricAssetRate(@PathVariable("name") String assetCode,
                                                      @RequestParam("chartdays") int numberDays,
                                                      @RequestHeader(value="authorization") String authorization) {
-        ResponseEntity<List> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+
+
+        ResponseEntity<List<AssetHistoryDto>> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         if (authorisationService.checkCustomerAuthorisation(authorization)) {
-            Optional<List> optList = assetService.getHistoricRates(assetName, numberDays);
+            Optional<List<AssetHistoryDto>> optList = assetService.getHistoricRates(assetCode, numberDays);
             if (optList.isPresent()) {
                 return ResponseEntity.ok().body(optList.get());
             } else {
                 throw new InvalidAssetRequest();
             }
+
+
         }
         return result;
     }

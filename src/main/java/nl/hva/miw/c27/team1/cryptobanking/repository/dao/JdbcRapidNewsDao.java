@@ -22,6 +22,7 @@ public class JdbcRapidNewsDao implements RapidNewsDao {
         logger.info("New JdbcNewsDao.");
     }
 
+
     @Override
     public void saveArticles(List<RapidNewsDto> newsDtos) {
         try {

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage</title>
+    <style>
+        .table2 {
+            display: block;
+            margin-top: 20px;
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ecebeb;
+        }
+
+    </style>
+</head>
+<body>
+<body onload="combinedMethods()">
+<h1>Homepage</h1>
+<div id="globalInfo">
+    <h2>Global info</h2>
+    <p id="detailsParagraph"></p>
+</div>
+<div>
+    <div id="assetTable" class="table2"></div>
+</div>
+<div>
+    <div>
+        <table id="trendingTable" class="table2">
+            <th>Coin</th>
+            <th>Populairste coins volgens market cap</th>
+        </table>
+    </div>
+    <div>
+        <div>
+            <div>
+                <table id="priceChangeTable" class="table2">
+                    <th>Coin</th>
+                    <th>Prijs schommeling in de laatste 24u</th>
+                    <th>Buy recommendation</th>
+                </table>
+            </div>
+        </div>
+        <div>
+            <br>
+            <table id="articleTable" class="table2">
+                <th>Links</th>
+                <table>
+                </table>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+    function combinedMethods() {
+        getAssetsFromBackEnd();
+        getAssetDetails();
+        getGlobalInfo();
+        getArticles();
+    }
+
+    var activeCrypto;
+    var totalMarkets;
+    var upcomingIco;
+    var arrayAMap = new Map();
+    var sortedMap = new Map();
+
+    async function getGlobalInfo() {
+        fetch('https://api.coingecko.com/api/v3/global', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                console.log(response)
+                return response.json() }
+            )
+            .then(data => {
+                console.log(data);
+                addToParagraph(data);
+            })
+            .catch((error) => {
+                console.error('Foutje', error);
+            });
+    }
+
+    async function addToParagraph(data) {
+        activeCrypto = data.data.active_cryptocurrencies;
+        totalMarkets = data.data.markets;
+        upcomingIco = data.data.upcoming_icos;
+
+        document.getElementById('detailsParagraph').innerHTML =
+            'Er zijn globaal ' + activeCrypto + ' actieve crypto coins beschikbaar op '
+            + totalMarkets + ' cyrpto markten. Er staan ' + upcomingIco + ' initial coin offerings (ICO) gepland.';
+        console.log(activeCrypto);
+    }
+
+    async function getAssetsFromBackEnd() {
+        fetch('http://localhost:8080/assets', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Customer'
+            },
+        })
+            .then(response => {
+                console.log(response)
+                return response.json() }
+            )
+            .then(data => {
+                console.log(data);
+                loadToAssetTable(data);
+            })
+            .catch((error) => {
+                console.error('Foutje', error);
+            });
+    }
+
+    async function loadToAssetTable(data) {
+        let myTable = document.querySelector('#assetTable');
+        let headers = ['naam', 'symbool','huidige prijs'];
+        let table = document.createElement('table');
+        let headerRow = document.createElement('tr');
+
+        // to create headers
+        headers.forEach(headerText => {
+            let header = document.createElement('th');
+            let textNode = document.createTextNode(headerText);
+            header.appendChild(textNode);
+            headerRow.appendChild(header);
+        });
+        table.appendChild(headerRow);
+
+        // to create rows
+        data.forEach(asset =>{
+            let row = document.createElement('tr');
+
+            Object.values(asset).forEach(text =>{
+                let cell = document.createElement('th');
+                let textNode = document.createTextNode(text);
+                cell.appendChild(textNode);
+                row.appendChild(cell);
+            })
+            table.appendChild(row);
+        });
+
+        myTable.appendChild(table);
+    }
+
+    async function getAssetDetails() {
+        fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&ids=bitcoin,solana,ethereum,cardano,apecoin,tether,gas,tron,polkadot,waves,loopring,dogecoin,tezos,chiliz,eos,uma,radix,kusama,dai,flow', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => {
+                console.log(response)
+                return response.json() }
+            )
+            .then(data => {
+                console.log(data);
+                addToTrendingTable(data);
+                addToPriceChangePercentageTable(data);
+            })
+            .catch((error) => {
+                console.error('Foutje', error);
+            });
+    }
+
+    async function addToTrendingTable(data) {
+        var myTable = document.getElementById("trendingTable");
+
+        for (let index = 0; index < 5; index++) {
+            var row = myTable.insertRow(index+1);
+            var cell = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            cell.innerHTML = data[index].id;
+            cell1.innerHTML = data[index].market_cap;
+        }
+        myTable.appendChild(trendingTable)
+    }
+
+    async function addToPriceChangePercentageTable(data) {
+        var myTable = document.getElementById("priceChangeTable");
+
+        for (let index = 0; index < 20; index++) {
+            arrayAMap.set(data[index].id, data[index].price_change_percentage_24h);
+        }
+        sortedMap = new Map([...arrayAMap].sort((a, b) => a[1] - b[1]));
+        console.log(sortedMap);
+
+        Array.from(sortedMap, ([key, value]) =>
+            console.log(key))
+        console.log(value);
+
+        for (let index = 0; index < 5; index++) {
+            var row = myTable.insertRow(index+1);
+            var cell = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            var cell2 = row.insertCell(2);
+
+            cell.innerHTML = sortedMap[index].key;
+            cell1.innerHTML = sortedMap[index].value;
+            cell2.innerHTML = 'test';
+        }
+        myTable.appendChild(priceChangeTable)
+    }
+
+    async function getArticles() {
+        fetch('http://localhost:8080/articles', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Customer'
+            },
+        })
+            .then(response => {
+                console.log(response)
+                return response.json() }
+            )
+            .then(data => {
+                console.log(data);
+                displayArticles(data);
+            })
+            .catch((error) => {
+                console.error('Foutje', error);
+            });
+    }
+
+    async function displayArticles(data) {
+        var myTable = document.getElementById("articleTable");
+
+        for (let index = 0; index < 5; index++) {
+            var row = myTable.insertRow(index+1);
+            var a = document.createElement('a');
+            var cell = row.insertCell(0);
+            var href = data[index].link;
+            a.href = href;
+            a.innerHTML = href;
+            cell.appendChild(a);
+
+        }
+        myTable.appendChild(articleTable);
+
+    }
+
+
+</script>
+</body>
+</html>
+

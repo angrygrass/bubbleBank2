@@ -129,9 +129,9 @@ public class RootRepository {
         assetHistoryDao.saveAssetHistoryList(assetHistory);
     }
 
-    public Optional<List> getAllHistoricAssetsDatabase(String assetName, int numberDays) {
+    public Optional<List<AssetHistoryDto>> getAllHistoricAssetsDatabase(String assetCode, int numberDays) {
         System.out.println("testroot");
-        return assetHistoryDao.getAllHistoricAssets(assetName, numberDays);
+        return assetHistoryDao.getAllHistoricAssets(assetCode, numberDays);
     }
     // methods for RapidNewsService
     public void saveArticles(List<RapidNewsDto> articleList) {
