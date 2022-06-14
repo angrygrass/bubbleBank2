@@ -45,7 +45,6 @@ public class Profile {
         this.passWordAsEntered = passWordAsEntered;
     }
 
-    //todo jjs
     public Profile(String userName, String hash, String salt, User user) {
         this.userName = userName;
         this.hash = hash;

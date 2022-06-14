@@ -1,6 +1,8 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
 import nl.hva.miw.c27.team1.cryptobanking.model.Token;
 import nl.hva.miw.c27.team1.cryptobanking.model.User;
@@ -82,6 +84,13 @@ public class AuthenticationService {
             return bearerToken.substring(BEARER.length()).trim();
         }
         return token;
+    }
+
+    public ObjectNode getJsonObjectForToken(String tokenID) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        result.put("token", tokenID);
+        return result;
     }
 
 }

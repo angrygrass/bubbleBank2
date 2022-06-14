@@ -3,8 +3,6 @@ package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Profile;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RegisterDto;
-import nl.hva.miw.c27.team1.cryptobanking.service.AuthenticationService;
-import nl.hva.miw.c27.team1.cryptobanking.service.HashService;
 import nl.hva.miw.c27.team1.cryptobanking.service.PepperService;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.authentication.HashHelper;
@@ -21,18 +19,14 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value=("/users"))
 public class UserApiController extends BaseApiController {
-    private final HashService hashService;
     private final PepperService pepperService;
-    private final AuthenticationService authenticationService;
     private final Logger logger = LogManager.getLogger(UserApiController.class);
 
 
     @Autowired
-    public UserApiController(UserService userService, HashService hashService, PepperService pepperService, AuthenticationService authenticationService) {
+    public UserApiController(UserService userService, PepperService pepperService) {
         super(userService);
-        this.hashService = hashService;
         this.pepperService = pepperService;
-        this.authenticationService = authenticationService;
         logger.info("New UserApiController");
     }
 

@@ -88,4 +88,9 @@ public class UserService {
         return rootRepository.getUserByToken(token);
     }
 
+    public Optional<User> getUserByTokenID (String tokenID) {
+        Token token = new Token(tokenID, null, null);
+        return getUserByToken(token);
+    }
+
 }
