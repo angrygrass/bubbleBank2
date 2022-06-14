@@ -24,6 +24,7 @@ public class RapidApiNewsService {
 
     private RootRepository rootRepository;
     private List<RapidNewsDto> articleList;
+    private final String rapidApiKey = "6945d9a517msh8b1d924b670b723p1fc407jsn96e412329fb7";
     private int id = 1;
 
     @JsonIgnore
@@ -49,7 +50,7 @@ public class RapidApiNewsService {
             URL url = new URL("https://free-news.p.rapidapi.com/v1/search?q=crypto&lang=en&page_size=5");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("X-RapidAPI-Key", "6945d9a517msh8b1d924b670b723p1fc407jsn96e412329fb7");
+            connection.setRequestProperty("X-RapidAPI-Key", rapidApiKey);
                 if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
                     logger.info(connection.getResponseMessage());
                 } else {
