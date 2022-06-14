@@ -45,7 +45,7 @@ public class UserApiController extends BaseApiController {
             profile.setPassWordAsEntered(registerDto.getPassWord());
             profile.setSalt(new SaltMaker(SaltMaker.DEFAULT_HASH_LENGTH).generateSalt());
                 profile.setHash(HashHelper.hash(profile.getPassWordAsEntered(),
-                   profile.getSalt() , pepperService.getPepper()));
+                   profile.getSalt(), pepperService.getPepper()));
             userService.register(customer);
 
             return new ResponseEntity<>("Customer created",

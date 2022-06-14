@@ -51,13 +51,13 @@ public class AssetApiController extends BaseApiController {
     }
 
     @GetMapping(value="/history/{name}")
-    public ResponseEntity<List<AssetHistoryDto>> getHistoricAssetRate(@PathVariable("name") String assetName,
+    public ResponseEntity<List<AssetHistoryDto>> getHistoricAssetRate(@PathVariable("name") String assetCode,
                                                      @RequestParam("chartdays") int numberDays,
                                                      @RequestHeader(value="authorization") String authorization) {
-        System.out.println(assetName);
+        System.out.println(assetCode);
         System.out.println(numberDays);
         System.out.println(authorization);
-        Optional<List<AssetHistoryDto>> optList = assetService.getHistoricRates(assetName, numberDays);
+        Optional<List<AssetHistoryDto>> optList = assetService.getHistoricRates(assetCode, numberDays);
         List<AssetHistoryDto> normalList = optList.orElse(null);
         System.out.println(normalList);
         for (int i = 0; i < normalList.size(); i++) {

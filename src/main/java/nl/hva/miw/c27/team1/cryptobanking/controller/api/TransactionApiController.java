@@ -14,7 +14,7 @@ import top.jfunc.json.impl.JSONObject;
 
 
 @RestController
-@RequestMapping(value=("/assets"))
+@RequestMapping(value=("/transaction"))
 
 public class TransactionApiController extends BaseApiController {
     @JsonIgnore
@@ -39,7 +39,7 @@ public class TransactionApiController extends BaseApiController {
 
 
     @ResponseBody
-    @PostMapping("/transaction")
+    @PostMapping("/buy")
     public String buyAsset(@RequestBody TransactionDto transactionDto)
     {
         if (transactionDto.getBuyerId() == transactionDto.getSellerId()) {
