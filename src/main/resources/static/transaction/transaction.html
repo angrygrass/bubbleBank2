@@ -41,21 +41,40 @@ event.preventDefault();
     })
         .then(response => {
             console.log(response)
-            document.write(response.toString())
+
                 return response.json()
         }
         )
         .then(json => {
             console.log(json);
-            document.write(json)
+            let jsonText = JSON.stringify(json);
+            document.write(jsonText)
+            addToParagraph(json)
         })
         .catch((error) => {
             console.error('Foutje: ', error);
+            document.write(error)
         });
 }
 
+
+
+
 const form = document.querySelector('form');
 form.addEventListener('submit', handleSubmit);
+
+async function addToParagraph(json) {
+
+
+    const obj = JSON.parse(json);
+
+    let transactionText =
+        'Er zijn ' + obj.Quantity + ' ' + obj.Asset + ' gekocht door user '
+        + obj.Buyer + ' van user ' + obj.Seller;
+    document.write(transactionText);
+}
+
+
 
 </script>
 
