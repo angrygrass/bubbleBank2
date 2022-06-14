@@ -4,16 +4,20 @@ import com.google.gson.Gson;
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
+import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.apache.catalina.connector.Response;
 
+import org.apache.catalina.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -36,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AssetApiController.class)
+
 class AssetApiControllerTest {
 
     private final MockMvc mockMvc;
@@ -43,12 +48,18 @@ class AssetApiControllerTest {
     @MockBean
     private AssetService assetService;
 
+    @MockBean
+    AuthorisationService authorisationService;
+
     @Autowired
-    public AssetApiControllerTest(MockMvc mockMvc) {
-        super();
+    public AssetApiControllerTest(MockMvc mockMvc, AssetService assetService, AuthorisationService authorisationService) {
+        this.assetService = assetService;
         this.mockMvc = mockMvc;
+        this.authorisationService = authorisationService;
 
     }
+
+
 
     @Test
     void getAllAssetRates() {
@@ -63,7 +74,7 @@ class AssetApiControllerTest {
         MockHttpServletRequestBuilder asset_request =
                 MockMvcRequestBuilders.get("/assets/");
 
-        asset_request.header("authorization", "authorization");
+        asset_request.header(HttpHeaders.AUTHORIZATION, "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004");
 
 
 

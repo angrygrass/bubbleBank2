@@ -2,7 +2,10 @@ package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.service.AuthenticationService;
+import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import nl.hva.miw.c27.team1.cryptobanking.service.PortfolioService;
+import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping(value=("/portfolio"))
@@ -21,36 +21,37 @@ public class PortfolioApiController extends BaseApiController {
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(PortfolioApiController.class);
 
+    private AuthenticationService authenticationService;
+    private AuthorisationService authorisationService;
+    private UserService userService;
+
     @Autowired
-    public PortfolioApiController(PortfolioService portfolioService) {
+    public PortfolioApiController(PortfolioService portfolioService, AuthenticationService authenticationService, AuthorisationService authorisationService, UserService userService) {
         super(portfolioService);
+        this.authenticationService = authenticationService;
+        this.authorisationService = authorisationService;
+        this.userService = userService;
         logger.info("new empty PortfolioApiController");
     }
 
-    // before you can access portofolio, first you need to call upon authorization service to check whether visitor
-    // is allowed.
     @GetMapping
     public ResponseEntity<Portfolio> showPortfolioHandler(@RequestHeader(value="authorization") String authorization) {
         System.out.println(authorization);
-        // some method like validateAuthorization(authorization) from registrationService class? ?
-        // if return is customer, then call portfolioService.getPortfolio(Customer customer) with if statement ?
-
-        try {
-            // placeholder
-            Customer testCustomer = new Customer(3,"Customer", "Van","Hallo",
-                    111222333 , new SimpleDateFormat("yyyy-MM-dd").parse("1937-12-16"),
-                    "Acoma St","2222", "2316LS","Proston", "Nederland",
-                    new Profile(),
-                    new BankAccount("NL02ABNA0123456789",5000),new Portfolio(), new ArrayList<>());
-            // makes sense?
-
-            Portfolio portfolio = portfolioService.getPortfolio(testCustomer);
-            return ResponseEntity.ok().body(portfolio);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        ResponseEntity<Portfolio> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        //get user by token and authorise that token
+        String token = authenticationService.extractTokenFromBearer(authorization);
+        User user = userService.getUserByTokenID(token).orElse(null);
+        if (user != null && authorisationService.checkCustomerAuthorisation(authorization)) {
+            try {
+                Customer customer = (Customer) user;
+                    Portfolio portfolio = portfolioService.getPortfolio(customer);
+                return ResponseEntity.ok().body(portfolio);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
         }
-        //return new ResponseEntity<>(HttpStatus.OK);
+        return result;
     }
 
 
