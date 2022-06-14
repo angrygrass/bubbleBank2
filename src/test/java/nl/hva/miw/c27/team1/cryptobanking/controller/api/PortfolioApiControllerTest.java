@@ -1,13 +1,18 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.service.AuthenticationService;
+import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import nl.hva.miw.c27.team1.cryptobanking.service.PortfolioService;
+import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.sound.sampled.Port;
 import java.text.ParseException;
@@ -19,13 +24,21 @@ import java.util.HashMap;
 public class PortfolioApiControllerTest {
     private MockMvc mockMvc;
 
+
     @MockBean
     private PortfolioService mockPortfolioService;
+    @MockBean
+    private AuthenticationService mockAuthenticationService;
+    @MockBean
+    private AuthorisationService mockAuthorisationService;
+    @MockBean
+    private UserService mockUserService;
 
     @Autowired
     public PortfolioApiControllerTest(MockMvc mockMvc) {
         super();
         this.mockMvc = mockMvc;
+
     }
 
     @Test
@@ -39,6 +52,8 @@ public class PortfolioApiControllerTest {
         Mockito.when(mockPortfolioService.getPortfolio(customer)).thenReturn(portfolio);
         Portfolio expected = new Portfolio();
         Portfolio actual = portfolio;
+    //    MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/portfolio/assets");
+
     }
 
 
