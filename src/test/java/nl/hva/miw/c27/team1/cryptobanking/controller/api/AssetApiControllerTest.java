@@ -7,7 +7,9 @@ import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,19 +26,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//@SpringBootTest
+//@AutoConfigureMockMvc
 @WebMvcTest(AssetApiController.class)
-
 class AssetApiControllerTest {
 
-    private final MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
     @MockBean
     private AssetService assetService;
 
     @MockBean
-    AuthorisationService authorisationService;
+    private AuthorisationService authorisationService;
 
-    @Autowired
+
+    /*
     public AssetApiControllerTest(MockMvc mockMvc, AssetService assetService, AuthorisationService authorisationService) {
         this.assetService = assetService;
         this.mockMvc = mockMvc;
@@ -44,6 +49,7 @@ class AssetApiControllerTest {
 
     }
 
+     */
 
 
     @Test
@@ -54,12 +60,12 @@ class AssetApiControllerTest {
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
         assetList.add(asset);
         Mockito.when(assetService.getRates()).thenReturn(assetList);
-
+        Mockito.when(authorisationService.checkCustomerAuthorisation("authorization")).thenReturn(true);
 
         MockHttpServletRequestBuilder asset_request =
                 MockMvcRequestBuilders.get("/assets/");
 
-        asset_request.header(HttpHeaders.AUTHORIZATION, "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004");
+        asset_request.header(HttpHeaders.AUTHORIZATION, "authorization");
 
 
 
@@ -80,6 +86,7 @@ class AssetApiControllerTest {
 
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
         Mockito.when(assetService.getRate("bitcoin")).thenReturn(Optional.of(asset));
+        Mockito.when(authorisationService.checkCustomerAuthorisation("authorization")).thenReturn(true);
 
         MockHttpServletRequestBuilder asset_request =
         MockMvcRequestBuilders.get("/assets/" + asset.getAssetName());
@@ -111,6 +118,7 @@ class AssetApiControllerTest {
         assethistoryList.add(new AssetHistoryDto(null, asset2.getAssetCode(), asset2.getRateInEuros()));
 
         Mockito.when(assetService.getHistoricRates(asset.getAssetCode(), 3)).thenReturn(Optional.of(assethistoryList));
+        Mockito.when(authorisationService.checkCustomerAuthorisation("authorization")).thenReturn(true);
 
 
         MockHttpServletRequestBuilder asset_request =

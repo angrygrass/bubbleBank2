@@ -39,7 +39,9 @@ public class LoginApiController extends BaseApiController {
         if (!salt.equals("")) {
             String hashedPassword = HashHelper.hash(loginDto.getPassword(),
                     salt, pepperService.getPepper());
+
             Profile profile = authenticationService.validateLogin(loginDto.getUserName(), hashedPassword);
+
             if (profile != null) {
                 //get and save a token for identification
                 User user =  profile.getUser();

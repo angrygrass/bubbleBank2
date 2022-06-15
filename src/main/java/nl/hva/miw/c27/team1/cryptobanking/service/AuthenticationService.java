@@ -52,7 +52,9 @@ public class AuthenticationService {
     public Profile validateLogin(String userName, String hashedPassWord) {
         Optional<Profile> optionalProfile = rootRepository.getProfileByUsername(userName);
         Profile profile = optionalProfile.orElse(null);
+
         if (profile != null && profile.getHash().equals(hashedPassWord)) {
+
             return profile;
         } else {
             return null;
