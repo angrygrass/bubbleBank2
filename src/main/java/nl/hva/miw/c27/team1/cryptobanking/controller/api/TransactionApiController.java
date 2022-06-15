@@ -64,9 +64,11 @@ public class TransactionApiController extends BaseApiController {
                 throw new InvalidTransactionRequestException();
             }
 
-
-            String transactionMsg = transactionDto.getBuyerId() + " has bought " + transactionDto.getQuantity() +
-                    " " + transactionDto.getAssetCode() + " from " + transactionDto.getSellerId();
+            transactionService.doTransaction(transactionDto.getBuyerId(), transactionDto.getSellerId(),
+                    transactionDto.getAssetCode(), transactionDto.getQuantity());
+            String transactionMsg = transactionService.getUserName(transactionDto.getBuyerId()) + " has bought " +
+                    transactionDto.getQuantity() + " " + transactionService.getCryptoName(transactionDto.getAssetCode())
+                    + " from " + transactionService.getUserName(transactionDto.getSellerId());
             return ResponseEntity.ok().body(transactionMsg);
 
         }

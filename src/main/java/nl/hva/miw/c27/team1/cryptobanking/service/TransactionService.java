@@ -76,6 +76,17 @@ public class TransactionService {
 
     }
 
+    public String getUserName(int id) {
+        String userName = Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getFirstName() + " " +
+                Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getPrefix() + " " +
+                Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getSurName();
+        return userName;
+    }
+
+    public String getCryptoName(String code) {
+        return Objects.requireNonNull(rootRepository.findAssetByCode(code).orElse(null)).getAssetName();
+    }
+
 
     private void payTransactionCosts(double transactionCosts, int buyerId, int sellerId) {
 
@@ -122,5 +133,7 @@ public class TransactionService {
                 cryptoBalance);
 
     }
+
+
 
 }
