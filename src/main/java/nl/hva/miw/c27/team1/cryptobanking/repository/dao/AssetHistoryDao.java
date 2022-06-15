@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface AssetHistoryDao {
 
     void saveAssetHistoryList(List<AssetHistoryDto> assetHistoryList);
-    Optional<List> getAllHistoricAssets(String assetName, int numberDays);
+    Optional<List<AssetHistoryDto>> getAllHistoricAssets(String assetCode, int numberDays);
 
 }

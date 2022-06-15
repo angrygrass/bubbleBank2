@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping(value=("/portfolio/assets"))
+@RequestMapping(value=("/portfolio"))
 public class PortfolioApiController extends BaseApiController {
 
     @JsonIgnore
