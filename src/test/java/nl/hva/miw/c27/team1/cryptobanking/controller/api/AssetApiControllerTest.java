@@ -1,31 +1,24 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
-//import com.google.gson.Gson;
+
+import com.google.gson.Gson;
+
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
 import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
-import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
-import org.apache.catalina.connector.Response;
-
-import org.apache.catalina.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,25 +26,25 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+//@SpringBootTest
+//@AutoConfigureMockMvc
 @WebMvcTest(AssetApiController.class)
-
 class AssetApiControllerTest {
 
-    private final MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
     @MockBean
     private AssetService assetService;
 
     @MockBean
-    AuthorisationService authorisationService;
+    private AuthorisationService authorisationService;
 
-    @Autowired
+
+    /*
     public AssetApiControllerTest(MockMvc mockMvc, AssetService assetService, AuthorisationService authorisationService) {
         this.assetService = assetService;
         this.mockMvc = mockMvc;
@@ -59,6 +52,7 @@ class AssetApiControllerTest {
 
     }
 
+     */
 
 
     @Test
@@ -69,12 +63,12 @@ class AssetApiControllerTest {
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
         assetList.add(asset);
         Mockito.when(assetService.getRates()).thenReturn(assetList);
-
+        Mockito.when(authorisationService.checkCustomerAuthorisation("authorization")).thenReturn(true);
 
         MockHttpServletRequestBuilder asset_request =
                 MockMvcRequestBuilders.get("/assets/");
 
-        asset_request.header(HttpHeaders.AUTHORIZATION, "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004");
+        asset_request.header(HttpHeaders.AUTHORIZATION, "authorization");
 
 
 
@@ -95,6 +89,7 @@ class AssetApiControllerTest {
 
         Asset asset = new Asset("btc", "bitcoin", 30000.00);
         Mockito.when(assetService.getRate("bitcoin")).thenReturn(Optional.of(asset));
+        Mockito.when(authorisationService.checkCustomerAuthorisation("authorization")).thenReturn(true);
 
         MockHttpServletRequestBuilder asset_request =
         MockMvcRequestBuilders.get("/assets/" + asset.getAssetName());
@@ -126,6 +121,7 @@ class AssetApiControllerTest {
         assethistoryList.add(new AssetHistoryDto(null, asset2.getAssetCode(), asset2.getRateInEuros()));
 
         Mockito.when(assetService.getHistoricRates(asset.getAssetCode(), 3)).thenReturn(Optional.of(assethistoryList));
+        Mockito.when(authorisationService.checkCustomerAuthorisation("authorization")).thenReturn(true);
 
 
         MockHttpServletRequestBuilder asset_request =
