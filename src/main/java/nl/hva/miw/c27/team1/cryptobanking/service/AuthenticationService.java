@@ -69,6 +69,9 @@ public class AuthenticationService {
         return token != null && token.getTokenId().equals(strToken) && token.getValiduntil().after(now);
     }
 
+    public Optional<Token> getTokenByUserId(int userId) {return rootRepository.getTokenByUserId(userId);}
+
+
     public void save(Token token) {
         tokenRepository.save(token);
     }
@@ -77,6 +80,10 @@ public class AuthenticationService {
         if (!user.getRole().isEmpty() && user.getRole().equals(Role.Admin.name())) {
             rootRepository.revokeTokenFromUser(user);
         }
+    }
+
+    public boolean checkIfExistsValidTokenForUser(User user) {
+        return rootRepository.checkIfExistsValidTokenForUser(user);
     }
 
     public String extractTokenFromBearer(String bearerToken) {
