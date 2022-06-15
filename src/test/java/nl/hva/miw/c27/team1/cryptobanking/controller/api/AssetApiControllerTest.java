@@ -1,31 +1,19 @@
 package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 
-import com.google.gson.Gson;
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
 import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
-import nl.hva.miw.c27.team1.cryptobanking.service.UserService;
-import org.apache.catalina.connector.Response;
-
-import org.apache.catalina.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 

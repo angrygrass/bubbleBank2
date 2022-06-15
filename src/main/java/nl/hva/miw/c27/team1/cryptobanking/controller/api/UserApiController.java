@@ -34,7 +34,6 @@ public class UserApiController extends BaseApiController {
     public ResponseEntity<String> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
         Customer customer = new Customer(registerDto);
         try {
-            //todo refactor
             Profile profile = customer.getProfile();
             profile.setPassWordAsEntered(registerDto.getPassWord());
             profile.setSalt(new SaltMaker(SaltMaker.DEFAULT_HASH_LENGTH).generateSalt());
@@ -42,8 +41,7 @@ public class UserApiController extends BaseApiController {
                    profile.getSalt(), pepperService.getPepper()));
             userService.register(customer);
 
-            return new ResponseEntity<>("Customer created",
-                    HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (DuplicateKeyException e) {
 
             return new ResponseEntity<>("user already exists", HttpStatus.UNPROCESSABLE_ENTITY);

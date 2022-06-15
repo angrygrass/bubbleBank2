@@ -82,7 +82,7 @@ public class JdbcUserDao implements UserDao {
         if (users.size() != 1) {
             return Optional.empty();
         } else {
-            return Optional.of(users.get(0));
+             return Optional.of(users.get(0));
         }
     }
     @Override
@@ -95,8 +95,6 @@ public class JdbcUserDao implements UserDao {
             return Optional.of(users.get(0));
         }
     }
-
-
 
     @Override
     public Optional<Customer> updateCustomer(Customer user) {

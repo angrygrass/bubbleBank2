@@ -87,6 +87,9 @@ public class RootRepository {
 
     public Optional<Token> getTokenByUserId(int userId) {return tokenDao.findByUserId(userId);}
 
+    public boolean checkIfExistsValidTokenForUser(User user) { return tokenDao.checkIfExistsValidTokenForUser(user);
+    }
+
     public void revokeTokenFromUser(User user) {tokenDao.revokeToken(user);}
 
     // methods for Bank Account

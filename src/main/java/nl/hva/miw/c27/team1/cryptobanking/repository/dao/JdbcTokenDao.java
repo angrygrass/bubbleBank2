@@ -70,8 +70,20 @@ public class JdbcTokenDao implements TokenDao {
             }
         }
 
+        public boolean checkIfExistsValidTokenForUser(User user) {
+            boolean result = false;
+            List<Token> tokens = jdbcTemplate.query(("select * from token " +
+                        "WHERE token.userID = ?"), new TokenRowMapper(), user.getId());
+            for (Token token: tokens) {
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                //token should be equal to token in database and still be valid
+                if (token.getValiduntil().after(now)) return true;
+            }
+            return result;
+        }
 
-        private class TokenRowMapper implements RowMapper<Token> {
+
+    private class TokenRowMapper implements RowMapper<Token> {
 
             @Override
             public Token mapRow(ResultSet resultSet, int rowNum) throws SQLException {
@@ -81,7 +93,6 @@ public class JdbcTokenDao implements TokenDao {
                 return new Token(idToken, validuntil, jdbcUserDao.findById(userId).orElse(null));
             }
         }
-
     }
 
 
