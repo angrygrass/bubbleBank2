@@ -74,7 +74,9 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<User> findByToken(Token token) {
+        System.out.println(token.getTokenId());
         List<User> users =
+
                 jdbcTemplate.query("select * from user where userId = (select userId from" +
                         " token where idToken = ?);", new UserRowMapper(), token.getTokenId());
         if (users.size() != 1) {

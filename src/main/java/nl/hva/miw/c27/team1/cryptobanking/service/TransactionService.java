@@ -7,8 +7,10 @@ import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InsufficientBuyer
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import top.jfunc.json.impl.JSONObject;
+
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -28,7 +30,7 @@ public class TransactionService {
         logger.info("new BuyAssetService");
     }
 
-    public String doTransaction(int buyerId, int sellerId, String assetCode, double quantity) {
+    public ResponseEntity.BodyBuilder doTransaction(int buyerId, int sellerId, String assetCode, double quantity) {
 
 
         //calculate transaction costs in euro - ATTENTION: TRANSACTIONCOSTS IN THE DATABASE IS A PERCENTAGE!
@@ -66,15 +68,12 @@ public class TransactionService {
        // pay transaction costs
 
         payTransactionCosts(transactionCostsInEuros, buyerId, sellerId);
-        String jsonString = new JSONObject()
-                .put("Buyer", rootRepository.getUserById(buyerId).orElse(null).getFirstName())
-                .put("Seller", rootRepository.getUserById(sellerId).orElse(null).getFirstName())
-                .put("Asset", rootRepository.findAssetByCode(assetCode).orElse(null).getAssetName())
-                .put("Quantity", quantity).toString();
+
+        return ResponseEntity.ok();
 
 
 
-        return jsonString;
+
     }
 
 

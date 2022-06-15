@@ -65,12 +65,14 @@ public class TransactionApiController extends BaseApiController {
             }
 
 
-            String transactionMsg = transactionService.doTransaction(transactionDto.getBuyerId(), transactionDto.getSellerId(),
-                    transactionDto.getAssetCode(), transactionDto.getQuantity());
+            String transactionMsg = transactionDto.getBuyerId() + " has bought " + transactionDto.getQuantity() +
+                    " " + transactionDto.getAssetCode() + " from " + transactionDto.getSellerId();
             return ResponseEntity.ok().body(transactionMsg);
 
         }
-        return result;
+
+            return result;
+
     }
 
 }
