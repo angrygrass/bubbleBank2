@@ -38,6 +38,4 @@ public class JdbcTransactionCostsDao implements TransactionCostsDao {
         return jdbcTemplate.queryForObject(sql, Double.class);
     }
 
-
-
 }

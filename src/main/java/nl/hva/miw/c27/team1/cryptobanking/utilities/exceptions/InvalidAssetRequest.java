@@ -1,10 +1,21 @@
 package nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions;
 
+import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
+import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.validation.AgeValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "This is not a valid entry. Our available coins are " +
-        "bitcoin, solana, ethereum, flow,cardano, dai, apecoin, tether, gas, tron, polkadot, waves, loopring, dogecoin," +
-        " tezos, chiliz, eos, uma, radix & kusama")
-public class InvalidAssetRequest extends RuntimeException {}
+import java.util.Objects;
+
+
+@ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+public class InvalidAssetRequest extends RuntimeException {
+
+
+    public InvalidAssetRequest(String d) {
+        super(d);
+
+    }
+}
 

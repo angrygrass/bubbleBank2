@@ -20,7 +20,7 @@ public class AgeValidator {
         return over18;
     }
 
-    //Helper method required to convert Data to LocalDate for calculation of checkAge()
+    //Helper method required to convert Date to LocalDate for calculation of checkAge()
     public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())

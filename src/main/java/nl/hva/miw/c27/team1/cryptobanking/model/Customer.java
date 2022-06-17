@@ -51,7 +51,7 @@ public class Customer extends User {
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 new Profile(), new BankAccount(), new Portfolio(), new ArrayList<>());
         this.setBankAccount(new BankAccount(dto.getIban(), INITIAL_BALANCE,this));
-        this.setProfile(new Profile(dto.getUserName(), INITIAL_HASH, dto.getPassWord(), this));
+        this.setProfile(new Profile(dto.getUserName(), INITIAL_HASH, dto.getPassword(), this));
     }
 
     public Customer(int id, String role) {

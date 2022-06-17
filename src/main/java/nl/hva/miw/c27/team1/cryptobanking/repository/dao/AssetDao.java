@@ -15,5 +15,6 @@ public interface AssetDao {
     Optional<Asset> findByCode(String code);
     Optional<Asset> findByName(String name);
     List<Asset> getAll();
+    String getInvalidAssetMsg();
 
 }

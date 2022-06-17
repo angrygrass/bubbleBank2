@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TransactionDao {
     Optional<Transaction> findById(int id);
-    void save(Transaction transaction);
+    int save(Transaction transaction);
     List<Transaction> getAll();
 
 }

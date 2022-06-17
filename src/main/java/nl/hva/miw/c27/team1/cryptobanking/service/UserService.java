@@ -41,6 +41,9 @@ public class UserService {
         if (!AgeValidator.checkAge(customer)) {
             throw new RegistrationFailedExceptionAge();
         }
+        if (!NameValidator.isNameValid(customer.getFirstName(), customer.getPrefix(), customer.getSurName())) {
+            throw new RegistrationFailedExceptionName();
+        }
         if (!BSNValidator.checkBsn(customer)) {
             throw new RegistrationFailedExceptionBsn(); // todo unhandled exceptions, should be handled in apicontroller to return a 400
         }

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -46,7 +45,8 @@ public class JdbcAssetDao implements AssetDao {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidAssetRequest();
+
+            throw new InvalidAssetRequest(getInvalidAssetMsg());
         }
     }
 
@@ -57,12 +57,27 @@ public class JdbcAssetDao implements AssetDao {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidAssetRequest();
+            throw new InvalidAssetRequest(getInvalidAssetMsg());
         }
 
     }
+    @Override
+    public String getInvalidAssetMsg() {
+        StringBuilder s = new StringBuilder("This is not a valid coin. Our coins are ");
+        for (int i = 0; i < getAll().size(); i++) {
+            s.append(getAll().get(i).getAssetName());
+            if (i < getAll().size() - 1) {
+                s.append(", ");
+            }
+
+        }
+
+        return s.toString();
+    }
+
 
     @Override
+
     public List<Asset> getAll() {
         String sql = "SELECT * FROM asset;";
         return jdbcTemplate.query(sql, new AssetRowMapper());
