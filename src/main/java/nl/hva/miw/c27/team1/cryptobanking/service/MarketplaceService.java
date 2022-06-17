@@ -35,7 +35,9 @@ public class MarketplaceService {
 
     public Transaction acceptOffer(int userId, int offerId) {
 
-        // TODO check if the offer can be accepted by this user. If so, do the transaction and return it.
+        // TODO check if the offer can be accepted by this user. If buy offer,
+        // TODO the user should have enough assets, if sell offer, the user should have enough money in bank account.
+        // TODO If so, do the transaction and return it.
         // TODO Also adjust TransactionService class so that it uses the appropriate price (at the moment it just
         // TODO uses the current rate when doing transactions between users
         // TODO If it can't be accepted, throw Exception

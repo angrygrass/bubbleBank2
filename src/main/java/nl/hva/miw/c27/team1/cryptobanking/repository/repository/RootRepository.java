@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -49,8 +50,11 @@ public class RootRepository {
     // methods for Customer
     public void saveCustomer(Customer customer) {
         userDao.save(customer);
+
         profileDao.save(customer.getProfile());
+
         bankAccountDao.save(customer.getBankAccount());
+
     }
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
@@ -62,9 +66,11 @@ public class RootRepository {
     }
 
     public Optional <User> getUserById(int id) {
+        Optional<User> user = userDao.findById(id);
+        assert user.orElse(null) != null;
+        user.orElse(null).setProfile(getProfileByUserId(id).orElse(null));
 
-
-        return userDao.findById(id);
+        return user;
     }
 
     public Optional<User> getUserByToken(Token token) {return userDao.findByToken(token);}
@@ -81,6 +87,8 @@ public class RootRepository {
 
     // methods for Profile
     public Optional<Profile> getProfileByUsername(String username) {return profileDao.findByUserName(username);}
+
+    public Optional<Profile> getProfileByUserId(int userId) {return profileDao.findByUserId(userId);}
 
     // methods for Token
     public void saveToken(Token token) {tokenDao.save(token);}
@@ -148,7 +156,11 @@ public class RootRepository {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
-        return portfolioDao.getPortfolio(customer);
+
+        Portfolio portfolio = portfolioDao.getPortfolio(customer);
+        portfolio.setCustomer(customer);
+
+        return portfolio;
     }
 
     public boolean checkAssetInPortfolio(String assetCode, int userId) {
@@ -229,6 +241,8 @@ public class RootRepository {
     }
 
 
-
+    public LocalDateTime getLastAssetRateUpdate() {
+        return assetDao.getLastAssetRateUpdate();
+    }
 }
 
