@@ -44,6 +44,7 @@ public class PortfolioApiController extends BaseApiController {
         if (user != null && authorisationService.checkCustomerAuthorisation(authorization)) {
             try {
                 Customer customer = (Customer) user;
+
                     Portfolio portfolio = portfolioService.getPortfolio(customer);
                 return ResponseEntity.ok().body(portfolio);
             } catch (Exception e) {

@@ -9,5 +9,6 @@ public interface ProfileDao {
 
     void save(Profile profile);
     Optional<Profile> findByUserName(String userName);
+    Optional<Profile> findByUserId(int userId);
 
 }

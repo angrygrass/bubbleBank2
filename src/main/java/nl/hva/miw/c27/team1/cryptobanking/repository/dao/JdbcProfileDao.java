@@ -61,6 +61,19 @@ public class JdbcProfileDao implements ProfileDao {
         }
     }
 
+    @Override
+    public Optional<Profile> findByUserId(int userId) {
+        List<Profile> profiles =
+                jdbcTemplate.query(("select * from profile where userId = ?"), new ProfileRowMapper(), userId);
+        if (profiles.size() != 1) {
+
+            return Optional.empty();
+        } else {
+
+            return Optional.of(profiles.get(0));
+        }
+    }
+
 
     private  class ProfileRowMapper implements RowMapper<Profile> {
 

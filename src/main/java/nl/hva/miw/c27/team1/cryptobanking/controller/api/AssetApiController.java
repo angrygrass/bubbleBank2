@@ -4,6 +4,7 @@ import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.AssetHistoryDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.AssetService;
 import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
+import nl.hva.miw.c27.team1.cryptobanking.service.CoinGeckoService;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidAssetRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -36,10 +38,12 @@ public class AssetApiController extends BaseApiController {
 
     @GetMapping
     public ResponseEntity<List> getAllAssetRates(@RequestHeader(value="authorization") String authorization) {
+
         ResponseEntity<List> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         try {
             if (authorisationService.checkCustomerAuthorisation(authorization)) {
                 result = ResponseEntity.ok().body(assetService.getRates());
+                result.getBody().add(0, ResponseEntity.ok().body(assetService.getLastUpdateTimeStamp()));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.*;
@@ -67,6 +68,8 @@ public class UserService {
             throw new RegistrationFailedExceptionUsername();
         }
         rootRepository.saveCustomer(customer);
+        System.out.println("na user service save");
+        System.out.println(customer.getFirstName());
         return customer;
     }
 
