@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidAssetRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -41,13 +44,23 @@ public class JdbcTransactionDao implements TransactionDao{
     }
 
     @Override
-    public void save(Transaction transaction) {
+    public int save(Transaction transaction) {
         String sql = "INSERT INTO transactionhistory(quantity, rateInEuro,dateTime,transactionCosts,buyerId,sellerId,assetCode)" +
                 " VALUES (?,?,?,?,?,?,?);";
+
         jdbcTemplate.update(sql,transaction.getQuantity(),transaction.getRateInEuro(),
         transaction.getDateTime(),transaction.getTransactionCosts(),transaction.getBuyerId(),transaction.getSellerId(),
                 transaction.getAssetCode()
                 );
+
+        sql = "SELECT transactionId FROM transactionhistory order by `dateTime` desc limit 1;";
+
+        Integer transactionId = jdbcTemplate.queryForObject(sql, Integer.class);
+        if (transactionId == null) {
+            return 0;
+        } else {
+            return transactionId;
+        }
     }
 
     //Seller or Buyer histories ???

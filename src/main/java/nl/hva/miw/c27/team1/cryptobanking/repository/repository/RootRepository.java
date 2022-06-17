@@ -110,7 +110,7 @@ public class RootRepository {
     // methods for Transaction
     public Optional<Transaction> findTransactionById (int id) {return transactionDao.findById(id);}
 
-    public void saveTransaction(Transaction transaction) {transactionDao.save(transaction);}
+    public int saveTransaction(Transaction transaction) {return transactionDao.save(transaction);}
 
     public List<Transaction> getAllTransactions() {return transactionDao.getAll();}
 
@@ -126,6 +126,8 @@ public class RootRepository {
     public Optional<Asset> findAssetByName (String name) {return assetDao.findByName(name);}
 
     public List<Asset> getAllAssets() {return assetDao.getAll();}
+
+    public String getInvalidAssetMsg() {return assetDao.getInvalidAssetMsg();}
 
     // methods for Asset history
     public void saveAssetHistory(List<AssetHistoryDto> assetHistory) {

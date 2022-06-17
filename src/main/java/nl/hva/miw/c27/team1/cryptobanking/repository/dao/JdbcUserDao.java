@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionBsn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +55,15 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public void save(User user) {
+        try {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> insertUserStatement(user, connection), keyHolder);
         int newKey = Objects.requireNonNull(keyHolder.getKey()).intValue();
-        user.setId(newKey);
+        user.setId(newKey);}
+        catch (Exception e) {
+            throw new RegistrationFailedExceptionBsn();
+
+        }
     }
 
 
@@ -74,7 +80,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<User> findByToken(Token token) {
-        System.out.println(token.getTokenId());
+
         List<User> users =
 
                 jdbcTemplate.query("select * from user where userId = (select userId from" +

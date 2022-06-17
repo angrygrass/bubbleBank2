@@ -30,7 +30,7 @@ public class TransactionService {
         logger.info("new BuyAssetService");
     }
 
-    public ResponseEntity.BodyBuilder doTransaction(int buyerId, int sellerId, String assetCode, double quantity) {
+    public Transaction doTransaction(int buyerId, int sellerId, String assetCode, double quantity) {
 
 
         //calculate transaction costs in euro - ATTENTION: TRANSACTIONCOSTS IN THE DATABASE IS A PERCENTAGE!
@@ -61,15 +61,16 @@ public class TransactionService {
 
         // save transaction to database
 
-        rootRepository.saveTransaction(new Transaction(1, quantity, Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).
+        Transaction transaction = new Transaction(1, quantity, Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).
                 orElse(null)).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, buyerId, sellerId,
-                assetCode));
+                assetCode);
+        transaction.setTransactionId(rootRepository.saveTransaction(transaction));
 
        // pay transaction costs
 
         payTransactionCosts(transactionCostsInEuros, buyerId, sellerId);
 
-        return ResponseEntity.ok();
+        return transaction;
 
 
 
@@ -97,12 +98,9 @@ public class TransactionService {
 
         if (buyerId == 1) {
             rootRepository.updateBalanceByUserId(sellerId, rootRepository.getBalanceByUserId(sellerId) - transactionCosts);
-            System.out.println("Buyer = bank");
         } else if (sellerId == 1) {
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts);
-            System.out.println(transactionCosts);
         } else {
-            System.out.println("Buyer and seller are users");
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts / 2);
             rootRepository.updateBalanceByUserId(sellerId, rootRepository.getBalanceByUserId(sellerId) - transactionCosts / 2);
         }

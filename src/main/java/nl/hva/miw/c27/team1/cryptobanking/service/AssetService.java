@@ -38,4 +38,6 @@ public class AssetService {
     public RootRepository getRootRepository() {
         return rootRepository;
     }
+
+    public String getInvalidAssetMsg() {return rootRepository.getInvalidAssetMsg();}
 }

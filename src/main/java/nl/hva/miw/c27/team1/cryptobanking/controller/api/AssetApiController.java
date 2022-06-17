@@ -57,7 +57,9 @@ public class AssetApiController extends BaseApiController {
             if (optAsset.isPresent()) {
                 return ResponseEntity.ok().body(optAsset.get());
             } else {
-                throw new InvalidAssetRequest();
+
+
+                throw new InvalidAssetRequest(assetService.getInvalidAssetMsg());
             }
         }
         return result;
@@ -76,7 +78,8 @@ public class AssetApiController extends BaseApiController {
             if (optList.isPresent()) {
                 return ResponseEntity.ok().body(optList.get());
             } else {
-                throw new InvalidAssetRequest();
+
+                throw new InvalidAssetRequest(assetService.getInvalidAssetMsg());
             }
 
 

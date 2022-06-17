@@ -36,7 +36,7 @@ public class PortfolioApiController extends BaseApiController {
 
     @GetMapping
     public ResponseEntity<Portfolio> showPortfolioHandler(@RequestHeader(value="authorization") String authorization) {
-        System.out.println(authorization);
+
         ResponseEntity<Portfolio> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         //get user by token and authorise that token
         String token = authenticationService.extractTokenFromBearer(authorization);
