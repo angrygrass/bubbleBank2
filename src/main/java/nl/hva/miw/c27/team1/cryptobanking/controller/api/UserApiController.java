@@ -37,21 +37,17 @@ public class UserApiController extends BaseApiController {
     @PostMapping("register")
     public ResponseEntity<Customer> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
 
-
-
         Customer customer = new Customer(registerDto);
-        System.out.println(customer);
         customer.setProfile(new Profile(registerDto.getUserName(), null, null, customer));
         Profile profile = customer.getProfile();
         customer.setBankAccount(new BankAccount(registerDto.getIban(), 5000, customer));
         profile.setPassWordAsEntered(registerDto.getPassword());
         profile.setSalt(new SaltMaker(SaltMaker.DEFAULT_HASH_LENGTH).generateSalt());
         profile.setHash(HashHelper.hash(profile.getPassWordAsEntered(), profile.getSalt(), pepperService.getPepper()));
-        System.out.println(profile);
-        System.out.println(customer);
         userService.register(customer);
-        System.out.println("na controller register");
-        System.out.println(customer);
+        customer.getBankAccount().setCustomer(null);
+        customer.getProfile().setUser(null);
+
         return ResponseEntity.ok(customer);
 
     }

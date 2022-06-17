@@ -68,8 +68,7 @@ public class UserService {
             throw new RegistrationFailedExceptionUsername();
         }
         rootRepository.saveCustomer(customer);
-        System.out.println("na user service save");
-        System.out.println(customer.getFirstName());
+
         return customer;
     }
 

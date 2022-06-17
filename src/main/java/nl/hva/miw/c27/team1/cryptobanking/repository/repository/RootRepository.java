@@ -50,11 +50,11 @@ public class RootRepository {
     // methods for Customer
     public void saveCustomer(Customer customer) {
         userDao.save(customer);
-        System.out.println("na userdaosave");
+
         profileDao.save(customer.getProfile());
-        System.out.println("na profiledaosave");
+
         bankAccountDao.save(customer.getBankAccount());
-        System.out.println("na bankaccountdaosave");
+
     }
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
