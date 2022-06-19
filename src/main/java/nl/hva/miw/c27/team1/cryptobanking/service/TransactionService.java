@@ -22,6 +22,7 @@ import java.util.Objects;
 public class TransactionService {
     private RootRepository rootRepository;
     private final Logger logger = LogManager.getLogger(TransactionService.class);
+    private final int BANK_ID = 1;
 
     @Autowired
     public TransactionService(RootRepository rootRepository) {
@@ -78,27 +79,24 @@ public class TransactionService {
     }
 
     public String getUserName(int id) {
-        String userName = Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getFirstName() + " " +
+        return Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getFirstName() + " " +
                 Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getPrefix() + " " +
                 Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getSurName();
-        return userName;
     }
 
-    public String getCryptoName(String code) {
-        return Objects.requireNonNull(rootRepository.findAssetByCode(code).orElse(null)).getAssetName();
-    }
+
 
 
     private void payTransactionCosts(double transactionCosts, int buyerId, int sellerId) {
 
         double transactionCostsInDollar = transactionCosts * (1 / Objects.requireNonNull(rootRepository.findAssetByCode("USD").orElse(null)).
                 getRateInEuros());
-        double bankDollarBalance = rootRepository.getQuantityOfAssetInPortfolio("usd", 1).orElse(0.0);
-        rootRepository.editPortfolio("usd", 1, bankDollarBalance + transactionCostsInDollar);
+        double bankDollarBalance = rootRepository.getQuantityOfAssetInPortfolio("usd", BANK_ID).orElse(0.0);
+        rootRepository.editPortfolio("usd", BANK_ID, bankDollarBalance + transactionCostsInDollar);
 
-        if (buyerId == 1) {
+        if (buyerId == BANK_ID) {
             rootRepository.updateBalanceByUserId(sellerId, rootRepository.getBalanceByUserId(sellerId) - transactionCosts);
-        } else if (sellerId == 1) {
+        } else if (sellerId == BANK_ID) {
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts);
         } else {
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts / 2);
@@ -108,10 +106,10 @@ public class TransactionService {
 
     private boolean checkBankAccountBalance(int buyerId, int sellerId, String assetCode, double quantity, double transactionCosts) {
 
-        if (buyerId != 1 && sellerId != 1) {
+        if (buyerId != BANK_ID && sellerId != BANK_ID) {
             transactionCosts = transactionCosts / 2;
         }
-        if (buyerId == 1) {transactionCosts = 0;}
+        if (buyerId == BANK_ID) {transactionCosts = 0;}
 
         if (rootRepository.findAssetByCode(assetCode).orElse(null).getRateInEuros() * quantity +
                 transactionCosts > rootRepository.getBalanceByUserId(buyerId)) {

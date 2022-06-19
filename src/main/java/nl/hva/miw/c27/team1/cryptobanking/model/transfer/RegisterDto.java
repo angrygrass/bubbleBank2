@@ -2,8 +2,16 @@ package nl.hva.miw.c27.team1.cryptobanking.model.transfer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidDateException;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionAge;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.validation.DateValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -17,7 +25,7 @@ public class RegisterDto {
     private String prefix;
     private String surName;
     private int bsnNumber;
-    private Date birthDate;
+    private String birthDate;
     private String streetName;
     private String houseNumber;
     private String zipCode;
@@ -30,29 +38,38 @@ public class RegisterDto {
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(RegisterDto.class);
 
-    public RegisterDto(Customer customer) {
+    public RegisterDto(int userId, String firstName, String prefix, String surName, int bsnNumber, String birthDate, String streetName,
+                       String houseNumber, String zipCode, String residence, String country, String iban, String userName,
+                       String password) throws ParseException {
         super();
-        this.firstName = customer.getFirstName();
-        this.prefix = customer.getPrefix();
-        this.surName = customer.getSurName();
-        this.bsnNumber = customer.getBsnNumber();
-        this.birthDate = customer.getBirthDate();
-        this.streetName = customer.getStreetName();
-        this.houseNumber = customer.getHouseNumber();
-        this.zipCode = customer.getZipCode();
-        this.residence = customer.getResidence();
-        this.country = customer.getCountry();
-        this.iban = customer.getBankAccount().getIban();
-        this.userName = customer.getProfile().getUserName();
-        this.password = customer.getProfile().getPassWordAsEntered();
+        this.firstName = firstName;
+        this.prefix = prefix;
+        this.surName = surName;
+        this.bsnNumber = bsnNumber;
+        if (DateValidator.checkDate(birthDate)) {
+
+            this.birthDate = birthDate;
+
+        } else {
+            throw new InvalidDateException();
+        }
+
+        this.streetName = streetName;
+        this.houseNumber = houseNumber;
+        this.zipCode = zipCode;
+        this.residence = residence;
+        this.country = country;
+        this.iban = iban;
+        this.userName = userName;
+        this.password = password;
         logger.info("New RegisterDto using all-args");
     }
 
-    public RegisterDto() {
+   /* public RegisterDto() {
 
         super();
         logger.info("New empty RegisterDto");
-    }
+    }*/
 
     // getters & setters
 //    public int getUserId() {
@@ -95,11 +112,11 @@ public class RegisterDto {
         this.bsnNumber = bsnNumber;
     }
 
-    public Date getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(String birthDate) {
         this.birthDate = birthDate;
     }
 

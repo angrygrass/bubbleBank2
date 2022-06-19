@@ -19,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 
 @RestController
 @RequestMapping(value=("/users"))
@@ -35,7 +37,7 @@ public class UserApiController extends BaseApiController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<Customer> registerCustomerHandler(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<Customer> registerCustomerHandler(@RequestBody RegisterDto registerDto) throws ParseException {
 
         Customer customer = new Customer(registerDto);
         customer.setProfile(new Profile(registerDto.getUserName(), null, null, customer));
