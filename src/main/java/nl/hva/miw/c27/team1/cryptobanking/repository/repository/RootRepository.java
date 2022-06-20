@@ -205,6 +205,18 @@ public class RootRepository {
     public Optional<Boolean> assetPresentInPortfolio(String assetCode, int userId) {return portfolioDao.isPresentInPortfolio(
             assetCode, userId);}
 
+    //Methods for Marketplace
+    public List<MarketplaceOffer> getAllOffers() {return marketplaceDao.getAllOffers();}
+
+    public Optional<MarketplaceOffer> getOfferById(int id) {return marketplaceDao.getOfferById(id);}
+
+    public int saveMarketplaceOffer(MarketplaceOffer marketplaceOffer) {return marketplaceDao.save(marketplaceOffer);}
+
+    public void deleteMarketplaceOffer(int id) {marketplaceDao.deleteOfferById(id);}
+
+    public void editMarketplaceOffer(MarketplaceOffer marketplaceOffer) {marketplaceDao.editMarketplaceOffer(marketplaceOffer);}
+
+
     // methods for transaction costs
 
     public double getTransactionCosts() {return transactionCostsDao.get();}
@@ -263,16 +275,6 @@ public class RootRepository {
 
     public MarketplaceDao getMarketplaceDao() {return marketplaceDao;}
 
-    //Methods for Marketplace
-    public List<MarketplaceOffer> getAllOffers() {return marketplaceDao.getAllOffers();}
-
-    public Optional<MarketplaceOffer> getOfferById(int id) {return marketplaceDao.getOfferById(id);}
-
-    public int saveMarketplaceOffer(MarketplaceOffer marketplaceOffer) {return marketplaceDao.save(marketplaceOffer);}
-
-    public void deleteMarketplaceOffer(int id) {marketplaceDao.deleteOfferById(id);}
-
-    public void editMarketplaceOffer(MarketplaceOffer marketplaceOffer) {marketplaceDao.editMarketplaceOffer(marketplaceOffer);}
 
 
 

@@ -62,7 +62,7 @@ public class TransactionService {
     public double getTransactionCostsInEuro(String assetCode, double quantity) {
         Asset asset = rootRepository.findAssetByCode(assetCode).orElse(null);
         if (asset != null) {
-            return rootRepository.getTransactionCosts() * quantity *  asset.getRateInEuros() / 100;
+            return rootRepository.getTransactionCosts() * quantity * asset.getRateInEuros() / 100;
         } else {
             throw new InvalidAssetRequest(assetService.getInvalidAssetMsg());
         }
