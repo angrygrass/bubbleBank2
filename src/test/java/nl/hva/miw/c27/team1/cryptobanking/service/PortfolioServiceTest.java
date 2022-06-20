@@ -1,7 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
-import nl.hva.miw.c27.team1.cryptobanking.repository.dao.JdbcPortfolioDao;
 import nl.hva.miw.c27.team1.cryptobanking.repository.dao.PortfolioDao;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -9,13 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -25,7 +22,7 @@ class PortfolioServiceTest {
 
     private  RootRepository rootRepository = new RootRepository(
             null, null, null, null,null,null,portfolioDao,
-            null, null, null);
+            null, null, null, marketplaceDao);
     private PortfolioService portfolioService = new PortfolioService(rootRepository);
 
 

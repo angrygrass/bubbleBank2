@@ -46,6 +46,7 @@ public class TransactionService {
             throw new InsufficientSellerCryptoBalanceException();
         }
 
+
         //check if asset is already in buyer's portfolio - if not save the new asset + amount, else update current amount
         rootRepository.addToPortfolio(assetCode, buyerId, quantity);
 

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -24,15 +25,20 @@ public class RootRepository {
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
     private final AssetHistoryDao assetHistoryDao;
+
+
+
     private final RapidNewsDao newsDao;
     private final TransactionCostsDao transactionCostsDao;
+    private final MarketplaceDao marketplaceDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
+    //Add Marketplace marketplaceDao to signature
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
-    TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
-    TransactionCostsDao transactionCostsDao) {
+                          TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
+                          TransactionCostsDao transactionCostsDao, MarketplaceDao marketplaceDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -43,6 +49,7 @@ public class RootRepository {
         this.assetHistoryDao = assetHistoryDao;
         this.newsDao = newsDao;
         this.transactionCostsDao = transactionCostsDao;
+        this.marketplaceDao = marketplaceDao;
         logger.info("New RootRepository");
     }
 
@@ -228,6 +235,18 @@ public class RootRepository {
         return logger;
     }
 
+    public MarketplaceDao getMarketplaceDao() {return marketplaceDao;}
+
+    //Methods for Marketplace
+    public List<MarketplaceOffer> getAll() {return marketplaceDao.getAllOffers();}
+
+    public Optional<MarketplaceOffer> getOfferById(int id) {return marketplaceDao.getOfferById(id);}
+
+    public int saveMarketplaceOffer(MarketplaceOffer marketplaceOffer) {return marketplaceDao.save(marketplaceOffer);}
+
+    public void deleteMarketplaceOffer(int id) {marketplaceDao.deleteOfferById(id);}
+
+    public void editMarketplaceOffer(MarketplaceOffer marketplaceOffer) {marketplaceDao.editMarketplaceOffer(marketplaceOffer);}
 
 
 }
