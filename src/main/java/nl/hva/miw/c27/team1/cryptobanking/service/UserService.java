@@ -51,9 +51,9 @@ public class UserService {
         if(!ZipCodeValidator.checkZipCode(customer)) {
             throw new RegistrationFailedExceptionZipCode();
         }
-        if (!IbanValidator.checkIban(customer)) {
+        /*if (!IbanValidator.checkIban(customer)) {
             throw new RegistrationFailedExceptionIban();
-        }
+        }*/
         if (!checkCountry(customer)) {
             throw new RegistrationFailedExceptionCountry();
         }

@@ -4,9 +4,13 @@ import com.fasterxml.jackson.annotation.*;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.RegisterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 /**
  * Annotation handles circular references (e.g. bi-directional relationships between
@@ -46,8 +50,9 @@ public class Customer extends User {
                 new Profile(), new BankAccount(),new Portfolio(),new ArrayList<>());
     }
 
-    public Customer(RegisterDto dto) {
-        this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
+    public Customer(RegisterDto dto) throws ParseException {
+
+        this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),new SimpleDateFormat("yyyy-MM-dd").parse(dto.getBirthDate()),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
                 null, null, null, null);
 

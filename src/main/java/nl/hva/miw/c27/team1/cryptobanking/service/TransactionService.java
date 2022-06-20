@@ -25,6 +25,7 @@ public class TransactionService {
     private final RootRepository rootRepository;
     private final AssetService assetService;
     private final Logger logger = LogManager.getLogger(TransactionService.class);
+    private final int BANK_ID = 1;
 
     @Autowired
     public TransactionService(RootRepository rootRepository, AssetService assetService) {
@@ -85,26 +86,29 @@ public class TransactionService {
                 Objects.requireNonNull(rootRepository.getUserById(id).orElse(null)).getSurName();
     }
 
-    public String getCryptoName(String code) {
-        return Objects.requireNonNull(rootRepository.findAssetByCode(code).orElse(null)).getAssetName();
-    }
+
 
 
     private void payTransactionCosts(double transactionCosts, int buyerId, int sellerId) {
 
         double transactionCostsInDollar = transactionCosts * (1 / Objects.requireNonNull(rootRepository.findAssetByCode("USD").orElse(null)).
                 getRateInEuros());
-        double bankDollarBalance = rootRepository.getQuantityOfAssetInPortfolio("usd", 1).orElse(0.0);
-        rootRepository.editPortfolio("usd", 1, bankDollarBalance + transactionCostsInDollar);
+        double bankDollarBalance = rootRepository.getQuantityOfAssetInPortfolio("usd", BANK_ID).orElse(0.0);
+        rootRepository.editPortfolio("usd", BANK_ID, bankDollarBalance + transactionCostsInDollar);
+
 
         if (buyerId == Globals.getBankId()) {
             rootRepository.updateBalanceByUserId(sellerId, rootRepository.getBalanceByUserId(sellerId) - transactionCosts);
         } else if (sellerId == Globals.getBankId()) {
+
+
+
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts);
         } else {
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts / 2);
             rootRepository.updateBalanceByUserId(sellerId, rootRepository.getBalanceByUserId(sellerId) - transactionCosts / 2);
         }
     }
+
 
 }
