@@ -53,8 +53,23 @@ public class JdbcProfileDao implements ProfileDao {
         List<Profile> profiles =
                 jdbcTemplate.query(("select * from profile where username = ?"), new ProfileRowMapper(), userName);
         if (profiles.size() != 1) {
+
             return Optional.empty();
         } else {
+
+            return Optional.of(profiles.get(0));
+        }
+    }
+
+    @Override
+    public Optional<Profile> findByUserId(int userId) {
+        List<Profile> profiles =
+                jdbcTemplate.query(("select * from profile where userId = ?"), new ProfileRowMapper(), userId);
+        if (profiles.size() != 1) {
+
+            return Optional.empty();
+        } else {
+
             return Optional.of(profiles.get(0));
         }
     }

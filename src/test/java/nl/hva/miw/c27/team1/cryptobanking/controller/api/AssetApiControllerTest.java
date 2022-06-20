@@ -41,15 +41,7 @@ class AssetApiControllerTest {
     private AuthorisationService authorisationService;
 
 
-    /*
-    public AssetApiControllerTest(MockMvc mockMvc, AssetService assetService, AuthorisationService authorisationService) {
-        this.assetService = assetService;
-        this.mockMvc = mockMvc;
-        this.authorisationService = authorisationService;
 
-    }
-
-     */
 
 
     @Test
@@ -71,10 +63,10 @@ class AssetApiControllerTest {
 
         try {
             ResultActions response = mockMvc.perform(asset_request);
-            response.andDo(print()).andExpect(status().isOk()); // Dit hadden we al bij de demo.
-            String responseBody = response.andReturn().getResponse().getContentAsString(); // dit is nieuw!
+            response.andDo(print()).andExpect(status().isOk());
+            String responseBody = response.andReturn().getResponse().getContentAsString();
             assertThat(responseBody).isEqualTo("[{\"id\":\"" + asset.getAssetName() +
-                    "\",\"symbol\":\"" + asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() +"}]"); // En nu kunnen we "gewoon" AssertJ gebruiken.
+                    "\",\"symbol\":\"" + asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() +"}]");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,12 +88,12 @@ class AssetApiControllerTest {
 
         try {
             ResultActions response = mockMvc.perform(asset_request);
-            response.andDo(print()).andExpect(status().isOk()); // Dit hadden we al bij de demo.
-            String responseBody = response.andReturn().getResponse().getContentAsString(); // dit is nieuw!
+            response.andDo(print()).andExpect(status().isOk());
+            String responseBody = response.andReturn().getResponse().getContentAsString();
 
 
             assertThat(responseBody).isEqualTo("{\"id\":\"" + asset.getAssetName() +
-                   "\",\"symbol\":\"" + asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() +"}"); // En nu kunnen we "gewoon" AssertJ gebruiken.
+                   "\",\"symbol\":\"" + asset.getAssetCode() + "\",\"current_price\":" + asset.getRateInEuros() +"}");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -129,11 +121,11 @@ class AssetApiControllerTest {
 
         try {
             ResultActions response = mockMvc.perform(asset_request);
-            response.andDo(print()).andExpect(status().isOk()); // Dit hadden we al bij de demo.
-            String responseBody = response.andReturn().getResponse().getContentAsString(); // dit is nieuw!
+            response.andDo(print()).andExpect(status().isOk());
+            String responseBody = response.andReturn().getResponse().getContentAsString();
             assertThat(responseBody).isEqualTo("[{\"dateTime\":null,\"symbol\":\""+asset.getAssetCode() +
                     "\",\"current_price\":" + asset.getRateInEuros() + "}," + "{\"dateTime\":null,\"symbol\":\""+asset2.getAssetCode() +
-                    "\",\"current_price\":" + asset2.getRateInEuros() + "}]"); // En nu kunnen we "gewoon" AssertJ gebruiken.
+                    "\",\"current_price\":" + asset2.getRateInEuros() + "}]");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -25,7 +25,7 @@ public class RegisterDto {
     private String country;
     private String userName;
     private String iban;
-    private String passWord;
+    private String password;
 
     @JsonIgnore
     private final Logger logger = LoggerFactory.getLogger(RegisterDto.class);
@@ -44,11 +44,12 @@ public class RegisterDto {
         this.country = customer.getCountry();
         this.iban = customer.getBankAccount().getIban();
         this.userName = customer.getProfile().getUserName();
-        this.passWord = customer.getProfile().getPassWordAsEntered();
+        this.password = customer.getProfile().getPassWordAsEntered();
         logger.info("New RegisterDto using all-args");
     }
 
     public RegisterDto() {
+
         super();
         logger.info("New empty RegisterDto");
     }
@@ -150,12 +151,12 @@ public class RegisterDto {
         this.userName = userName;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setPassword(String passWord) {
+        this.password = passWord;
     }
 
     public String getIban() {

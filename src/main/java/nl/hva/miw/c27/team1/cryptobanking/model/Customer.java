@@ -49,9 +49,8 @@ public class Customer extends User {
     public Customer(RegisterDto dto) {
         this(0, dto.getFirstName(),dto.getPrefix(),dto.getSurName(),dto.getBsnNumber(),dto.getBirthDate(),
                 dto.getStreetName(),dto.getHouseNumber(),dto.getZipCode(),dto.getResidence(),dto.getCountry(),
-                new Profile(), new BankAccount(), new Portfolio(), new ArrayList<>());
-        this.setBankAccount(new BankAccount(dto.getIban(), INITIAL_BALANCE,this));
-        this.setProfile(new Profile(dto.getUserName(), INITIAL_HASH, dto.getPassWord(), this));
+                null, null, null, null);
+
     }
 
     public Customer(int id, String role) {
@@ -91,5 +90,16 @@ public class Customer extends User {
     @Override
     public Logger getLogger() {
         return logger;
+    }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "bankAccount=" + bankAccount +
+                ", portfolio=" + portfolio +
+                ", transactionList=" + transactionList +
+                ", INITIAL_BALANCE=" + INITIAL_BALANCE +
+                ", INITIAL_HASH='" + INITIAL_HASH + '\'' +
+                '}';
     }
 }

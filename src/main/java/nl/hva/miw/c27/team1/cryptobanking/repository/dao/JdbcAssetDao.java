@@ -11,8 +11,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -31,12 +31,14 @@ public class JdbcAssetDao implements AssetDao {
         jdbcTemplate.update(sql, asset.getAssetCode(), asset.getAssetName(),
                 asset.getRateInEuros());
     }
-
+    @Override
     public void saveAllAssets(List<Asset> assetList) {
-         String sql = "UPDATE asset SET assetName = ?, rateInEuro = ? WHERE assetCode = ?;";
+        String sql = "UPDATE asset SET assetName = ?, rateInEuro = ? WHERE assetCode = ?;";
+        jdbcTemplate.update("update lastassetrateupdate set lastassetrateupdate = ?", LocalDateTime.now());
         for (Asset assets : assetList) {
             jdbcTemplate.update(sql, assets.getAssetName(), assets.getRateInEuros(), assets.getAssetCode());
         }
+
     }
 
 
@@ -46,7 +48,8 @@ public class JdbcAssetDao implements AssetDao {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new JdbcAssetDao.AssetRowMapper(), assetCode));
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidAssetRequest();
+
+            throw new InvalidAssetRequest(getInvalidAssetMsg());
         }
     }
 
@@ -57,12 +60,33 @@ public class JdbcAssetDao implements AssetDao {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, new AssetRowMapper(), name));
         } catch (EmptyResultDataAccessException e) {
-            throw new InvalidAssetRequest();
+            throw new InvalidAssetRequest(getInvalidAssetMsg());
         }
 
     }
+    @Override
+    public String getInvalidAssetMsg() {
+        StringBuilder s = new StringBuilder("This is not a valid coin. Our coins are ");
+        for (int i = 0; i < getAll().size(); i++) {
+            s.append(getAll().get(i).getAssetName());
+            if (i < getAll().size() - 1) {
+                s.append(", ");
+            }
+
+        }
+
+        return s.toString();
+    }
 
     @Override
+    public LocalDateTime getLastAssetRateUpdate() {
+        String sql = "SELECT * FROM lastassetrateupdate;";
+        return jdbcTemplate.queryForObject(sql, LocalDateTime.class);
+    }
+
+
+    @Override
+
     public List<Asset> getAll() {
         String sql = "SELECT * FROM asset;";
         return jdbcTemplate.query(sql, new AssetRowMapper());

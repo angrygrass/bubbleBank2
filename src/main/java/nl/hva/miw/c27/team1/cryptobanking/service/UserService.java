@@ -1,5 +1,6 @@
 package nl.hva.miw.c27.team1.cryptobanking.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.*;
@@ -41,6 +42,9 @@ public class UserService {
         if (!AgeValidator.checkAge(customer)) {
             throw new RegistrationFailedExceptionAge();
         }
+        if (!NameValidator.isNameValid(customer.getFirstName(), customer.getPrefix(), customer.getSurName())) {
+            throw new RegistrationFailedExceptionName();
+        }
         if (!BSNValidator.checkBsn(customer)) {
             throw new RegistrationFailedExceptionBsn(); // todo unhandled exceptions, should be handled in apicontroller to return a 400
         }
@@ -64,6 +68,7 @@ public class UserService {
             throw new RegistrationFailedExceptionUsername();
         }
         rootRepository.saveCustomer(customer);
+
         return customer;
     }
 

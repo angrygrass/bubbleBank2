@@ -11,4 +11,6 @@ public interface TokenDao {
     Optional<Token> findByUserId(int userId);
     void revokeToken(User user);
 
+    public boolean checkIfExistsValidTokenForUser(User user);
+
 }

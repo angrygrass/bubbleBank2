@@ -1,6 +1,8 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.authorization.Role;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionBsn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +56,15 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public void save(User user) {
+        try {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> insertUserStatement(user, connection), keyHolder);
         int newKey = Objects.requireNonNull(keyHolder.getKey()).intValue();
-        user.setId(newKey);
+        user.setId(newKey);}
+        catch (Exception e) {
+            throw new RegistrationFailedExceptionBsn();
+
+        }
     }
 
 
@@ -74,7 +81,7 @@ public class JdbcUserDao implements UserDao {
 
     @Override
     public Optional<User> findByToken(Token token) {
-        System.out.println(token.getTokenId());
+
         List<User> users =
 
                 jdbcTemplate.query("select * from user where userId = (select userId from" +
@@ -82,7 +89,7 @@ public class JdbcUserDao implements UserDao {
         if (users.size() != 1) {
             return Optional.empty();
         } else {
-            return Optional.of(users.get(0));
+             return Optional.of(users.get(0));
         }
     }
     @Override
@@ -95,8 +102,6 @@ public class JdbcUserDao implements UserDao {
             return Optional.of(users.get(0));
         }
     }
-
-
 
     @Override
     public Optional<Customer> updateCustomer(Customer user) {
@@ -147,11 +152,11 @@ public class JdbcUserDao implements UserDao {
             String role = resultSet.getString("role");
             int staffId = resultSet.getInt("staffId");
             User user = null;
-            if (role.equals("Customer") || role.equals("Bank")) {
+            if (role.equals(Role.Customer.name()) || role.equals(Role.Bank.name())) {
                 user = new Customer(id, firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country);
             }
-            if (role.equals("Admin")) {
+            if (role.equals(Role.Admin.name())) {
                 user = new Admin(id, firstname, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country, staffId);
             }

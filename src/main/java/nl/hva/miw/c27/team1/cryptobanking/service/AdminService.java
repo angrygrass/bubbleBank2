@@ -37,6 +37,8 @@ public class AdminService {
     }
 
     public Optional<User> getUserById(int id) {
+
+
         return rootRepository.getUserById(id);
     }
 

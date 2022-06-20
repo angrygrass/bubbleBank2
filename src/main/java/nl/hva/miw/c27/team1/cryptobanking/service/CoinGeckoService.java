@@ -23,6 +23,7 @@ import java.util.List;
 public class CoinGeckoService extends BaseApiController {
 
     private RootRepository rootRepository;
+    private TriggerTransactionService triggerTransactionService;
     private List<Asset> assetObjects;
     private List<AssetHistoryDto> assetHistoryObjects;
     private URL url = new URL("https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=" +
@@ -33,8 +34,10 @@ public class CoinGeckoService extends BaseApiController {
     private static final Logger logger = LogManager.getLogger(CoinGeckoService.class);
 
     @Autowired
-    public CoinGeckoService(RootRepository rootRepository) throws MalformedURLException {
+    public CoinGeckoService(RootRepository rootRepository, TriggerTransactionService triggerTransactionService)
+            throws MalformedURLException {
         this.rootRepository = rootRepository;
+        this.triggerTransactionService = triggerTransactionService;
         logger.info("new empty CoingeckoService");
     }
 
@@ -61,6 +64,7 @@ public class CoinGeckoService extends BaseApiController {
                 connection.setConnectTimeout(10000);
                 connection.setReadTimeout(10000);
                 rootRepository.saveAssets(assetObjects);
+                triggerTransactionService.executeTriggerTransactions();
                 logger.info("@Scheduled: updated asset rates in database");
             }
         } catch (Exception e) {

@@ -3,6 +3,7 @@ package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
+import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.TransactionDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.AuthorisationService;
 import nl.hva.miw.c27.team1.cryptobanking.service.TransactionService;
@@ -54,27 +55,31 @@ public class TransactionApiController extends BaseApiController {
 
     @ResponseBody
 
-    @PostMapping("/buy")
-    public ResponseEntity<String> buyAsset(@RequestBody TransactionDto transactionDto,
+    @PostMapping
+    public ResponseEntity<Transaction> buyAsset(@RequestBody TransactionDto transactionDto,
                                            @RequestHeader(value="authorization") String authorization) {
-        ResponseEntity<String> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        ResponseEntity<Transaction> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         if (authorisationService.checkCustomerAuthorisation(authorization))   {
             if (transactionDto.getBuyerId() == transactionDto.getSellerId()) {
                 throw new InvalidTransactionRequestException();
             }
+            if (transactionDto.getQuantity() <= 0) {
+                throw new InvalidTransactionRequestException();
+            }
 
-            transactionService.doTransaction(transactionDto.getBuyerId(), transactionDto.getSellerId(),
+            Transaction transaction = transactionService.doTransaction(transactionDto.getBuyerId(), transactionDto.getSellerId(),
                     transactionDto.getAssetCode(), transactionDto.getQuantity());
-            String transactionMsg = transactionService.getUserName(transactionDto.getBuyerId()) + " has bought " +
-                    transactionDto.getQuantity() + " " + transactionService.getCryptoName(transactionDto.getAssetCode())
-                    + " from " + transactionService.getUserName(transactionDto.getSellerId());
-            return ResponseEntity.ok().body(transactionMsg);
+
+            return ResponseEntity.ok().body(transaction);
 
         }
 
-            return result;
+        return result;
 
     }
+
+
+
 
 }
