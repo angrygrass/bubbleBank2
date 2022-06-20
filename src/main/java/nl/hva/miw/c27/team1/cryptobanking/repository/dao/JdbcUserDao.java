@@ -1,6 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 import nl.hva.miw.c27.team1.cryptobanking.model.*;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.authorization.Role;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.RegistrationFailedExceptionBsn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -151,11 +152,11 @@ public class JdbcUserDao implements UserDao {
             String role = resultSet.getString("role");
             int staffId = resultSet.getInt("staffId");
             User user = null;
-            if (role.equals("Customer") || role.equals("Bank")) {
+            if (role.equals(Role.Customer.name()) || role.equals(Role.Bank.name())) {
                 user = new Customer(id, firstname, prefix, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country);
             }
-            if (role.equals("Admin")) {
+            if (role.equals(Role.Admin.name())) {
                 user = new Admin(id, firstname, surname, fiscalnumber, dateOfBirth, streetname, housenumber, zipcode,
                         residence, country, staffId);
             }

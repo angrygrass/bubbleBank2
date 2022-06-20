@@ -55,7 +55,7 @@ public class TransactionApiController extends BaseApiController {
 
     @ResponseBody
 
-    @PostMapping("/buy")
+    @PostMapping
     public ResponseEntity<Transaction> buyAsset(@RequestBody TransactionDto transactionDto,
                                            @RequestHeader(value="authorization") String authorization) {
         ResponseEntity<Transaction> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -78,5 +78,8 @@ public class TransactionApiController extends BaseApiController {
         return result;
 
     }
+
+
+
 
 }

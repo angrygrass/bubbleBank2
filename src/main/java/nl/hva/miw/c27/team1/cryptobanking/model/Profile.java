@@ -86,4 +86,17 @@ public class Profile {
     public Logger getLogger() {
         return logger;
     }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "userName='" + userName + '\'' +
+                ", hash='" + hash + '\'' +
+                ", salt='" + salt + '\'' +
+                ", user=" + user +
+                ", hashService=" + hashService +
+                ", passWordAsEntered='" + passWordAsEntered + '\'' +
+                ", logger=" + logger +
+                '}';
+    }
 }

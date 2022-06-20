@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,12 +31,14 @@ public class JdbcAssetDao implements AssetDao {
         jdbcTemplate.update(sql, asset.getAssetCode(), asset.getAssetName(),
                 asset.getRateInEuros());
     }
-
+    @Override
     public void saveAllAssets(List<Asset> assetList) {
-         String sql = "UPDATE asset SET assetName = ?, rateInEuro = ? WHERE assetCode = ?;";
+        String sql = "UPDATE asset SET assetName = ?, rateInEuro = ? WHERE assetCode = ?;";
+        jdbcTemplate.update("update lastassetrateupdate set lastassetrateupdate = ?", LocalDateTime.now());
         for (Asset assets : assetList) {
             jdbcTemplate.update(sql, assets.getAssetName(), assets.getRateInEuros(), assets.getAssetCode());
         }
+
     }
 
 
@@ -73,6 +76,12 @@ public class JdbcAssetDao implements AssetDao {
         }
 
         return s.toString();
+    }
+
+    @Override
+    public LocalDateTime getLastAssetRateUpdate() {
+        String sql = "SELECT * FROM lastassetrateupdate;";
+        return jdbcTemplate.queryForObject(sql, LocalDateTime.class);
     }
 
 

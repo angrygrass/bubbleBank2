@@ -7,6 +7,8 @@ import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,7 @@ public class AssetService {
     }
 
     public List<Asset> getRates() {
+
         return rootRepository.getAllAssets();
     }
 
@@ -40,4 +43,6 @@ public class AssetService {
     }
 
     public String getInvalidAssetMsg() {return rootRepository.getInvalidAssetMsg();}
+
+    public LocalDateTime getLastUpdateTimeStamp() {return rootRepository.getLastAssetRateUpdate();}
 }

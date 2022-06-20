@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -26,13 +27,14 @@ public class RootRepository {
     private final AssetHistoryDao assetHistoryDao;
     private final RapidNewsDao newsDao;
     private final TransactionCostsDao transactionCostsDao;
+    private final TriggerTransactionDao triggerTransactionDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
     TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
-    TransactionCostsDao transactionCostsDao) {
+    TransactionCostsDao transactionCostsDao, TriggerTransactionDao triggerTransactionDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -43,6 +45,7 @@ public class RootRepository {
         this.assetHistoryDao = assetHistoryDao;
         this.newsDao = newsDao;
         this.transactionCostsDao = transactionCostsDao;
+        this.triggerTransactionDao = triggerTransactionDao;
         logger.info("New RootRepository");
     }
 
@@ -62,9 +65,10 @@ public class RootRepository {
     }
 
     public Optional <User> getUserById(int id) {
-
-
-        return userDao.findById(id);
+        Optional<User> user = userDao.findById(id);
+        assert user.orElse(null) != null;
+        user.orElse(null).setProfile(getProfileByUserId(id).orElse(null));
+        return user;
     }
 
     public Optional<User> getUserByToken(Token token) {return userDao.findByToken(token);}
@@ -81,6 +85,8 @@ public class RootRepository {
 
     // methods for Profile
     public Optional<Profile> getProfileByUsername(String username) {return profileDao.findByUserName(username);}
+
+    public Optional<Profile> getProfileByUserId(int userId) {return profileDao.findByUserId(userId);}
 
     // methods for Token
     public void saveToken(Token token) {tokenDao.save(token);}
@@ -148,7 +154,9 @@ public class RootRepository {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
-        return portfolioDao.getPortfolio(customer);
+        Portfolio portfolio = portfolioDao.getPortfolio(customer);
+        portfolio.setCustomer(customer);
+        return portfolio;
     }
 
     public boolean checkAssetInPortfolio(String assetCode, int userId) {
@@ -156,10 +164,8 @@ public class RootRepository {
     }
 
     public void addToPortfolio(String assetCode, int userId, double quantity) {
-
         Portfolio portfolio = getPortfolioByCustomerId(userId).orElse(new Portfolio());
         HashMap<Asset, Double> assetsOfUser = portfolio.getAssetsOfUser();
-
         if (!checkAssetInPortfolio(assetCode, userId)) {
             assetsOfUser.put(findAssetByCode(assetCode).orElse(null), quantity);
             portfolio.setAssetsOfUser(assetsOfUser);
@@ -169,19 +175,12 @@ public class RootRepository {
             double customerBalance = getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
             editPortfolio(assetCode, userId, customerBalance + quantity);
         }
-
     }
 
     public void subtractFromPortfolio (int userId, String assetCode, double quantity) {
-
         double sellerBalance = getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
         editPortfolio(assetCode, userId, sellerBalance - quantity);
-
     }
-
-
-
-
 
     public Optional<Portfolio> getPortfolioByCustomerId(int id) {
         return portfolioDao.findById(id);}
@@ -224,10 +223,30 @@ public class RootRepository {
         return assetDao;
     }
 
+    public TriggerTransactionDao getTriggerTransactionDao() {
+        return triggerTransactionDao;
+    }
+
+    public Optional<TriggerTransaction> findByKey(String assetCode, int userId, boolean sellYesNo) {
+        return triggerTransactionDao.findByKey(assetCode, userId, sellYesNo);
+    }
+    public void save(TriggerTransaction triggerTransaction) {
+        triggerTransactionDao.save(triggerTransaction);
+    }
+    public void delete(TriggerTransaction triggerTransaction) {
+        triggerTransactionDao.delete(triggerTransaction);
+    }
+    public List<TriggerTransaction> getAll() {
+        return triggerTransactionDao.getAll();
+    }
+
     public Logger getLogger() {
         return logger;
     }
 
+    public LocalDateTime getLastAssetRateUpdate() {
+        return assetDao.getLastAssetRateUpdate();
+    }
 
 
 }
