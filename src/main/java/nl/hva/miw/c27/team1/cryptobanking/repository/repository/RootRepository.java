@@ -25,16 +25,24 @@ public class RootRepository {
     private final AssetDao assetDao;
     private final PortfolioDao portfolioDao;
     private final AssetHistoryDao assetHistoryDao;
+
     private final RapidNewsDao newsDao;
     private final TransactionCostsDao transactionCostsDao;
     private final TriggerTransactionDao triggerTransactionDao;
+    private final MarketplaceDao marketplaceDao;
+
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
+    //Add Marketplace marketplaceDao to signature
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
+
     TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
-    TransactionCostsDao transactionCostsDao, TriggerTransactionDao triggerTransactionDao) {
+    TransactionCostsDao transactionCostsDao, TriggerTransactionDao triggerTransactionDao, MarketplaceDao marketplaceDao) {
+
+
+
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -45,7 +53,11 @@ public class RootRepository {
         this.assetHistoryDao = assetHistoryDao;
         this.newsDao = newsDao;
         this.transactionCostsDao = transactionCostsDao;
+
         this.triggerTransactionDao = triggerTransactionDao;
+
+        this.marketplaceDao = marketplaceDao;
+
         logger.info("New RootRepository");
     }
 
@@ -244,9 +256,24 @@ public class RootRepository {
         return logger;
     }
 
+
     public LocalDateTime getLastAssetRateUpdate() {
         return assetDao.getLastAssetRateUpdate();
     }
+
+    public MarketplaceDao getMarketplaceDao() {return marketplaceDao;}
+
+    //Methods for Marketplace
+    public List<MarketplaceOffer> getAllOffers() {return marketplaceDao.getAllOffers();}
+
+    public Optional<MarketplaceOffer> getOfferById(int id) {return marketplaceDao.getOfferById(id);}
+
+    public int saveMarketplaceOffer(MarketplaceOffer marketplaceOffer) {return marketplaceDao.save(marketplaceOffer);}
+
+    public void deleteMarketplaceOffer(int id) {marketplaceDao.deleteOfferById(id);}
+
+    public void editMarketplaceOffer(MarketplaceOffer marketplaceOffer) {marketplaceDao.editMarketplaceOffer(marketplaceOffer);}
+
 
 
 }
