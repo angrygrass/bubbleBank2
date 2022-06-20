@@ -8,6 +8,14 @@ public class BankAccountBalanceValidator {
                                                   double transactionCosts, RootRepository rootRepository) {
         if (buyerId != Globals.getBankId() && sellerId != Globals.getBankId()) {
             transactionCosts = transactionCosts / 2;
+            double price = transactionCosts * (100 / rootRepository.getTransactionCosts());
+            if (price * quantity + transactionCosts / 2 > rootRepository.getBalanceByUserId(buyerId)) {
+                return false;
+            } else {
+                return true;
+            }
+
+
         }
         if (buyerId == Globals.getBankId()) {transactionCosts = 0;}
 
