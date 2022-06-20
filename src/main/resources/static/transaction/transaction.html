@@ -2,78 +2,160 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <body>
+<script>
 
+    async function getAssetsFromBackEnd() {
+        fetch('http://localhost:8080/assets', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer 36716df7-839b-426e-8bc0-ac3ad5580004'
+            },
+        })
+            .then(response => {
+                console.log(response)
+                return response.json() }
+            )
+            .then(data => {
+
+                loadToDropDown(data)
+
+            })
+            .catch((error) => {
+                console.error('Foutje', error);
+            });
+    }
+
+    async function loadToDropDown(data) {
+
+        console.log(data)
+        const assetObjects = []
+
+
+        data.forEach(item => assetObjects.push(Object.values(item)[0]));
+        //removes first item (timestamp)
+        assetObjects.shift();
+        //sort alphabetically
+        assetObjects.sort();
+        //removes the dollar
+        assetObjects.shift();
+
+
+
+
+        var select = document.createElement("select");
+        select.name = "pets";
+        select.id = "pets"
+
+        for (const val of data)
+        {
+
+            var option = document.createElement("option");
+            option.value = val;
+
+            option.text = Object.values(val)[0].toString().charAt(0).toUpperCase() + Object.values(val)[0].toString().slice(1);
+            select.appendChild(option);
+        }
+
+        var label = document.createElement("label");
+        label.innerHTML = "Kies de crypto die je wilt kopen: "
+        label.htmlFor = "pets";
+
+        document.getElementById("container").appendChild(label).appendChild(select);
+    }
+
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        let cryptoid = document.getElementsByName("pets")[0].value;
+        let cryptocode = Object.values(cryptoid)[1];
+        document.write(cryptocode.toString())
+
+
+
+        let quantity = document.getElementsByName("quantity")[0].value;
+        /*let sellerId = document.querySelector('input[name="sellerId"]:checked').value;*/
+        let sellerId = 1;
+        let data = JSON.stringify({"buyerId":2, "sellerId":sellerId, "assetCode":cryptocode, "quantity":quantity});
+
+
+
+        fetch('http://localhost:8080/transaction', {
+
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004"
+
+            },
+            body: data
+        })
+            .then(async response => {
+                    console.log(response.status)
+                    document.write(await response.text())
+
+
+                }
+            )
+            /*.then(json => {
+                console.log(json);
+                let jsonText = JSON.stringify(json);
+                document.write(jsonText)
+                addToParagraph(json)
+            })*/
+            .catch((error) => {
+                console.error('Foutje: ', error);
+
+            });
+    }
+
+
+
+
+
+
+
+    getAssetsFromBackEnd()
+    const form = document.querySelector('form');
+    form.addEventListener('submit', handleSubmit);
+
+</script>
 <form>
-    <label for="text">Cryptocode:</label>
-    <input type="text" name="cryptocode" id="text" /> <br>
+
+
+    <div id="container"></div>
+    <br>
+
+
+
+
+
+
+
+
 
     <label for="quantity">Quantity:</label>
     <input type="number" id="quantity" name="quantity">
     <br>
-    <p>Buy from:</p>
 
-    <input type="radio" id="The Bank" name="sellerId" value=1>
-    <label for="The Bank">The Bank</label><br>
-    <input type="radio" id="David" name="sellerId" value=3>
-    <label for="David">Stevie (user 3)</label><br>
-    <input type="radio" id="Jan-Jaap" name="sellerId" value=4>
-    <label for="Jan-Jaap">Mariko (user 4)</label> <br>
 
     <button type="submit">Submit</button>
 </form>
 
 <script>
-function handleSubmit(event) {
-event.preventDefault();
-    let cryptocode = document.getElementsByName("cryptocode")[0].value;
-
-    let quantity = document.getElementsByName("quantity")[0].value;
-    let sellerId = document.querySelector('input[name="sellerId"]:checked').value;
-    let data = JSON.stringify({"buyerId":2, "sellerId":sellerId, "assetCode":cryptocode, "quantity":quantity});
-
-
-
-    fetch('http://localhost:8080/transaction', {
-
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            "Authorization": "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004"
-
-        },
-        body: data
-    })
-        .then(async response => {
-                console.log(response.status)
-                document.write(await response.text())
-
-
-            }
-        )
-        /*.then(json => {
-            console.log(json);
-            let jsonText = JSON.stringify(json);
-            document.write(jsonText)
-            addToParagraph(json)
-        })*/
-        .catch((error) => {
-            console.error('Foutje: ', error);
-
-        });
-}
-
-
-
-
-const form = document.querySelector('form');
-form.addEventListener('submit', handleSubmit);
-
-
-
 
 
 </script>
+
+<html>
+<body>
+
+</body>
+</html>
+
+
+
 
     </body>
 </html>
