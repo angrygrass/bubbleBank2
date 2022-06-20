@@ -98,6 +98,4 @@ public class UserService {
         return getUserByToken(token);
     }
 
-    //todo jjs public Optional<Profile> getProfileByUsername(String username) {return rootRepository.getProfileByUsername(username);}
-
 }

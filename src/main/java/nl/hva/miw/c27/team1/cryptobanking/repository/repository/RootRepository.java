@@ -27,13 +27,14 @@ public class RootRepository {
     private final AssetHistoryDao assetHistoryDao;
     private final RapidNewsDao newsDao;
     private final TransactionCostsDao transactionCostsDao;
+    private final TriggerTransactionDao triggerTransactionDao;
 
     private final Logger logger = LogManager.getLogger(RootRepository.class);
 
     @Autowired
     public RootRepository(UserDao userDao, ProfileDao profileDao, BankAccountDao bankAccountDao, TokenDao tokenDao,
     TransactionDao transactionDao, AssetDao assetDao, PortfolioDao portfolioDao, AssetHistoryDao assetHistoryDao, RapidNewsDao newsDao,
-    TransactionCostsDao transactionCostsDao) {
+    TransactionCostsDao transactionCostsDao, TriggerTransactionDao triggerTransactionDao) {
         this.profileDao = profileDao;
         this.userDao = userDao;
         this.bankAccountDao = bankAccountDao;
@@ -44,17 +45,15 @@ public class RootRepository {
         this.assetHistoryDao = assetHistoryDao;
         this.newsDao = newsDao;
         this.transactionCostsDao = transactionCostsDao;
+        this.triggerTransactionDao = triggerTransactionDao;
         logger.info("New RootRepository");
     }
 
     // methods for Customer
     public void saveCustomer(Customer customer) {
         userDao.save(customer);
-
         profileDao.save(customer.getProfile());
-
         bankAccountDao.save(customer.getBankAccount());
-
     }
 
     public Optional<Customer> updateUser(Customer customer) {return userDao.updateCustomer(customer);}
@@ -69,7 +68,6 @@ public class RootRepository {
         Optional<User> user = userDao.findById(id);
         assert user.orElse(null) != null;
         user.orElse(null).setProfile(getProfileByUserId(id).orElse(null));
-
         return user;
     }
 
@@ -156,10 +154,8 @@ public class RootRepository {
         return portfolioDao.findQuantityOfAssetInPortfolio(assetCode, userId); }
 
     public Portfolio getPortfolioOfCustomer(Customer customer) {
-
         Portfolio portfolio = portfolioDao.getPortfolio(customer);
         portfolio.setCustomer(customer);
-
         return portfolio;
     }
 
@@ -168,10 +164,8 @@ public class RootRepository {
     }
 
     public void addToPortfolio(String assetCode, int userId, double quantity) {
-
         Portfolio portfolio = getPortfolioByCustomerId(userId).orElse(new Portfolio());
         HashMap<Asset, Double> assetsOfUser = portfolio.getAssetsOfUser();
-
         if (!checkAssetInPortfolio(assetCode, userId)) {
             assetsOfUser.put(findAssetByCode(assetCode).orElse(null), quantity);
             portfolio.setAssetsOfUser(assetsOfUser);
@@ -181,19 +175,12 @@ public class RootRepository {
             double customerBalance = getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
             editPortfolio(assetCode, userId, customerBalance + quantity);
         }
-
     }
 
     public void subtractFromPortfolio (int userId, String assetCode, double quantity) {
-
         double sellerBalance = getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
         editPortfolio(assetCode, userId, sellerBalance - quantity);
-
     }
-
-
-
-
 
     public Optional<Portfolio> getPortfolioByCustomerId(int id) {
         return portfolioDao.findById(id);}
@@ -236,13 +223,31 @@ public class RootRepository {
         return assetDao;
     }
 
+    public TriggerTransactionDao getTriggerTransactionDao() {
+        return triggerTransactionDao;
+    }
+
+    public Optional<TriggerTransaction> findByKey(String assetCode, int userId, boolean sellYesNo) {
+        return triggerTransactionDao.findByKey(assetCode, userId, sellYesNo);
+    }
+    public void save(TriggerTransaction triggerTransaction) {
+        triggerTransactionDao.save(triggerTransaction);
+    }
+    public void delete(TriggerTransaction triggerTransaction) {
+        triggerTransactionDao.delete(triggerTransaction);
+    }
+    public List<TriggerTransaction> getAll() {
+        return triggerTransactionDao.getAll();
+    }
+
     public Logger getLogger() {
         return logger;
     }
 
-
     public LocalDateTime getLastAssetRateUpdate() {
         return assetDao.getLastAssetRateUpdate();
     }
+
+
 }
 
