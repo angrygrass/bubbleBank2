@@ -45,32 +45,30 @@ public class RapidApiNewsService {
      * Not part of requirements.
      */
     @Scheduled(fixedRate = 90000000)
-    public void getArticles() throws IOException {
+    public List<RapidNewsDto> getArticles() throws IOException {
         try {
             URL url = new URL("https://free-news.p.rapidapi.com/v1/search?q=crypto&lang=en&page_size=5");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("X-RapidAPI-Key", rapidApiKey);
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    logger.info(connection.getResponseMessage());
-                } else {
-                    ObjectMapper mapper = new ObjectMapper()
-                            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    JsonNode jsonNode = mapper.readTree(connection.getInputStream());
-                    String sourceString = jsonNode.at("/articles").toString();
-                    articleList = mapper.readValue(sourceString, new TypeReference<>(){});
-                    connection.setConnectTimeout(10000);
-                    connection.setReadTimeout(10000);
-                        for (RapidNewsDto articleLink : articleList) {
-                            articleLink.setId(id);
-                            id++;
-                        }
-                    rootRepository.saveArticles(articleList);
-                    logger.info("@Scheduled: updated articles in database");
-                }
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                logger.info(connection.getResponseMessage());
+            } else {
+                ObjectMapper mapper = new ObjectMapper()
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                JsonNode jsonNode = mapper.readTree(connection.getInputStream());
+                String sourceString = jsonNode.at("/articles").toString();
+                articleList = mapper.readValue(sourceString, new TypeReference<>(){});
+                connection.setConnectTimeout(10000);
+                connection.setReadTimeout(10000);
+
+                rootRepository.saveArticles(articleList);
+                logger.info("@Scheduled: updated articles in database");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return articleList;
     }
 
 
