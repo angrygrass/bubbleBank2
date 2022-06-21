@@ -60,8 +60,7 @@ public class MarketplaceApiController extends BaseApiController {
         ResponseEntity<MarketplaceOffer> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         if (authorisationService.checkCustomerAuthorisation(authorization))   {
-            return ResponseEntity.ok().body(marketplaceService.makeOffer(marketplaceDto.getUserId(), marketplaceDto.getAssetCode(),
-                    marketplaceDto.getQuantity(), marketplaceDto.getPrice(), marketplaceDto.isSellYesOrNo()));
+            return ResponseEntity.ok().body(marketplaceService.makeOffer(marketplaceDto));
 
         }
         return result;

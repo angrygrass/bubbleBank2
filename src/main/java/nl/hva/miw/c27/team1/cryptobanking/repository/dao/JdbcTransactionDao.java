@@ -63,7 +63,7 @@ public class JdbcTransactionDao implements TransactionDao{
         }
     }
 
-    //Seller or Buyer histories ???
+
     @Override
     public List<Transaction> getAll() {
         String sql = "SELECT * FROM transactionhistory ;";

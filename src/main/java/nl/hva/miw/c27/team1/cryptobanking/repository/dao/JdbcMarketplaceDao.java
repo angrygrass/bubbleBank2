@@ -1,9 +1,7 @@
 package nl.hva.miw.c27.team1.cryptobanking.repository.dao;
 
 
-import nl.hva.miw.c27.team1.cryptobanking.model.Customer;
 import nl.hva.miw.c27.team1.cryptobanking.model.MarketplaceOffer;
-import nl.hva.miw.c27.team1.cryptobanking.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,23 +9,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.time.LocalDate;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
 public class JdbcMarketplaceDao implements MarketplaceDao{
     private final Logger logger = LoggerFactory.getLogger(JdbcMarketplaceDao.class);
     private JdbcTemplate jdbcTemplate;
-    static java.sql.ResultSet result;
+
 
     @Autowired
     public JdbcMarketplaceDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        logger.info("new JdbcMarketplaceDao");
 
     }
 
@@ -99,8 +96,6 @@ public class JdbcMarketplaceDao implements MarketplaceDao{
             return new MarketplaceOffer(rs.getInt("offerId"),
                     rs.getInt("userId"),
                     rs.getObject(3, LocalDateTime.class),
-                    //rs.getObject( 3,LocalDate.class),
-                    //result.getTimestamp("dateTime").toLocalDateTime(),
                     rs.getString("assetCode"),
                     rs.getDouble("quantity"),
                     rs.getDouble("price"),

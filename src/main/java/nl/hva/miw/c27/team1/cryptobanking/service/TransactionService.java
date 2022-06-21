@@ -52,8 +52,7 @@ public class TransactionService {
                 Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).orElse(null)).getRateInEuros());
         // save transaction to database
         Transaction transaction = new Transaction(1, quantity, Objects.requireNonNull(rootRepository.findAssetByCode(assetCode).
-                orElse(null)).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, buyerId, sellerId,
-                assetCode);
+                orElse(null)).getRateInEuros(), LocalDateTime.now(), transactionCostsInEuros, buyerId, sellerId, assetCode);
         transaction.setTransactionId(rootRepository.saveTransaction(transaction));
        // pay transaction costs
         payTransactionCosts(transactionCostsInEuros, buyerId, sellerId);

@@ -4,7 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.Asset;
 import nl.hva.miw.c27.team1.cryptobanking.model.MarketplaceOffer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.MarketplaceDto;
 import nl.hva.miw.c27.team1.cryptobanking.repository.repository.RootRepository;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InsufficientBuyerBalanceException;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InsufficientSellerCryptoBalanceException;
+import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidMakeOfferRequestException;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.validation.BankAccountBalanceValidator;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.validation.CryptoBalanceValidator;
 import org.apache.logging.log4j.LogManager;
@@ -17,7 +21,7 @@ import java.util.Objects;
 
 @Service
 public class MarketplaceService {
-    private MarketplaceOffer marketplaceOffer;
+
     private RootRepository rootRepository;
 
 
@@ -42,48 +46,48 @@ public class MarketplaceService {
     // userId is user who has made the offer, price is price for 1 unit of the asset, sellYesOrNo true = sell, false = buy
 
 
-    public Transaction acceptOffer(int userId, int offerId) throws Exception {
-
+    public Transaction acceptOffer(int userId, int offerId) {
 
         MarketplaceOffer offer = rootRepository.getOfferById(offerId).orElse(null);
 
-                if (offer.isSellYesOrNo()) {
+        assert offer != null;
+        if (offer.isSellYesOrNo()) {
+            return acceptSellOffer(userId, offer);
+        } else {
+            return acceptBuyOffer(userId, offer);
+        }
+    }
 
+    public Transaction acceptSellOffer(int userId, MarketplaceOffer offer) {
+        if (BankAccountBalanceValidator.checkBankAccountBalance(userId, offer.getUserId(), offer.getAssetCode(),
+                offer.getQuantity(), offer.getTransactionPrice(), rootRepository)) {
+            rootRepository.addToPortfolio(offer.getAssetCode(), userId, offer.getQuantity());
+            rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) - offer.getQuantity() *
+                    offer.getPrice() - offer.getTransactionPrice() / 2);
+            rootRepository.updateBalanceByUserId(offer.getUserId(), rootRepository.getBalanceByUserId(offer.getUserId())
+                    +offer.getQuantity() * offer.getPrice() - offer.getTransactionPrice() / 2);
 
-            if (BankAccountBalanceValidator.checkBankAccountBalance(userId, offer.getUserId(), offer.getAssetCode(),
-                    offer.getQuantity(), offer.getTransactionPrice(), rootRepository)) {
-                rootRepository.addToPortfolio(offer.getAssetCode(), userId, offer.getQuantity());
-                rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) - offer.getQuantity() *
-                        offer.getPrice() - offer.getTransactionPrice() / 2);
-                rootRepository.updateBalanceByUserId(offer.getUserId(), rootRepository.getBalanceByUserId(offer.getUserId())
-                +offer.getQuantity() * offer.getPrice() - offer.getTransactionPrice() / 2);
+            return concludeOffer(offer.getTransactionPrice(), offer, userId);
 
-                return concludeOffer(offer.getTransactionPrice(), offer, userId);
-
-            } else {
-                throw new Exception("not valid");
-            }
-
-                       }
-
-        else {
-
-            if (CryptoBalanceValidator.checkCryptoBalance(userId, offer.getAssetCode(),
-                    offer.getQuantity(), rootRepository)) {
-                rootRepository.subtractFromPortfolio(userId, offer.getAssetCode(), offer.getQuantity());
-                rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) + offer.getQuantity() *
-                        offer.getPrice() - offer.getTransactionPrice() / 2);
-                rootRepository.addToPortfolio(offer.getAssetCode(), offer.getUserId(), offer.getQuantity());
-
-                return concludeOffer(offer.getTransactionPrice(), offer, userId);
-
-            } else {
-                throw new Exception("not valid");
-            }
-
+        } else {
+            throw new InsufficientBuyerBalanceException();
         }
 
+    }
 
+    public Transaction acceptBuyOffer(int userId, MarketplaceOffer offer) {
+        if (CryptoBalanceValidator.checkCryptoBalance(userId, offer.getAssetCode(),
+                offer.getQuantity(), rootRepository)) {
+            rootRepository.subtractFromPortfolio(userId, offer.getAssetCode(), offer.getQuantity());
+            rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) + offer.getQuantity() *
+                    offer.getPrice() - offer.getTransactionPrice() / 2);
+            rootRepository.addToPortfolio(offer.getAssetCode(), offer.getUserId(), offer.getQuantity());
+
+            return concludeOffer(offer.getTransactionPrice(), offer, userId);
+
+        } else {
+            throw new InsufficientSellerCryptoBalanceException();
+        }
     }
 
 
@@ -95,46 +99,38 @@ public class MarketplaceService {
         rootRepository.editPortfolio("usd", 1, bankDollarBalance + transactionCostsInDollar);
 
         // save transaction and delete offer
-
-
         Transaction transaction = new Transaction(1, offer.getQuantity(), offer.getPrice(), LocalDateTime.now(), transactionCostsInEuros, userId,
                 offer.getUserId(), offer.getAssetCode());
 
         if (!offer.isSellYesOrNo()) {
-
             transaction.setBuyerId(offer.getUserId());
             transaction.setSellerId(userId);
         }
 
-
-
         transaction.setTransactionId(rootRepository.saveTransaction(transaction));
         rootRepository.deleteMarketplaceOffer(offer.getOfferId());
-
-
         return transaction;
-
     }
 
 
 
 
 
-    public MarketplaceOffer makeOffer (int userId, String assetCode, double quantity, double price, boolean sellYesOrNo) throws Exception {
-        if (checkOfferValidity(userId, assetCode, quantity, price, sellYesOrNo)) {
-            double transactionPrice = rootRepository.getTransactionCosts() * price * quantity / 100;
-            if (!sellYesOrNo) {
+    public MarketplaceOffer makeOffer (MarketplaceDto marketplaceDto) {
+        if (checkOfferValidity(marketplaceDto)) {
+            double transactionPrice = rootRepository.getTransactionCosts() * marketplaceDto.getPrice() * marketplaceDto.getQuantity() / 100;
+            if (!marketplaceDto.isSellYesOrNo()) {
 
-                rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) - quantity *
-                        price - transactionPrice / 2);
+                rootRepository.updateBalanceByUserId(marketplaceDto.getUserId(), rootRepository.getBalanceByUserId(marketplaceDto.getUserId())
+                        - marketplaceDto.getQuantity() * marketplaceDto.getPrice() - transactionPrice / 2);
             } else {
-                rootRepository.subtractFromPortfolio(userId, assetCode, quantity);
+                rootRepository.subtractFromPortfolio(marketplaceDto.getUserId(), marketplaceDto.getAssetCode(), marketplaceDto.getQuantity());
 
             }
-            return rootRepository.saveMarketplaceOffer(new MarketplaceOffer(0, userId, LocalDateTime.now(), assetCode, quantity, price, sellYesOrNo, transactionPrice));
+            return rootRepository.saveMarketplaceOffer(new MarketplaceOffer(marketplaceDto, transactionPrice));
 
         } else {
-            throw new Exception("Geen geldige aanvraag");
+            throw new InvalidMakeOfferRequestException();
         }
     }
 
@@ -152,38 +148,34 @@ public class MarketplaceService {
     }
 
     //Check methods if offer is legal
-    public boolean checkOfferValidity (int userId, String assetCode, double quantity, double price, boolean sellYesOrNo) throws Exception  {
+    public boolean checkOfferValidity (MarketplaceDto marketplaceDto) {
 
-
-        if (price <= 0){
-            throw new Exception("Dit kan niet.");
+        if (marketplaceDto.getPrice() <= 0){
+            throw new InvalidMakeOfferRequestException();
+        }//
+        if (!marketplaceDto.isSellYesOrNo()) {
+            return checkBuyOfferValidity(marketplaceDto);
+        } else {
+            return checkSellOfferValidity(marketplaceDto);
         }
-//        if () {
-//
-//        }
-        if (!sellYesOrNo) {
-            double transactionCostsInEuros = rootRepository.getTransactionCosts() *
-                    quantity * price / 100;
-            if (price * quantity + transactionCostsInEuros > rootRepository.getBalanceByUserId(userId)) {
-                return false;
-            } else {
-                return true;
-            }
-
-        }
-
-        if (sellYesOrNo) {
-            if (!rootRepository.checkAssetInPortfolio(assetCode, userId)) {
-                return false;
-            }
-
-            double cryptoBalance = rootRepository.getQuantityOfAssetInPortfolio(assetCode, userId).orElse(0.0);
-            if (cryptoBalance >= quantity) {
-                return true;
-            }
-        }
-        return true;
-
     }
 
+
+    public boolean checkSellOfferValidity (MarketplaceDto marketplaceDto) {
+        if (!rootRepository.checkAssetInPortfolio(marketplaceDto.getAssetCode(), marketplaceDto.getUserId())) {
+            return false;
+        }
+
+        double cryptoBalance = rootRepository.getQuantityOfAssetInPortfolio(marketplaceDto.getAssetCode(),
+                marketplaceDto.getUserId()).orElse(0.0);
+        return cryptoBalance >= marketplaceDto.getQuantity();
+    }
+
+    public boolean checkBuyOfferValidity (MarketplaceDto marketplaceDto) {
+
+        double transactionCostsInEuros = rootRepository.getTransactionCosts() *
+                marketplaceDto.getQuantity() * marketplaceDto.getPrice() / 100;
+        return !(marketplaceDto.getPrice() * marketplaceDto.getQuantity() + transactionCostsInEuros >
+                rootRepository.getBalanceByUserId(marketplaceDto.getUserId()));
+    }
 }
