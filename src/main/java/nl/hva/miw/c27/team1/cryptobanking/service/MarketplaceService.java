@@ -140,6 +140,7 @@ public class MarketplaceService {
 
     public void cancelOffer(int offerId) {
         MarketplaceOffer offer = rootRepository.getOfferById(offerId).orElse(null);
+        assert offer != null;
         if (!offer.isSellYesOrNo()) {
             rootRepository.updateBalanceByUserId(offer.getUserId(), rootRepository.getBalanceByUserId(offer.getUserId())
                     + offer.getQuantity() * offer.getPrice() + offer.getTransactionPrice() / 2);
@@ -147,11 +148,7 @@ public class MarketplaceService {
             rootRepository.addToPortfolio(offer.getAssetCode(), offer.getUserId(), offer.getQuantity());
 
         }
-
-
         rootRepository.deleteMarketplaceOffer(offerId);
-
-
     }
 
     //Check methods if offer is legal

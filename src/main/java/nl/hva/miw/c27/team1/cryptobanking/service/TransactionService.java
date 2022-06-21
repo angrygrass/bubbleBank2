@@ -101,9 +101,6 @@ public class TransactionService {
         if (buyerId == Globals.getBankId()) {
             rootRepository.updateBalanceByUserId(sellerId, rootRepository.getBalanceByUserId(sellerId) - transactionCosts);
         } else if (sellerId == Globals.getBankId()) {
-
-
-
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts);
         } else {
             rootRepository.updateBalanceByUserId(buyerId, rootRepository.getBalanceByUserId(buyerId) - transactionCosts / 2);
