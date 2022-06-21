@@ -42,7 +42,7 @@ public class JdbcMarketplaceDao implements MarketplaceDao{
     @Override
     public Optional<MarketplaceOffer> getOfferById(int id) {
         List<MarketplaceOffer> marketplaceoffers =
-                jdbcTemplate.query("select * from user where offerId = ?", new JdbcMarketplaceDao.MarketplaceOfferRowMapper(), id);
+                jdbcTemplate.query("select * from marketplaceoffer where offerId = ?", new JdbcMarketplaceDao.MarketplaceOfferRowMapper(), id);
         if (marketplaceoffers.size() != 1) {
             return Optional.empty();
         } else {
@@ -51,13 +51,13 @@ public class JdbcMarketplaceDao implements MarketplaceDao{
     }
 
     @Override
-    public int save(MarketplaceOffer marketplaceOffer) {
-        String sql = "INSERT INTO marketplaceoffer(userId, dateTime,assetCode,quantity,price,sellYesOrNo)" +
-                " VALUES (?,?,?,?,?,?);";
+    public MarketplaceOffer save(MarketplaceOffer marketplaceOffer) {
+        String sql = "INSERT INTO marketplaceoffer(userId, dateTime,assetCode,quantity,price,sellYesOrNo,transactionPrice)" +
+                " VALUES (?,?,?,?,?,?,?);";
 
         jdbcTemplate.update(sql,marketplaceOffer.getUserId(),marketplaceOffer.getDateTime(),
                 marketplaceOffer.getAssetCode(),marketplaceOffer.getQuantity(),marketplaceOffer.getPrice(),
-                marketplaceOffer.isSellYesOrNo()
+                marketplaceOffer.isSellYesOrNo(),marketplaceOffer.getTransactionPrice()
         );
 
 
@@ -68,9 +68,9 @@ public class JdbcMarketplaceDao implements MarketplaceDao{
 
         Integer offerId = jdbcTemplate.queryForObject(sql, Integer.class);
         if (offerId == null) {
-            return 0;
+            return null;
         } else {
-            return offerId;
+            return getOfferById(offerId).orElse(null);
         }
 
     }
@@ -85,10 +85,10 @@ public class JdbcMarketplaceDao implements MarketplaceDao{
     public Optional<MarketplaceOffer> editMarketplaceOffer(MarketplaceOffer marketplaceOffer) {
 
         String sql = "UPDATE `marketplaceoffer` SET userId = ?, dateTime = ?, assetCode = ?, quantity = ?," +
-                "price = ?, sellYesOrNo = ?";
+                "price = ?, sellYesOrNo = ?, transactionPrice = ?";
         jdbcTemplate.update(sql, marketplaceOffer.getUserId(), marketplaceOffer.getDateTime(), marketplaceOffer.getAssetCode(),
                 marketplaceOffer.getQuantity(),
-                marketplaceOffer.getPrice(), marketplaceOffer.isSellYesOrNo());
+                marketplaceOffer.getPrice(), marketplaceOffer.isSellYesOrNo(), marketplaceOffer.getTransactionPrice());
         return Optional.of(marketplaceOffer);
 
     }
@@ -104,7 +104,8 @@ public class JdbcMarketplaceDao implements MarketplaceDao{
                     rs.getString("assetCode"),
                     rs.getDouble("quantity"),
                     rs.getDouble("price"),
-                    rs.getBoolean("sellYesOrNo"));
+                    rs.getBoolean("sellYesOrNo"),
+                    rs.getDouble("transactionPrice"));
         }
     }
 

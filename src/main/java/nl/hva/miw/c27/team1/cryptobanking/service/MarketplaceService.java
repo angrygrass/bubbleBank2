@@ -19,14 +19,14 @@ import java.util.Objects;
 public class MarketplaceService {
     private MarketplaceOffer marketplaceOffer;
     private RootRepository rootRepository;
-    private TransactionService transactionService;
+
 
     @JsonIgnore
     private final Logger logger = LogManager.getLogger(MarketplaceService.class);
 
-    public MarketplaceService(RootRepository rootRepository, TransactionService transactionService) {
+    public MarketplaceService(RootRepository rootRepository) {
         this.rootRepository = rootRepository;
-        this.transactionService = transactionService;
+
         logger.info("new empty MarketplaceService");
 
     }
@@ -39,77 +39,55 @@ public class MarketplaceService {
 
     }
 
+    // userId is user who has made the offer, price is price for 1 unit of the asset, sellYesOrNo true = sell, false = buy
+
 
     public Transaction acceptOffer(int userId, int offerId) throws Exception {
 
 
         MarketplaceOffer offer = rootRepository.getOfferById(offerId).orElse(null);
 
-        double transactionCostsInEuros = rootRepository.getTransactionCosts() *
-                offer.getQuantity() * offer.getPrice() / 100;
-
-        if (offer.isSellYesOrNo()) {
+                if (offer.isSellYesOrNo()) {
 
 
             if (BankAccountBalanceValidator.checkBankAccountBalance(userId, offer.getUserId(), offer.getAssetCode(),
-                    offer.getQuantity(), transactionCostsInEuros, rootRepository)) {
+                    offer.getQuantity(), offer.getTransactionPrice(), rootRepository)) {
                 rootRepository.addToPortfolio(offer.getAssetCode(), userId, offer.getQuantity());
                 rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) - offer.getQuantity() *
-                        offer.getPrice() - transactionCostsInEuros / 2);
+                        offer.getPrice() - offer.getTransactionPrice() / 2);
+                rootRepository.updateBalanceByUserId(offer.getUserId(), rootRepository.getBalanceByUserId(offer.getUserId())
+                +offer.getQuantity() * offer.getPrice() - offer.getTransactionPrice() / 2);
 
-                return concludeOffer(transactionCostsInEuros, offer, userId);
-
-
-
-
+                return concludeOffer(offer.getTransactionPrice(), offer, userId);
 
             } else {
-
-
                 throw new Exception("not valid");
             }
 
-                /*rootRepository.saveTransaction(new Transaction(0, offer.getQuantity(), offer.getPrice(),
-                        LocalDateTime.now()))*/
+                       }
 
-
-        }
-
-
-        if (!offer.isSellYesOrNo()) {
+        else {
 
             if (CryptoBalanceValidator.checkCryptoBalance(userId, offer.getAssetCode(),
                     offer.getQuantity(), rootRepository)) {
                 rootRepository.subtractFromPortfolio(userId, offer.getAssetCode(), offer.getQuantity());
                 rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) + offer.getQuantity() *
-                        offer.getPrice() - transactionCostsInEuros / 2);
+                        offer.getPrice() - offer.getTransactionPrice() / 2);
+                rootRepository.addToPortfolio(offer.getAssetCode(), offer.getUserId(), offer.getQuantity());
 
-                return concludeOffer(transactionCostsInEuros, offer, userId);
-
-
-
-
+                return concludeOffer(offer.getTransactionPrice(), offer, userId);
 
             } else {
-
-
                 throw new Exception("not valid");
             }
 
         }
-
-
-
-        // pay transaction costs to bank
-
-        throw new Exception("not valid");
 
 
     }
 
 
     public Transaction concludeOffer(double transactionCostsInEuros, MarketplaceOffer offer, int userId) {
-
 
         double transactionCostsInDollar = transactionCostsInEuros * (1 / Objects.requireNonNull(rootRepository.findAssetByCode("USD").orElse(null)).
                 getRateInEuros());
@@ -118,55 +96,69 @@ public class MarketplaceService {
 
         // save transaction and delete offer
 
+
         Transaction transaction = new Transaction(1, offer.getQuantity(), offer.getPrice(), LocalDateTime.now(), transactionCostsInEuros, userId,
                 offer.getUserId(), offer.getAssetCode());
+
+        if (!offer.isSellYesOrNo()) {
+
+            transaction.setBuyerId(offer.getUserId());
+            transaction.setSellerId(userId);
+        }
+
+
+
         transaction.setTransactionId(rootRepository.saveTransaction(transaction));
         rootRepository.deleteMarketplaceOffer(offer.getOfferId());
 
 
         return transaction;
 
-
-
-
     }
 
-        // TODO check if the offer can be accepted by this user. If so, do the transaction and return it.
-
-
-
-        // TODO Also adjust TransactionService class so that it uses the appropriate price (at the moment it just
-        // TODO uses the current rate when doing transactions between users
-        // TODO If it can't be accepted, throw Exception
 
 
 
 
-    public int makeOffer (int userId, String assetCode, double quantity, double price, boolean sellYesOrNo) throws Exception {
+    public MarketplaceOffer makeOffer (int userId, String assetCode, double quantity, double price, boolean sellYesOrNo) throws Exception {
         if (checkOfferValidity(userId, assetCode, quantity, price, sellYesOrNo)) {
+            double transactionPrice = rootRepository.getTransactionCosts() * price * quantity / 100;
             if (!sellYesOrNo) {
+
                 rootRepository.updateBalanceByUserId(userId, rootRepository.getBalanceByUserId(userId) - quantity *
-                        price - rootRepository.getTransactionCosts() * price * quantity / 100);
+                        price - transactionPrice / 2);
             } else {
                 rootRepository.subtractFromPortfolio(userId, assetCode, quantity);
 
             }
-
-
-            return rootRepository.saveMarketplaceOffer(new MarketplaceOffer(0, userId, LocalDateTime.now(), assetCode, quantity, price, sellYesOrNo));
-
-
+            return rootRepository.saveMarketplaceOffer(new MarketplaceOffer(0, userId, LocalDateTime.now(), assetCode, quantity, price, sellYesOrNo, transactionPrice));
 
         } else {
             throw new Exception("Geen geldige aanvraag");
         }
     }
 
+    public void cancelOffer(int offerId) {
+        MarketplaceOffer offer = rootRepository.getOfferById(offerId).orElse(null);
+        if (!offer.isSellYesOrNo()) {
+            rootRepository.updateBalanceByUserId(offer.getUserId(), rootRepository.getBalanceByUserId(offer.getUserId())
+                    + offer.getQuantity() * offer.getPrice() + offer.getTransactionPrice() / 2);
+        } else {
+            rootRepository.addToPortfolio(offer.getAssetCode(), offer.getUserId(), offer.getQuantity());
+
+        }
+
+
+        rootRepository.deleteMarketplaceOffer(offerId);
+
+
+    }
+
     //Check methods if offer is legal
     public boolean checkOfferValidity (int userId, String assetCode, double quantity, double price, boolean sellYesOrNo) throws Exception  {
 
 
-        if (marketplaceOffer.getPrice() <= 0){
+        if (price <= 0){
             throw new Exception("Dit kan niet.");
         }
 //        if () {

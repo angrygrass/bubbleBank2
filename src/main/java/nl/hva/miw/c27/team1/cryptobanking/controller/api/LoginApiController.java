@@ -31,6 +31,8 @@ public class LoginApiController extends BaseApiController {
         logger.info("New LoginApiController");
     }
 
+
+
     @PostMapping("/authenticate")
     public ResponseEntity<?> loginHandler(@RequestBody LoginDto loginDto) {
         //default value for time to keep token is a month

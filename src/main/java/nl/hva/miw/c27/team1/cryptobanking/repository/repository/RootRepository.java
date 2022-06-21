@@ -210,7 +210,7 @@ public class RootRepository {
 
     public Optional<MarketplaceOffer> getOfferById(int id) {return marketplaceDao.getOfferById(id);}
 
-    public int saveMarketplaceOffer(MarketplaceOffer marketplaceOffer) {return marketplaceDao.save(marketplaceOffer);}
+    public MarketplaceOffer saveMarketplaceOffer(MarketplaceOffer marketplaceOffer) {return marketplaceDao.save(marketplaceOffer);}
 
     public void deleteMarketplaceOffer(int id) {marketplaceDao.deleteOfferById(id);}
 

@@ -4,6 +4,7 @@ package nl.hva.miw.c27.team1.cryptobanking.controller.api;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import nl.hva.miw.c27.team1.cryptobanking.model.MarketplaceOffer;
 import nl.hva.miw.c27.team1.cryptobanking.model.Transaction;
+import nl.hva.miw.c27.team1.cryptobanking.model.transfer.MarketplaceDto;
 import nl.hva.miw.c27.team1.cryptobanking.model.transfer.TransactionDto;
 import nl.hva.miw.c27.team1.cryptobanking.service.*;
 import nl.hva.miw.c27.team1.cryptobanking.utilities.exceptions.InvalidTransactionRequestException;
@@ -53,23 +54,42 @@ public class MarketplaceApiController extends BaseApiController {
 
     @ResponseBody
 
-    @PostMapping
-    public ResponseEntity<Transaction> acceptOffer (@RequestBody int userId, int offerId,
+    @PostMapping("/make")
+    public ResponseEntity<MarketplaceOffer> makeOffer (@RequestBody MarketplaceDto marketplaceDto,
+                                          @RequestHeader(value="authorization") String authorization) throws Exception {
+        ResponseEntity<MarketplaceOffer> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        if (authorisationService.checkCustomerAuthorisation(authorization))   {
+            return ResponseEntity.ok().body(marketplaceService.makeOffer(marketplaceDto.getUserId(), marketplaceDto.getAssetCode(),
+                    marketplaceDto.getQuantity(), marketplaceDto.getPrice(), marketplaceDto.isSellYesOrNo()));
+
+        }
+        return result;
+    }
+
+
+    @PostMapping("/accept")
+    public ResponseEntity<Transaction> acceptOffer (@RequestParam int userId, int offerId,
                                                 @RequestHeader(value="authorization") String authorization) throws Exception {
         ResponseEntity<Transaction> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         if (authorisationService.checkCustomerAuthorisation(authorization))   {
-
-
             Transaction transaction = marketplaceService.acceptOffer(userId, offerId);
-
-
             return ResponseEntity.ok().body(transaction);
-
         }
-
         return result;
+    }
 
+    @DeleteMapping("/cancel")
+    public ResponseEntity<?> cancelOffer (@RequestParam int offerId,
+                                                    @RequestHeader(value="authorization") String authorization) throws Exception {
+        ResponseEntity<?> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        if (authorisationService.checkCustomerAuthorisation(authorization))   {
+            marketplaceService.cancelOffer(offerId);
+            return ResponseEntity.ok().body("Offer canceled");
+        }
+        return result;
     }
 
 

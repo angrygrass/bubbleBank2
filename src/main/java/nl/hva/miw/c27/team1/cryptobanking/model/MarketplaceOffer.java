@@ -11,9 +11,13 @@ public class MarketplaceOffer {
     private double quantity;
     private double price;
     private boolean sellYesOrNo;
+    private double transactionPrice;
+
+    // userId is user who has made the offer, price is price for 1 unit of the asset, sellYesOrNo true = sell, false = buy
 
 
-    public MarketplaceOffer(int offerId, int userId, LocalDateTime dateTime, String assetCode, double quantity, double price, boolean sellYesOrNo) {
+    public MarketplaceOffer(int offerId, int userId, LocalDateTime dateTime, String assetCode, double quantity, double price, boolean sellYesOrNo,
+                            double transactionPrice) {
         this.offerId = offerId;
         this.userId = userId;
         this.dateTime = dateTime;
@@ -21,6 +25,7 @@ public class MarketplaceOffer {
         this.quantity = quantity;
         this.price = price;
         this.sellYesOrNo = sellYesOrNo;
+        this.transactionPrice = transactionPrice;
     }
 
     public int getOfferId() {
@@ -77,5 +82,13 @@ public class MarketplaceOffer {
 
     public void setSellYesOrNo(boolean sellYesOrNo) {
         this.sellYesOrNo = sellYesOrNo;
+    }
+
+    public double getTransactionPrice() {
+        return transactionPrice;
+    }
+
+    public void setTransactionPrice(double transactionPrice) {
+        this.transactionPrice = transactionPrice;
     }
 }
