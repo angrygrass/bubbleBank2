@@ -55,7 +55,7 @@ public class MarketplaceApiController extends BaseApiController {
 
     @PostMapping
     public ResponseEntity<Transaction> acceptOffer (@RequestBody int userId, int offerId,
-                                                @RequestHeader(value="authorization") String authorization) {
+                                                @RequestHeader(value="authorization") String authorization) throws Exception {
         ResponseEntity<Transaction> result = ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 
         if (authorisationService.checkCustomerAuthorisation(authorization))   {

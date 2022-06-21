@@ -39,6 +39,7 @@ public class TransactionService {
         //calculate transaction costs in euro - ATTENTION: TRANSACTIONCOSTS IN THE DATABASE IS A PERCENTAGE!
         double transactionCostsInEuros = getTransactionCostsInEuro(assetCode, quantity);
         //check if customer bank account balance and bank crypto balance are sufficient for the transaction
+
         doBalanceChecks(buyerId, sellerId, assetCode, quantity, transactionCostsInEuros);
         //check if asset is already in buyer's portfolio - if not save the new asset + amount, else update current amount
         rootRepository.addToPortfolio(assetCode, buyerId, quantity);
@@ -62,7 +63,7 @@ public class TransactionService {
     public double getTransactionCostsInEuro(String assetCode, double quantity) {
         Asset asset = rootRepository.findAssetByCode(assetCode).orElse(null);
         if (asset != null) {
-            return rootRepository.getTransactionCosts() * quantity *  asset.getRateInEuros() / 100;
+            return rootRepository.getTransactionCosts() * quantity * asset.getRateInEuros() / 100;
         } else {
             throw new InvalidAssetRequest(assetService.getInvalidAssetMsg());
         }

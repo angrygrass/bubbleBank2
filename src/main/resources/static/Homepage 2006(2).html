@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Homepage</title>
+        <style>
+            body {
+                padding:30px
+            }
+
+            .grid-container-buttons {
+                display: grid;
+                grid-template-columns: repeat(9, 1fr);
+                grid-template-rows: repeat(1, 1fr);
+                background-color: #f7fdf7;
+            }
+
+            .grid-container-assets {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(1, 1fr);
+                background-color: #f7fdf7;
+                padding-left: 25px;
+                padding-right: 25px;
+                font-weight: bold;
+            }
+
+            .grid-container-graphs {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(1, 1fr);
+                background-color: #ffffffd4;
+                padding: 1px;
+                padding-right: 600px;
+                align-content: left;
+            }
+
+            .grid-item-graph {
+                background-color: rgba(255, 255, 255, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                padding: 1px;
+                font-size: 30px;
+                text-align: center;
+            }
+
+            .button {
+                background-color: #0058b0;
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+            }
+
+            .table {
+                display: block;
+                margin-top: 20px;
+                font-family: arial, sans-serif;
+                border-collapse: collapse;
+                width: 150%;
+                padding: 15px;
+            }
+
+            td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            }
+
+            tr:nth-child(even) {
+            background-color: #fcf3fc;
+            }
+
+
+
+
+        </style>
+    </head>
+    <body>
+        <body onload="combinedMethods()">
+        <div class="grid-container-buttons">
+            <h2>Homepage</h2>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div><button class="button">Marktplaats</button></div>
+            <div><button class="button">Koop crypto</button></div>
+            <div><button class="button">Log uit</button></div>
+        </div>
+
+        <div id="globalInfo">
+            <h2>Global info</h2>
+                <p id="detailsParagraph"></p>
+        </div>
+        <div>
+            <h3>Huidige koers in EUR</h3>
+        </div>
+        <div class="grid-container-assets">
+            <div id="assetTable", class="table"></div>
+            <div>
+                <table id="priceChangeTable" class="table">
+                    <th></th>
+                    <th>Coin</th>
+                    <th>% 24u prijs schommeling</th>
+                    <th>Aanbeveling</th>
+                    <th></th>
+                </table>
+            </div>
+        </div>
+
+        <br>
+        <h2>Asset details</h2>
+                <label for="coins">Kies een coin</label>
+                    <select id="coins" name="coins">
+                        <option value="ada">ada</option>
+                        <option value="ape">ape</option>
+                        <option value="btc">btc</option>
+                        <option value="chz">chz</option>
+                        <option value="dai">dai</option>
+                        <option value="doge">doge</option>
+                        <option value="dot">dot</option>
+                        <option value="eos">eos</option>
+                        <option value="eth">eth</option>
+                        <option value="flow">flow</option>
+                        <option value="gas">gas</option>
+                        <option value="ksm">ksm</option>
+                        <option value="lrc">lrc</option>
+                        <option value="sol">sol</option>
+                        <option value="trx">trx</option>
+                        <option value="uma">uma</option>
+                        <option value="usdt">usdt</option>
+                        <option value="waves">waves</option>
+                        <option value="xrd">xrd</option>
+                        <option value="xtz">xtz</option>
+                    </select>
+                <label for="days">aantal dagen</label>
+                    <select name="days" id="days">
+                        <option value="3">3</option>
+                        <option value="7">7</option>
+                        <option value="14">14</option>
+                        <option value="30">30</option>
+                    </select>
+                <input type="submit" onclick="getHistoricAssetsFromBackEnd(coins.value, days.value)"> 
+        <div class="grid-container-graphs">
+            <div class="grid-item-graph">
+                <canvas id="1" width="450" height="450"></canvas>
+            </div>
+            <div>
+                <canvas id="2" width="450" height="450"></canvas>
+            </div>
+            <div>
+                <canvas id="3" width="450" height="450"></canvas>
+            </div>
+        </div>
+        <h2>Crypto market cap: wat is het?</h2>
+            <p>De market cap van een munt is de totale waarde van alle munten van die asset die in omloop zijn.
+            Hoe hoger de market cap van een bepaalde munt, hoe hoger de ranking en de % van de markt.
+            Crypto kunnen in de volgende 3 categorien verdeeld worden:</p>
+        <ol>
+            <li>Large-cap crypto (> $ 10 miljard)</li>
+            <li>Mid-cap crypto ($1 miljar - $10 miljard)</li>
+            <li>Small-cap crypto (<$1 miljard)</li>
+        </ol>
+            <div>
+                <table id="articleTable" class="table">
+                    <th>Laatste crypto nieuws</th>
+                    <table>
+            </div>
+
+            <script>
+                function combinedMethods() {
+                    getAssetsFromBackEnd()
+                    getAssetDetails()
+                    getGlobalInfo()
+                    getArticles()
+                    getHistoricAssetsFromBackEnd("ada", 3)
+                }
+
+                let activeCrypto
+                let totalMarkets
+                let upcomingIco
+                const assetCodeList = []
+                let arrayAMap = new Map()
+                let sortedMap = new Map()
+                window.myHistoryChart = null
+                window.myMarketCapChart = null
+                window.myCirculatingSupplyChart = null
+
+                async function getGlobalInfo() {
+                    fetch('https://api.coingecko.com/api/v3/global', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        }, 
+                    })
+                    .then(response => {
+                        return response.json() }
+                    ) 
+                    .then(data => {
+                        addToParagraph(data)
+                        })
+                    .catch((error) => {
+                        console.error('Foutje', error)
+                    })
+                }
+                
+                async function addToParagraph(data) {
+                    activeCrypto = data.data.active_cryptocurrencies
+                    totalMarkets = data.data.markets
+                    upcomingIco = data.data.upcoming_icos
+
+                    document.getElementById('detailsParagraph').innerHTML = 
+                    'Er zijn globaal ' + activeCrypto + ' actieve crypto coins beschikbaar op ' 
+                    + totalMarkets + ' crypto markten. Er staan ' 
+                    + upcomingIco + ' initial coin offerings (ICO) gepland.'
+                }
+
+                // retrieves asset rates of 20 bubbleBank coins, and passes data on to different methods in
+                // the 2nd promise
+                async function getAssetsFromBackEnd() {
+                    fetch('http://localhost:8080/assets', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            "Authorization": "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004"
+                        },
+                    })
+                    .then(response => {
+                        return response.json() }
+                    )
+                    .then(data => {
+                        loadToAssetTable(data)
+                        getAssetCodes(data)
+                        })
+                    .catch((error) => {
+                        console.error('Foutje', error)
+                    });
+                }
+
+                // this function might not be needed
+                async function getAssetCodes(data) {
+                    for (let index = 0; index < data.length; index++) {
+                        assetCodeList.push(data[index].symbol)
+                    }
+                    // USD exchange rate not needed here
+                    assetCodeList.pop('USD')
+                }
+
+                async function loadToAssetTable(data) {
+                    let myTable = document.querySelector('#assetTable')
+                    let headers = ['naam', 'symbool','prijs']
+                    let table = document.createElement('table')
+                    let headerRow = document.createElement('tr')
+                    
+                    // to create headers
+                    headers.forEach(headerText => {
+                        let header = document.createElement('th');
+                        let textNode = document.createTextNode(headerText)
+                        header.appendChild(textNode)
+                        headerRow.appendChild(header)
+                    });
+                    table.appendChild(headerRow);
+
+                    // to create rows
+                    data.forEach(asset =>{
+                        let row = document.createElement('tr')
+                        
+                        Object.values(asset).forEach(text =>{
+                            let cell = document.createElement('th')
+                            let textNode = document.createTextNode(text)
+                            cell.appendChild(textNode)
+                            row.appendChild(cell)
+
+                        })
+                        table.appendChild(row)
+                    });
+
+                    myTable.appendChild(table)
+                }
+
+                async function getAssetDetails() {
+                    fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=eur&order=market_cap_desc&ids=bitcoin,solana,ethereum,cardano,apecoin,tether,gas,tron,polkadot,waves,loopring,dogecoin,tezos,chiliz,eos,uma,radix,kusama,dai,flow', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        }, 
+                    })
+                    .then(response => {
+                        return response.json() }
+                    )
+                    .then(data => {
+                        addToPriceChangePercentageTable(data)
+                        loadDataToMarketCapChart(data)
+                        loadDataToCirculatingSupplyChart(data)
+                        })
+                    .catch((error) => {
+                        console.error('Foutje', error)
+                    });
+                }
+
+                async function addToPriceChangePercentageTable(data) {
+                    let myTable = document.getElementById("priceChangeTable")
+                    console.log(data)
+
+                    for (let index = 0; index < 20; index++) {
+                        arrayAMap.set(data[index].id, data[index].price_change_percentage_24h);
+                    }
+                    // sorts data based on highest price change %
+                    sortedMap = new Map([...arrayAMap].sort((a, b) => a[1] - b[1]))
+
+                    let teller = 0;    
+                        sortedMap.forEach((k,v) => {
+                            if (teller < 5) {
+                                var row = myTable.insertRow()
+                            let cell = row.insertCell(0)
+                            let cell1 = row.insertCell(1)
+                            let cell2 = row.insertCell(2)
+                            let cell3 = row.insertCell(3)
+                            let cell4 = row.insertCell(4)
+                            cell1.innerHTML = v;
+                            cell2.innerHTML = k;
+                            let img = document.createElement('img')
+                            img.src = "images/" + v + ".png"
+                            cell.appendChild(img)
+
+                                if (k < -2) {
+                                    let img = document.createElement('img')
+                                    img.src = "images/buy.png";
+                                    cell3.appendChild(img)
+                                } else if (k > 10) {
+                                    let img = document.createElement('img')
+                                    img.src = "images/sell.png";
+                                    cell3.appendChild(img)
+                                }
+                            let button = document.createElement('button')
+
+                            button.appendChild(document.createTextNode("koop/verkoop"))
+                            cell4.appendChild(button)
+                            button.className = "button"
+                            }
+                            teller++
+                        }
+                    ) 
+                }
+
+                async function getArticles() {
+                    fetch('http://localhost:8080/articles', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            "Authorization": "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004"
+                        },
+                    })
+                    .then(response => {
+                        return response.json() }
+                    )
+                    .then(data => {
+                        displayArticles(data)
+                        })
+                    .catch((error) => {
+                        console.error('Foutje', error)
+                    });
+                }
+
+                async function displayArticles(data) {
+                    let myTable = document.getElementById("articleTable");
+                    
+                    for (let index = 0; index < 5; index++) {
+                        let row = myTable.insertRow(index+1)
+                        let a = document.createElement('a')
+                        let cell = row.insertCell(0)
+                        let href = data[index].link
+                        a.href = href
+                        a.innerHTML = href
+                        cell.appendChild(a)
+                    }
+                }
+
+                // retrieves history of 1 coin specified by name and number of days
+                async function getHistoricAssetsFromBackEnd(assetCode, numberOfDays) {
+                    fetch('http://localhost:8080/assets/history/' + assetCode + '?chartdays=' + numberOfDays + '', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            "Authorization": "Bearer 36716df7-839b-426e-8bc0-ac3ad5580004"
+                        },
+                    })
+                    .then(response => {
+                        return response.json() }
+                    )
+                    .then(data => {
+                        displayHistoryChart(data)
+                        })
+                    .catch((error) => {
+                        console.error('Foutje', error)
+                    });
+                }
+
+
+                // data bevat 1 coin obv aantal dagen
+                async function displayHistoryChart(data) {
+                    let historicRates = []
+                    let symbol = data[0].symbol
+                    let sizeDataObjectArray = Object.keys(data).length
+                    for (let index = 0; index < sizeDataObjectArray; index++) {
+                        let currentPriceOnDateTime = data[index].current_price
+                        historicRates.push(currentPriceOnDateTime)
+                    }
+                    // alle rates van 1 coin
+                    loadDataToHistoryGraph(historicRates, symbol)
+                }
+
+                async function loadDataToHistoryGraph(arrayList, symbol) {
+                    if(window.myHistoryChart != null){
+                        window.myHistoryChart.destroy()
+                    }
+
+                    let setRgba
+                    let labelArray = []
+
+                    for (let index = 0; index < arrayList.length; index++) {
+                        labelArray[index] = " ";
+                    }
+
+                    let beginValue = arrayList[0]
+                    let endValue = arrayList[arrayList.length - 1]
+                    
+                    if (beginValue <= endValue) {
+                        setRgba = 'rgba(62, 214, 84, 0.8)'
+                        } else { 
+                            setRgba = 'rgba(244, 40, 40, 0.8)'
+                        }
+
+                    let ctx = document.getElementById(1).getContext('2d');
+                    window.myHistoryChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labelArray,
+                            datasets: [{
+                                label: 'Historische waarde van ' + symbol,
+                                data: arrayList,
+                                backgroundColor: [
+                                    setRgba,
+                                ],
+                                borderColor: [
+                                    'rgba(237, 246, 239, 0.8)',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: false,
+                            maintainAspectRatio: false,
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                    },
+                                    gridLines: {
+                                        color: "rgba(0, 0, 0, 0)",
+                                    }
+                                }
+                                ],
+                            }
+                        }
+                    });
+                }
+
+                async function loadDataToMarketCapChart(data) {
+                    if(window.myMarketCapChart != null){
+                        window.myMarketCapChart.destroy();
+                        }
+                    let arrayIds = []
+                    let arrayMarketCap = []
+
+                    for (let index = 0; index < 5; index++) {
+                        arrayIds.push(data[index].id)
+                        arrayMarketCap.push(data[index].market_cap)
+                    }
+
+                    let ctx = document.getElementById(2).getContext('2d')
+
+                    window.myMarketCapChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: [arrayIds[0], arrayIds[1], arrayIds[2], arrayIds[3], arrayIds[4]],
+                            datasets: [{
+                                data: arrayMarketCap,
+                                backgroundColor: [
+                                    'rgba(71, 80, 173, 0.8)',
+                                    'rgba(254, 80, 173, 0.8)',
+                                    'rgba(254, 187, 173, 0.8)',
+                                    'rgba(254, 114, 0, 0.8)',
+                                    'rgba(254, 35, 0, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(71, 80, 173, 0.8)',
+                                    'rgba(254, 80, 173, 0.8)',
+                                    'rgba(254, 187, 173, 0.8)',
+                                    'rgba(254, 114, 0, 0.8)',
+                                    'rgba(254, 35, 0, 0.8)'
+                                ],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Top 5 coins op basis van market cap'
+                            },
+                            hoverBackgroundColor: true,
+                            responsive: false,
+                            maintainAspectRatio: false,
+                        }
+                    });
+                }
+
+                async function loadDataToCirculatingSupplyChart(data) {
+                    if(window.myCirculatingSupplyChart != null){
+                        window.myCirculatingSupplyChart.destroy()
+                        }
+                    let arrayIds = []
+                    let arrayCirculatingSupply = []
+                    let keyValueMap = new Map()
+
+                    for (let index = 0; index < 20; index++) {
+                        keyValueMap.set(data[index].id, data[index].market_cap_change_percentage_24h)
+                    }
+                    // sorts data
+                    sortedMap2 = new Map([...keyValueMap].sort((b, a) => a[1] - b[1]))
+
+                    sortedMap2.forEach((k,v) => {
+                        arrayIds.push(v)
+                        arrayCirculatingSupply.push(k)
+                    })
+
+                    let ctx = document.getElementById(3).getContext('2d');
+
+                    window.myCirculatingSupplyChart = new Chart(ctx, {
+                        type: 'polarArea',
+                        data: {
+                            labels: [arrayIds[0], arrayIds[1],arrayIds[2], arrayIds[3],arrayIds[4]],
+                            datasets: [{
+                                data: [arrayCirculatingSupply[0], arrayCirculatingSupply[1], arrayCirculatingSupply[2],arrayCirculatingSupply[3],arrayCirculatingSupply[4]],
+                                backgroundColor: [
+                                    'rgba(71, 80, 173, 0.8)',
+                                    'rgba(254, 80, 173, 0.8)',
+                                    'rgba(254, 187, 173, 0.8)',
+                                    'rgba(254, 114, 0, 0.8)',
+                                    'rgba(254, 35, 0, 0.8)',
+                                ],
+                                borderColor: [
+                                    'rgba(71, 80, 173, 0.8)',
+                                    'rgba(254, 80, 173, 0.8)',
+                                    'rgba(254, 187, 173, 0.8)',
+                                    'rgba(254, 114, 0, 0.8)',
+                                    'rgba(254, 35, 0, 0.8)',     
+                                ],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Top 5 market cap stijging in 24u (%)'
+                            },
+                            hoverBackgroundColor: true,
+                            responsive: false,
+                            maintainAspectRatio: false,
+                        }
+                    });
+                }
+
+            </script>
+    </body>
+    </html>
+
